@@ -14,11 +14,15 @@ import { provideAuth, AuthHttp, AuthConfig }      from 'angular2-jwt';
 import { MenuService } from './menu/menu.services';
 import { MenuDirective } from './menu/menu.directive';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { UserAuthenticationService } from './user-authentication/user-authentication.service';
+import { FacebookService } from 'ng2-facebook-sdk';
 
 
-import {Ng2PaginationModule} from 'ng2-pagination';
+
+import { Ng2PaginationModule } from 'ng2-pagination';
 import { RatingFoodComponent } from './rating-food/rating-food.component';
 import { RatingServiceComponent } from './rating-service/rating-service.component';
+import { GoogleSignInComponent } from './google-sign-in/google-sign-in.component';
 
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
@@ -37,6 +41,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     RatingFoodComponent,
     UserProfileComponent,
     RatingServiceComponent,
+    GoogleSignInComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,7 +56,9 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
       useFactory: authHttpServiceFactory,
       deps: [ Http, RequestOptions ]
     },
-    MenuService
+    MenuService,
+    UserAuthenticationService,
+    FacebookService
   ],
   bootstrap: [AppComponent]
 })

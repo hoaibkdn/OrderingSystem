@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { User } from './models/user';
 import { ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { FacebookService, LoginResponse, InitParams } from 'ng2-facebook-sdk';
+import { UserAuthenticationService } from './user-authentication/user-authentication.service';
 declare var $:any;
 
 @Component({
@@ -17,9 +19,36 @@ export class AppComponent {
   inputEmail: string;
   inputPassword: string;
   constructor(
-    private router: Router) {
-
+    private router: Router, private facebookService: FacebookService, private userAuthenticationService: UserAuthenticationService) {
+      let fbParams: InitParams = {
+                                     appId: '830527260415888',
+                                     xfbml: true,
+                                     version: 'v2.5'
+                                     };
+      this.facebookService.init(fbParams);
   }
+
+  facebookLogin(): void {
+      this.facebookService.login().then(
+      (response: LoginResponse) => {
+        console.log(response);
+        let token = response.authResponse.accessToken;
+        this.userAuthenticationService.loginByFacebook(token).subscribe(
+          res => {
+            let token = res.json().token;
+            localStorage.setItem('token', token);
+            console.log(token);
+            $('#login').modal('hide');
+            // Hoai: Add your logic code after login success here
+          },
+          err => {
+            console.log(err);
+          })
+      },
+      (error: any) => console.error(error)
+    );
+  }
+
   signIn() {
     if(this.inputEmail == "admin@gmail.com")
       this.router.navigate(["/admin"]);
@@ -27,4 +56,6 @@ export class AppComponent {
     console.log(this.inputPassword);
     $('#login').modal('hide');
   }
+
+  
 }
