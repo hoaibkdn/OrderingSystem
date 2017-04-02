@@ -6,7 +6,7 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 
-import { FoodAndBeverage } from '../models/FoodAndBeverage';
+import { FoodAndDrink } from '../models/food-and-drink';
 import { Rating } from '../models/Rating';
 
 
@@ -14,23 +14,24 @@ import { Rating } from '../models/Rating';
 export class MenuService {
 
   private headers = new Headers({'Content-Type': 'application/json'});
-  private foodUrl = "/src/app/models/FoodAndBeverage-data.json";
+  private foodUrl = "http://192.168.0.106:8080/api/food-and-drink/all";
+  // private foodUrl = "src/app/models/"
   private rateUrl;
   constructor(private http: Http) {}
 
-  getFood(id:Number): Observable<FoodAndBeverage[]> {
+  getFood(id:Number): Observable<FoodAndDrink[]> {
     return this.getAllFood()
-        .map(food => food.filter(afood => afood.foodAndBeverageTypeId === id ));
+        .map(food => food.filter(afood => afood.foodAndDrinkType.id === id ));
   }
 
-  getDetail(id:Number): Observable<FoodAndBeverage> {
+  getDetail(id:Number): Observable<FoodAndDrink> {
     return this.getAllFood()
-        .map(food => food.filter(afood => afood.foodAndBeverageId === id ))[0];
+        .map(food => food.filter(afood => afood.id === id ))[0];
   }
 
-  getAllFood(): Observable<FoodAndBeverage[]> {
+  getAllFood(): Observable<FoodAndDrink[]> {
     return this.http.get(this.foodUrl)
-        .map(response => response.json().data as FoodAndBeverage[]);
+        .map(response => response.json() as FoodAndDrink[]);
   }
 
   //get from JSON rating, check exist, post into JSON
@@ -51,6 +52,12 @@ export class MenuService {
           .then(() => rating);
   }
 
+
+  postOrder(order: any): Observable<any>{
+    const url = "http://192.168.0.106:8080/api/invoice";
+    this.headers.append('Authorization', 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiaWdlckBnbWFpbC5jb20iLCJhdWRpZW5jZSI6IndlYiIsImNyZWF0ZWQiOjE0OTEwNDA4NjAwNDYsImV4cCI6MTQ5MTEyNzI2MH0.Nwjc8Xzs72keWEbxc4YD4XJML7jmKLDB_Yf-XAjbJzGyFN7NpnMKBox02GllGaNL9DJw1jJIf5F02QjPFZiegQ');
+    return this.http.post(url, order, {headers: this.headers});
+  }
   private extractData(res: Response) {
         let body = res.json();
         return body.data || {};
@@ -62,8 +69,5 @@ export class MenuService {
       console.error(errMsg); // log to console instead
       return Observable.throw(errMsg);
   }
-  // var searching = document.getElementsByClassName("search__box")[0];
-  // searching.addEventListener("keypress", function(event) {
 
-  // })
 }

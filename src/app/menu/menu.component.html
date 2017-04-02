@@ -45,7 +45,7 @@
                             <img class="food__img" src="../../assets/slice/food.png" alt="">
                             <div class="food__board">
                               <p class="food__board--name">{{afood.name}}</p>
-                              <p class="food__board--price">{{afood.price}}</p>
+                              <p class="food__board--price">{{afood.price}} d</p>
                             </div>
                           </a>
                         </div>
@@ -71,9 +71,22 @@
 
                   <div id="ordered-food__wrap" class="collapse">
                     <!--food that ordered will be put here-->
+                    <div class="ordering__food--text inner-odered flex-box food1">
+                      <p class="ordered__food--name">Noodle</p>
+                      <p class="ordered__food--quantity">2</p>
+                      <p class="ordered__food--price">90.000 d</p>
+                      <button (click)="clearFood('food1')" class="ordered__food--clear">x</button>
+                    </div>
                   </div>
 
                   <!--food ordering-->
+
+                  <div class="ordering__food--text ordered__food flex-box food2">
+                    <p class="ordered__food--name">Noodle</p>
+                    <p class="ordered__food--quantity">1</p>
+                    <p class="ordered__food--price">30.000 d</p>
+                    <button (click)="clearFood('food2')" class="ordered__food--clear">x</button>
+                  </div>
 
                   <!--<div class="ordering__food--text ordered__food flex-box food1">
                     <p class="ordered__food--name">Noodle</p>
@@ -86,8 +99,8 @@
                     <p class="ordered__food--quantity">1</p>
                     <p class="ordered__food--price">30.000 d</p>
                     <button (click)="clearFood('food2')" class="ordered__food--clear">x</button>
-                  </div>
-                  <div class="ordering__food--text ordered__food flex-box food3">
+                  </div>-->
+                  <!--<div class="ordering__food--text ordered__food flex-box food3">
                     <p class="ordered__food--name">Hamberger</p>
                     <p class="ordered__food--quantity">2</p>
                     <p class="ordered__food--price">90.000 d</p>
@@ -125,7 +138,7 @@
             <h2>Pizza</h2>
             <p class="show-detail__disc">{{afood.detail}}</p>
             <div class="show-detail__quanity flex-box">
-              <p class="show-detail__price" >{{afood.price}}</p>
+              <p class="show-detail__price" >{{afood.price}} d</p>
               <div class="show-detail__choosing flex-box">
                 <button (click) = "quantityUp()" id="btn-up" type="button" class="show-detail__btn-arrow icon-arrow-up"></button>
                 <input id="quantity" type="text" [(ngModel)] = "quantity" class="show-detail__number" name="inputQuantity">

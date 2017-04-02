@@ -1,7 +1,7 @@
 import { Component, OnInit, Directive, ElementRef, ComponentFactoryResolver,
         ComponentRef, Input } from '@angular/core';
 import { MenuService } from './menu.services';
-import { FoodAndBeverage } from '../models/FoodAndBeverage';
+import { FoodAndDrink } from '../models/food-and-drink';
 import { ViewEncapsulation } from '@angular/core';
 
 import { Observable }        from 'rxjs/Observable';
@@ -19,15 +19,15 @@ declare var $:any;
 })
 
 export class MenuComponent implements OnInit {
-  food: FoodAndBeverage[];
-  afood: FoodAndBeverage;
+  food: FoodAndDrink[];
+  afood: FoodAndDrink;
   errorMessage: string;
   quantity: number;
   priceStr: string;
   priceNumFirst : number;
-  foodSearch: FoodAndBeverage;
+  foodSearch: FoodAndDrink;
   textSearch: string;
-  thisPrice: String;
+  thisPrice: number;
   ratingFood: Rating;
   ratingService: Rating;
 
@@ -48,12 +48,13 @@ export class MenuComponent implements OnInit {
     var foodPrice = document.getElementsByClassName("ordered__food--price");
     var totalPrice = document.getElementsByClassName("ordering__total--money")[0];
     var total = 0;
+
     for(var i = 0; i < foodPrice.length; i++) {
-      var price = foodPrice[i].innerHTML.split(".")[0];
-      total += parseInt(price);
+      // var price = foodPrice[i].innerHTML.split(".")[0];
+      total += parseFloat(foodPrice[i].innerHTML);
     }
     if(total == 0) totalPrice.innerHTML = "0 d";
-    else totalPrice.innerHTML = total + ".000 d";
+    else totalPrice.innerHTML = total + " d";
     return total;
   }
 
@@ -61,28 +62,27 @@ export class MenuComponent implements OnInit {
     this.menuService.getFood(id)
         .subscribe(food => this.food = food);
   }
-  getDetail(afood: FoodAndBeverage) {
+  getDetail(afood: FoodAndDrink) {
     this.afood = afood;
     this.thisPrice = afood.price;
-    this.priceNumFirst = parseInt(this.afood.price.split(".")[0]);
+    this.priceNumFirst = this.afood.price;
   }
 
   quantityUp() {
     this.quantity += 1;
     var priceNum = this.priceNumFirst * this.quantity;
-    this.priceStr = priceNum + ".000 d";
-    this.afood.price = this.priceStr;
+    // this.priceStr = priceNum + ".000 d";
+    this.afood.price = priceNum;
   }
   quantityDown() {
     this.quantity -= 1;
     if(this.quantity <= 0) this.quantity = 0;
     var priceNum = this.priceNumFirst * this.quantity;
-    this.priceStr = priceNum + ".000 d";
-    this.afood.price = this.priceStr;
+    // this.priceStr = priceNum + ".000 d";
+    this.afood.price = priceNum;
   }
 
   clearFood(event) {
-    console.log("event "+ event);
     var parent = document.getElementsByClassName("ordering__food")[0];
     var foodClear = document.getElementsByClassName(event)[0];
     parent.removeChild(foodClear);
@@ -90,32 +90,45 @@ export class MenuComponent implements OnInit {
     this.totalMoney();
   }
 
-  //insert food choosed into ordering board
-  ordering(afood: FoodAndBeverage) {
+  // //insert food choosed into ordering board
+  ordering(afood: FoodAndDrink) {
     var foodOrdering = document.getElementsByClassName("ordering__food")[0];
     var orderedFoodList = document.getElementsByClassName("ordered__food");
     var endFood;
     var order = 1;
-    if(orderedFoodList.length > 0) {
+    var sizeOrderedFoodList = orderedFoodList.length;
+    var isExist = false;
+    if(sizeOrderedFoodList > 0) {
       endFood = orderedFoodList[orderedFoodList.length-1];
       console.log("end food " + endFood);
 
       var classNameLst = endFood.className.split(" ");
       order = parseInt(classNameLst[classNameLst.length-1].split("food")[1])+1;
     }
-    var addFood = document.createElement("div");
-    var newClassDiv = "food"+order;
-    var newClassClear = "clear"+order;
 
-    addFood.setAttribute("class", "ordering__food--text ordered__food flex-box "+newClassDiv);
+    //check: if food existed in ordering board => updateRate
+    for(var i = 0; i < sizeOrderedFoodList; i++ ) {
+      if(orderedFoodList[i].children[0].innerHTML == afood.name) isExist = true;
+    }
+    if (isExist) {
+      var currentQuantity =parseInt(orderedFoodList[i].children[1].innerHTML);
+      orderedFoodList[i].children[1].innerHTML = (currentQuantity+ this.quantity).toString();
+    }
+    else {
+      var addFood = document.createElement("div");
+      var newClassDiv = "food"+order;
+      var newClassClear = "clear"+order;
 
-    addFood.innerHTML =`
-      <p class="ordered__food--name">`+afood.name+`</p>
-      <p class="ordered__food--quantity">`+this.quantity+`</p>
-      <p class="ordered__food--price">`+afood.price+`</p>
-      <button class="ordered__food--clear `+newClassDiv+`">x</button>
-    `;
-    foodOrdering.appendChild(addFood);
+      addFood.setAttribute("class", "ordering__food--text ordered__food flex-box "+newClassDiv);
+
+      addFood.innerHTML =`
+        <p class="ordered__food--name">`+afood.name+`</p>
+        <p class="ordered__food--quantity">`+this.quantity+`</p>
+        <p class="ordered__food--price">`+afood.price+` d</p>
+        <button class="ordered__food--clear `+newClassDiv+`">x</button>
+      `;
+      foodOrdering.appendChild(addFood);
+    }
 
     var buttonClear = this.elementRef.nativeElement.getElementsByClassName(newClassDiv)[1];
     console.log("btn "+ buttonClear.className);
@@ -135,10 +148,28 @@ export class MenuComponent implements OnInit {
   ordered() {
      var orderedWrap = document.getElementsByClassName("ordering__food")[0];
      var orderedFood = document.getElementById("ordered-food__wrap");
+     var orderedFoodLst = orderedFood.children;
+     var sizeOrderedFoodLst = orderedFoodLst.length;
      var orderingFoodLst = document.getElementsByClassName("ordered__food");
+     var isExist = false;
      for (var i = 0; i < orderingFoodLst.length; i++) {
-      orderedFood.appendChild(orderingFoodLst[i]);
-      orderingFoodLst[i].classList.add("inner-odered");
+      for(var j=0; j <sizeOrderedFoodLst; j++ ) {
+        if(orderedFoodLst[j].children[0].innerHTML === orderingFoodLst[i].children[0].innerHTML) {
+          isExist = true;
+          var existedFood = parseInt(orderedFoodLst[j].children[1].innerHTML);
+          var addQuantityFood = parseInt(orderingFoodLst[i].children[1].innerHTML);
+          var totalQuantity = existedFood+addQuantityFood;
+          orderedFoodLst[j].children[1].innerHTML = totalQuantity.toString();
+          orderingFoodLst[i].remove();
+        }
+      }
+     }
+     if(!isExist) {
+      for (var i = 0; i < orderingFoodLst.length; i++) {
+        orderedFood.appendChild(orderingFoodLst[i]);
+        orderingFoodLst[i].classList.add("inner-odered");
+        orderingFoodLst[i].classList.remove("ordered__food");
+      }
      }
      var btnRemove = document.getElementsByClassName("ordered__food--clear");
      var size = btnRemove.length;
@@ -146,15 +177,27 @@ export class MenuComponent implements OnInit {
        btnRemove[size-1].remove();
        size--;
      }
-    //  for (var i = 0; i < btnRemove.length; i++) {
-    //    btnRemove[i].remove();
-    //  }
-     console.log("btn remove "+ btnRemove[1]);
      var btnPaymen = document.getElementsByClassName("ordering__btn--payment")[0];
      btnPaymen.classList.add("btn--suggest");
      var btnOrder = document.getElementsByClassName("ordering__btn--order")[0];
      btnOrder.classList.add("btn--normal");
      btnOrder.classList.remove("btn--suggest");
+
+     let orderBoard = {
+       "invoiceId": "INV123",
+       "numberOfInvoiceDetails":3,
+       "tableId": 1,
+       "foodAndDrinkId": "1,2,3",
+       "quantity": "2,3,4"
+     };
+     this.menuService.postOrder(orderBoard).subscribe(res => {
+       console.log(res);
+     console.log(orderBoard);
+
+     }, err => {
+       console.log(err);
+     });
+
   }
 
   public itemSvg:any =
@@ -207,6 +250,14 @@ export class MenuComponent implements OnInit {
          error => {
            console.log(error);
          });
-
+     this.menuService.getRate("service", this.itemSvgService.selectedStars)
+        .subscribe(ratingService => {
+         this.ratingService = ratingService;
+         this.ratingService.numOfPeople++;
+         this.menuService.updateRate("service", this.ratingService);
+         $('#rating').modal('hide');},
+         error => {
+           console.log(error);
+         });
   }
 }
