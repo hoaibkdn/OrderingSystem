@@ -24,7 +24,6 @@ import { RatingFoodComponent } from './rating-food/rating-food.component';
 import { RatingServiceComponent } from './rating-service/rating-service.component';
 import { GoogleSignInComponent } from './google-sign-in/google-sign-in.component';
 
-
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp( new AuthConfig({}), http, options);
 }
@@ -41,14 +40,14 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     RatingFoodComponent,
     UserProfileComponent,
     RatingServiceComponent,
-    GoogleSignInComponent,
+    GoogleSignInComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
     AppRoutingModule,
-    Ng2PaginationModule
+    Ng2PaginationModule,
   ],
   providers: [
     {

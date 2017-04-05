@@ -14,7 +14,7 @@ import { Rating } from '../models/Rating';
 export class MenuService {
 
   private headers = new Headers({'Content-Type': 'application/json'});
-  private foodUrl = "http://192.168.0.106:8080/api/food-and-drink/all";
+  private foodUrl = "https://backend-os.herokuapp.com/api/food-and-drink/all";
   // private foodUrl = "src/app/models/"
   private rateUrl;
   constructor(private http: Http) {}
@@ -36,7 +36,7 @@ export class MenuService {
 
   //get from JSON rating, check exist, post into JSON
   getRate(type: string, id: number): Observable<Rating> {
-    this.rateUrl = "http://localhost:3000/"+type+"/"+id;
+    this.rateUrl = "https://backend-os.herokuapp.com/"+type+"/"+id;
     console.log("url "+ this.rateUrl);
 
     return this.http.get(this.rateUrl)
@@ -45,8 +45,8 @@ export class MenuService {
 
   updateRate(type:string, rating: Rating): Promise<Rating> {
     var rateUrl;
-    if(type === "food") rateUrl = "http://localhost:3000/food/"+rating.id;
-    else if(type === "service") rateUrl = "http://localhost:3000/service/"+rating.id;
+    if(type === "food") rateUrl = "https://backend-os.herokuapp.com/food/"+rating.id;
+    else if(type === "service") rateUrl = "https://backend-os.herokuapp.com/service/"+rating.id;
     return this.http.put(rateUrl, JSON.stringify(rating), {headers: this.headers})
           .toPromise()
           .then(() => rating);
@@ -54,10 +54,35 @@ export class MenuService {
 
 
   postOrder(order: any): Observable<any>{
-    const url = "http://192.168.0.106:8080/api/invoice";
-    this.headers.append('Authorization', 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiaWdlckBnbWFpbC5jb20iLCJhdWRpZW5jZSI6IndlYiIsImNyZWF0ZWQiOjE0OTEwNDA4NjAwNDYsImV4cCI6MTQ5MTEyNzI2MH0.Nwjc8Xzs72keWEbxc4YD4XJML7jmKLDB_Yf-XAjbJzGyFN7NpnMKBox02GllGaNL9DJw1jJIf5F02QjPFZiegQ');
+    const url = "https://backend-os.herokuapp.com/api/invoice";
+    // const url = "http://10.10.33.164:8080/api/invoice";
+
+    let token = localStorage.getItem('token');
+    this.headers.append('Authorization', token);
+    console.log(order);
+    // return null;
     return this.http.post(url, order, {headers: this.headers});
   }
+
+  getInvoiceId(): Observable<number> {
+    const url = "";
+    return this.http.get(url)
+        .map(response => response.json());
+  }
+
+  paymentRequest(invoiceId):Observable<any> {
+    const url="https://backend-os.herokuapp.com/api/invoice/confirm-paid/"+invoiceId;
+    console.log(url);
+
+    let token = localStorage.getItem('token');
+    console.log(token);
+    // this.headers.append('Authorization', token);
+    if(!this.headers) this.headers.append('Authorization', token);
+    console.log(this.headers);
+
+    return this.http.put(url, JSON.stringify("body"), {headers: this.headers});
+  }
+
   private extractData(res: Response) {
         let body = res.json();
         return body.data || {};

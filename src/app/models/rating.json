@@ -1,46 +1,46 @@
 {
   "food": [
     {
-      "id": 1,
-      "numOfPeople": 6
+      "id": "1",
+      "numOfPeople": "6"
     },
     {
-      "id": 2,
-      "numOfPeople": 3
+      "id": "2",
+      "numOfPeople": "3"
     },
     {
-      "id": 3,
-      "numOfPeople": 5
+      "id": "3",
+      "numOfPeople": "5"
     },
     {
-      "id": 4,
-      "numOfPeople": 14
+      "id": "4",
+      "numOfPeople": "14"
     },
     {
-      "id": 5,
-      "numOfPeople": 27
+      "id": "5",
+      "numOfPeople": "27"
     }
   ],
   "service": [
     {
-      "id": 1,
-      "numOfPeople": 20
+      "id": "1",
+      "numOfPeople": "20"
     },
     {
-      "id": 2,
-      "numOfPeople": 4
+      "id": "2",
+      "numOfPeople": "4"
     },
     {
-      "id": 3,
-      "numOfPeople": 10
+      "id": "3",
+      "numOfPeople": "10"
     },
     {
-      "id": 4,
-      "numOfPeople": 14
+      "id": "4",
+      "numOfPeople": "14"
     },
     {
-      "id": 5,
-      "numOfPeople": 101
+      "id": "5",
+      "numOfPeople": "101"
     }
   ]
 }

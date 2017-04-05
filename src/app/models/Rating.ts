@@ -1,4 +1,4 @@
 export class Rating {
-  id: number;
-  numOfPeople: number;
+  id: string;
+  numOfPeople: string;
 }

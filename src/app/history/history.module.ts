@@ -5,6 +5,7 @@ import { HistoryComponent } from './history.component';
 
 import { HistoryRoutingModule } from './history-routing.module';
 import { UserHistoryComponent } from './../user-history/user-history.component';
+import { HistoryInvoiceComponent } from './../history-invoice/history-invoice.component';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { UserHistoryComponent } from './../user-history/user-history.component';
   ],
   declarations: [
     HistoryComponent,
-    UserHistoryComponent
+    UserHistoryComponent,
+    HistoryInvoiceComponent
   ],
   providers: [
   ]

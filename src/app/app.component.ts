@@ -18,6 +18,7 @@ export class AppComponent {
   errorMessage: string;
   inputEmail: string;
   inputPassword: string;
+  token: string;
   constructor(
     private router: Router, private facebookService: FacebookService, private userAuthenticationService: UserAuthenticationService) {
       let fbParams: InitParams = {
@@ -50,12 +51,14 @@ export class AppComponent {
   }
 
   signIn() {
-    if(this.inputEmail == "admin@gmail.com")
-      this.router.navigate(["/admin"]);
-    console.log(this.inputEmail);
-    console.log(this.inputPassword);
-    $('#login').modal('hide');
+    this.userAuthenticationService.logIn(this.inputEmail, this.inputPassword, "http://localhost:4200").subscribe(
+      res => {
+        this.token = res.json().token;
+        localStorage.setItem('token', this.token);
+        console.log(this.token);
+        $('#login').modal('hide');
+        this.router.navigate(["/admin"]);
+      }
+    )
   }
-
-  
 }
