@@ -1,4 +1,5 @@
 import { FoodAndDrinkType } from './food-and-drink-type';
+
 export class FoodAndDrink {
   id: number;
   name: string;

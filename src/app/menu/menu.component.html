@@ -128,7 +128,7 @@
                   </p>
                 </div>
                 <div class="ordering__btn">
-                  <a (click)="ordered()" class="ordering__btn--order btn--suggest">Order</a>
+                  <a (click)="ordered()" class="ordering__btn--order btn--suggest" *ngIf='permitedOder'>Order</a>
                   <a (click)="reguestPayment()" data-toggle="modal" data-target="#rating" class="ordering__btn--payment btn--normal">Payment</a>
                 </div>
               </div>

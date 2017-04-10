@@ -1,22 +1,30 @@
 @import "../helper/all";
 
 .profile {
-  &-group {
-    display: table
+  width: 100%;
+  background: url("../../assets/slice/main-bg.png") no-repeat;
+  &-wrap {
+    background: $cl-white;
+    padding: 20px;
   }
-  &-qrcode,
   &-info {
-    display: table-cell;
-    vertical-align: middle;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-left: 80px;
+    padding-left: 140px;
+    border-radius: 3px;
+    position: relative;
+    text-align: right;
   }
   &-qrcode {
     padding: 10px;
     background: $cl-white;
     border: 1px solid #ccc;
-    width: 80%;
-  }
-  &-info {
-    width: 70%;
+    width: 200px;
+    height: 200px;
+    @extend %position-vertical-center;
+    left: 10px;
+    z-index: 10;
   }
 
   &-email,
@@ -50,5 +58,8 @@
       color: #c16100;
       background: #dadada;
     }
+  }
+  &-btn {
+    border: none;
   }
 }

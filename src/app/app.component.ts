@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { User } from './models/user';
 import { ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
@@ -12,7 +12,7 @@ declare var $:any;
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   users: User[];
   errorMessage: string;
@@ -27,6 +27,14 @@ export class AppComponent {
                                      version: 'v2.5'
                                      };
       this.facebookService.init(fbParams);
+  }
+
+  ngOnInit() {
+    var token = localStorage.getItem('token');
+    if(token) {
+      console.log('token logined ', token);
+      this.token = token;
+    }
   }
 
   facebookLogin(): void {
@@ -51,6 +59,7 @@ export class AppComponent {
   }
 
   signIn() {
+    // this.router.navigate(["/admin"]);
     this.userAuthenticationService.logIn(this.inputEmail, this.inputPassword, "http://localhost:4200").subscribe(
       res => {
         this.token = res.json().token;
@@ -60,5 +69,11 @@ export class AppComponent {
         this.router.navigate(["/admin"]);
       }
     )
+  }
+
+  logOut() {
+    localStorage.removeItem;
+    this.token = null;
+    this.router.navigate([""]);
   }
 }

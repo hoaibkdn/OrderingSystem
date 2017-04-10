@@ -10,7 +10,7 @@
         </div>
         <div class="header__btn-group flex-box">
           <button class="header__btn-login" data-toggle="modal" data-target="#login" >Log In</button>
-          <button (click)="logOut()" class="header__btn-login" data-toggle="modal" data-target="#login" *ngIf="token">Log Out</button>
+          <button (click)="logOut()" class="header__btn-login" *ngIf="token">Log Out</button>
           <a href="#" class="btn btn-default header__btn-waiter" value="Waiter">
             <p class="icon-phone header__btn-waiter--icon"></p>
             Waiter
@@ -24,18 +24,18 @@
 
 <router-outlet></router-outlet>
 
-<!--add footer here-->
-<footer class="footer">
-  <div class="container">
-    <div class="row">
-      <div class="footer-group">
-        <a routerLink="/history/food" class="icon-location icon-outer"></a>
-        <a href="#" class="icon-home3 icon-middle"></a>
-        <a routerLink="/userprofile" class="icon-user icon-outer"></a>
+  <!--add footer here-->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="footer-group">
+          <a routerLink="/history/invoice" class="icon-location icon-outer" ></a>
+          <a href="#" class="icon-home3 icon-middle"></a>
+          <a routerLink="/userprofile" class="icon-user icon-outer"></a>
+        </div>
       </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
 <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
   <div class="modal-dialog" role="document">

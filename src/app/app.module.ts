@@ -12,17 +12,21 @@ import { provideAuth, AuthHttp, AuthConfig }      from 'angular2-jwt';
 
 
 import { MenuService } from './menu/menu.services';
+import { HistoryInvoiceService } from './history-invoice/history-invoice.service';
+import { UserHistoryService } from './user-history/user-history.service';
+import { HistoryFavoriteService } from './history-favorite/history-favorite.service';
+
 import { MenuDirective } from './menu/menu.directive';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserAuthenticationService } from './user-authentication/user-authentication.service';
 import { FacebookService } from 'ng2-facebook-sdk';
 
-
-
 import { Ng2PaginationModule } from 'ng2-pagination';
 import { RatingFoodComponent } from './rating-food/rating-food.component';
 import { RatingServiceComponent } from './rating-service/rating-service.component';
 import { GoogleSignInComponent } from './google-sign-in/google-sign-in.component';
+
+// import { HistoryService } from './history/history.service';
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp( new AuthConfig({}), http, options);
@@ -36,11 +40,11 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   declarations: [
     AppComponent,
     MenuComponent,
-    MenuDirective,
     RatingFoodComponent,
     UserProfileComponent,
     RatingServiceComponent,
-    GoogleSignInComponent
+    GoogleSignInComponent,
+    MenuDirective
   ],
   imports: [
     BrowserModule,
@@ -57,7 +61,10 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     },
     MenuService,
     UserAuthenticationService,
-    FacebookService
+    FacebookService,
+    HistoryInvoiceService,
+    UserHistoryService,
+    HistoryFavoriteService
   ],
   bootstrap: [AppComponent]
 })

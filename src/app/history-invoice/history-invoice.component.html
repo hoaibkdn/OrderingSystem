@@ -8,55 +8,25 @@
     </tr>
   </thead>
   <tbody>
-    <tr data-toggle="modal" data-target="#detailInvoice">
-      <td>1</td>
-      <td>15/03/2017</td>
-      <td>300.000 d</td>
-      <td>Internet banking</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>15/03/2017</td>
-      <td>300.000 d</td>
-      <td>Internet banking</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>15/03/2017</td>
-      <td>300.000 d</td>
-      <td>Internet banking</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>15/03/2017</td>
-      <td>300.000 d</td>
-      <td>Internet banking</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>15/03/2017</td>
-      <td>300.000 d</td>
-      <td>Internet banking</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>15/03/2017</td>
-      <td>300.000 d</td>
+    <tr  *ngFor = 'let invoice of invoices' data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
+      <td >{{invoice.id}}</td>
+      <td>day</td>
+      <td>{{invoice.pay}}</td>
       <td>Internet banking</td>
     </tr>
   </tbody>
 </table>
 
 
-<div class="modal fade" id="detailInvoice" tabindex="-1" role="dialog" aria-labelledby="detailInvoiceLabel">
+<div class="modal fade" id="invoice-detail" tabindex="-1" role="dialog" aria-labelledby="detailInvoiceLabel" >
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <div class="modal-content" >
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Invoice date: 20/03/2017</h4>
       </div>
-      <div class="modal-body">
-        ...
+      <div class="modal-body" *ngIf='invoiceDetail'>
+        {{invoiceDetail[0].id}}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

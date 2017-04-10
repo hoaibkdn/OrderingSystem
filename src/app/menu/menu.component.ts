@@ -32,6 +32,7 @@ export class MenuComponent implements OnInit {
   ratingService: Rating;
   invoiceId: number;
   isPayed: boolean;
+  permitedOder: boolean;
 
   //search
   text: string;
@@ -47,6 +48,7 @@ export class MenuComponent implements OnInit {
         .subscribe(food => this.food = food);
     this.totalMoney();
     this.textSearch = "";
+    this.permitedOder = false;
   }
 
   // get total price
@@ -91,7 +93,11 @@ export class MenuComponent implements OnInit {
   clearFood(event) {
     var parent = document.getElementsByClassName("ordering__food")[0];
     var foodClear = document.getElementsByClassName(event)[0];
+    var listChild = parent.children;
     parent.removeChild(foodClear);
+    if(listChild.length === 0) {
+      this.permitedOder = true;
+    }
     var currentPrice = this.totalMoney();
     this.totalMoney();
   }
@@ -138,6 +144,8 @@ export class MenuComponent implements OnInit {
       foodOrdering.appendChild(addFood);
     }
 
+    this.permitedOder = true;
+
     var buttonClear = this.elementRef.nativeElement.getElementsByClassName(newClassDiv)[1];
     console.log("btn "+ buttonClear.className);
 
@@ -171,7 +179,11 @@ export class MenuComponent implements OnInit {
     var i = 0, j = 0;
 
     // if not exist food that ordered => push all
-    if(sizeOrderedFoodLst === 0) {
+    if(sizeOrderingFoodLst === 0) {
+      var btnOrder = document.getElementsByClassName("ordering__btn--order")[0];
+      btnOrder.classList.add("btn--normal");
+    }
+    else if(sizeOrderedFoodLst === 0) {
       while(orderingFoodLst.length > 0) {
         orderedFood.appendChild(orderingFoodLst[0]);
         orderingFoodLst[0].classList.add("inner-odered");

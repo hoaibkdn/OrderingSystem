@@ -1,0 +1,42 @@
+@import "../helper/all";
+
+.his-food {
+  padding: 10px;
+  thead {
+    th {
+      border-bottom: none;
+      text-align: center;
+    }
+  }
+
+  tbody {
+    tr {
+      box-shadow: 2px 2px 5px #ccc;
+      td {
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        text-align: center;
+        margin-bottom: 5px;
+        padding: 10px;
+      }
+      td:first-of-type {
+        border-right: âpx;
+      }
+      td:first-of-type,
+      td:last-of-type {
+        border: 1px solid #ccc;
+      }
+      td:nth(2) {
+        border-left: 1px solid #ccc;
+      }
+      td:nth(4) {
+        border-right: 1px solid #ccc;
+      }
+      td:last-of-type {
+        background: #EA6D24;
+        color: $cl-white;
+        border-left: 2px;
+      }
+    }
+  }
+}
