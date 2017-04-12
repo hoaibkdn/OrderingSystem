@@ -8,6 +8,7 @@ import 'rxjs/add/operator/toPromise';
 
 import { FoodAndDrink } from '../models/food-and-drink';
 import { Rating } from '../models/Rating';
+import { RatingPost } from '../models/rating-post';
 
 
 @Injectable()
@@ -35,19 +36,17 @@ export class MenuService {
   }
 
   //get from JSON rating, check exist, post into JSON
-  getRate(type: string, id: number): Observable<Rating> {
-    this.rateUrl = "https://backend-os.herokuapp.com/"+type+"/"+id;
+  getRate(type: number): Observable<Rating> {
+    this.rateUrl = "https://backend-os.herokuapp.com/api/rate/"+type+"/num-of-people";
     console.log("url "+ this.rateUrl);
 
     return this.http.get(this.rateUrl)
         .map(response => response.json() as Rating);
   }
 
-  updateRate(type:string, rating: Rating): Promise<Rating> {
-    var rateUrl;
-    if(type === "food") rateUrl = "https://backend-os.herokuapp.com/food/"+rating.id;
-    else if(type === "service") rateUrl = "https://backend-os.herokuapp.com/service/"+rating.id;
-    return this.http.put(rateUrl, JSON.stringify(rating), {headers: this.headers})
+  updateRate(rating: RatingPost): Promise<RatingPost> {
+    var rateUrl = "https://backend-os.herokuapp.com/api/rate";
+    return this.http.post(rateUrl, JSON.stringify(rating), {headers: this.headers})
           .toPromise()
           .then(() => rating);
   }
@@ -70,7 +69,7 @@ export class MenuService {
         .map(response => response.json());
   }
 
-  paymentRequest(invoiceId):Observable<any> {
+  paymentRequest(invoiceId: string):Observable<any> {
     const url="https://backend-os.herokuapp.com/api/invoice/confirm-paid/"+invoiceId;
     console.log(url);
 

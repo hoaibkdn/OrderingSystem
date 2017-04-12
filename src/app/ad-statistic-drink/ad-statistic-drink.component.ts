@@ -14,86 +14,83 @@ import { Chart } from 'angular-highcharts';
 })
 
 export class AdStatisticDrinkComponent implements OnInit{
+  chart: Chart;
+  point: any;
   // chartData: any;
   // chartOptions: any;
-  // ratingArr: Rating[];
-  constructor(private adStatisticDrinkService: AdStatisticDrinkService) {
-
-  }
-    // public pie_ChartData;
-    // public pie_ChartOptions  = {
-    //   title: 'Statistic by food',
-    //   width: 600,
-    //   height: 350
-    // };
-
-    chart = new Chart({
+  ratingArr: Rating[];
+  constructor(private adStatisticDrinkService: AdStatisticDrinkService) {}
+    ngOnInit(){
+      // console.log(this.chart);
+      // var point = null;
+      this.adStatisticDrinkService.getRatingDrink()
+          .subscribe(ratingArr => {this.ratingArr = ratingArr; console.log(this.ratingArr);
+            this.chart = new Chart({
       chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
-    },
-    title: {
-        text: 'Browser market shares January, 2015 to May, 2015'
-    },
-    tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-    },
-    plotOptions: {
-        pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-                enabled: true,
-                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+          },
+          title: {
+              text: 'Statistic by food and drink'
+          },
+          tooltip: {
+              pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+          },
+          plotOptions: {
+              pie: {
+                  allowPointSelect: true,
+                  cursor: 'pointer',
+                  dataLabels: {
+                      enabled: true,
+                      format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+
+                  },
+              },
+              series: {
+                cursor: 'pointer',
+                events:{
+                  click: function (event) {
+                      alert(
+                        "current "
+                      );
+                  }
+              }
 
             }
+          },
+          series: [{
+              name: 'Brands',
+              data: [{
+                  name: '5*',
+                  y: parseInt(this.ratingArr[4].numOfPeople),
+                  sliced: true,
+                  selected: true,
+              }, {
+                  name: '4*',
+                  y: parseInt(this.ratingArr[3].numOfPeople),
+              }, {
+                  name: '3*',
+                  y: parseInt(this.ratingArr[2].numOfPeople)
+              }, {
+                  name: '2*',
+                  y: parseInt(this.ratingArr[1].numOfPeople)
+              }, {
+                  name: '1*',
+                  y: parseInt(this.ratingArr[0].numOfPeople)
+              }]
+          }]
         }
-    },
-    series: [{
-        name: 'Brands',
-        data: [{
-            name: 'Microsoft Internet Explorer',
-            y: 56.33
-        }, {
-            name: 'Chrome',
-            y: 24.03,
-            sliced: true,
-            selected: true
-        }, {
-            name: 'Firefox',
-            y: 10.38
-        }, {
-            name: 'Safari',
-            y: 4.77
-        }, {
-            name: 'Opera',
-            y: 0.91
-        }, {
-            name: 'Proprietary or Undetectable',
-            y: 0.2
-        }]
-    }]
+      );
+
+        // set event
+
     });
 
+  }
 
-    ngOnInit(){
-      console.log(this.chart);
-
-      // this.adStatisticDrinkService.getRatingDrink()
-      //     .subscribe(ratingArr => {this.ratingArr = ratingArr; console.log(this.ratingArr);
-      //       this.pie_ChartData = [
-      //         ['Task', 'Hours per Day'],
-      //         ['5 *', parseInt(this.ratingArr[4].numOfPeople + "")],
-      //         ['4 *', parseInt(this.ratingArr[3].numOfPeople + "")],
-      //         ['3 *', parseInt(this.ratingArr[2].numOfPeople + "")],
-      //         ['2 *', parseInt(this.ratingArr[1].numOfPeople + "")],
-      //         ['1 *', parseInt(this.ratingArr[0].numOfPeople + "")]
-      //       ]; console.log(this.pie_ChartData);
-      //     });
-
+    getDetailRating() {
+      console.log("detail here");
     }
-
-
 }

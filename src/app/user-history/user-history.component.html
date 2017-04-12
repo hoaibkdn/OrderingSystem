@@ -1,4 +1,4 @@
-<table class="table table-hover his-food">
+<table class="table table-hover his-food" cellpadding="10px">
   <thead>
     <tr>
       <th>No</th>
@@ -9,8 +9,24 @@
       <th>Total</th>
     </tr>
   </thead>
-  <tbody>
-    <tr *ngFor='let invoiceDetail of invoiceDetails'>
+  <tbody  cellspacing="10">
+    <!--<tr cellspacing="10">
+      <td>1</td>
+      <td>15/03/2017</td>
+      <td>8:00PM</td>
+      <td>1</td>
+      <td class="history-food-quantity">2</td>
+      <td class="history-food-total">300.000 d</td>
+    </tr>
+    <tr cellspacing="10">
+      <td>1</td>
+      <td>15/03/2017</td>
+      <td>8:00PM</td>
+      <td>1</td>
+      <td class="history-food-quantity">2</td>
+      <td class="history-food-total">300.000 d</td>
+    </tr>-->
+    <tr *ngFor="let invoiceDetail of invoiceDetails | paginate: { itemsPerPage: 6, currentPage: page }" data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
       <td>{{invoiceDetail.id}}</td>
       <td>15/03/2017</td>
       <td>8:00PM</td>
@@ -20,3 +36,7 @@
     </tr>
   </tbody>
 </table>
+
+<!--paging-->
+<pagination-controls (pageChange)="page = $event" style="text-align: center;">
+</pagination-controls>

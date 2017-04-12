@@ -8,7 +8,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr  *ngFor = 'let invoice of invoices' data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
+    <tr  *ngFor = 'let invoice of invoices | paginate: { itemsPerPage: 6, currentPage: p }' data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
       <td >{{invoice.id}}</td>
       <td>day</td>
       <td>{{invoice.pay}}</td>
@@ -16,6 +16,7 @@
     </tr>
   </tbody>
 </table>
+<pagination-controls (pageChange)="p = $event" style="text-align: center;"></pagination-controls>
 
 
 <div class="modal fade" id="invoice-detail" tabindex="-1" role="dialog" aria-labelledby="detailInvoiceLabel" >

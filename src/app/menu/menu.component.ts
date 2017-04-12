@@ -8,6 +8,7 @@ import { Observable }        from 'rxjs/Observable';
 import { Http }       from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Rating } from '../models/Rating';
+import { RatingPost } from '../models/rating-post';
 
 declare var $:any;
 
@@ -30,15 +31,15 @@ export class MenuComponent implements OnInit {
   thisPrice: number;
   ratingFood: Rating;
   ratingService: Rating;
-  invoiceId: number;
+  invoiceId: string;
   isPayed: boolean;
-  permitedOder: boolean;
+  permitedOrder: boolean;
 
   //search
   text: string;
   currentFood = [];
 
-  constructor( private menuService: MenuService,
+  constructor(private menuService: MenuService,
               private componentFactoryResolver: ComponentFactoryResolver,
               private elementRef: ElementRef) { }
 
@@ -48,7 +49,7 @@ export class MenuComponent implements OnInit {
         .subscribe(food => this.food = food);
     this.totalMoney();
     this.textSearch = "";
-    this.permitedOder = false;
+    this.permitedOrder = false;
   }
 
   // get total price
@@ -94,10 +95,12 @@ export class MenuComponent implements OnInit {
     var parent = document.getElementsByClassName("ordering__food")[0];
     var foodClear = document.getElementsByClassName(event)[0];
     var listChild = parent.children;
+
     parent.removeChild(foodClear);
-    if(listChild.length === 0) {
-      this.permitedOder = true;
-    }
+    if(listChild.length > 2) {
+      this.permitedOrder = true;
+      console.log("children ", listChild);
+    } else this.permitedOrder = false;
     var currentPrice = this.totalMoney();
     this.totalMoney();
   }
@@ -144,7 +147,7 @@ export class MenuComponent implements OnInit {
       foodOrdering.appendChild(addFood);
     }
 
-    this.permitedOder = true;
+    this.permitedOrder = true;
 
     var buttonClear = this.elementRef.nativeElement.getElementsByClassName(newClassDiv)[1];
     console.log("btn "+ buttonClear.className);
@@ -161,10 +164,10 @@ export class MenuComponent implements OnInit {
     $('#detailFood').modal('hide');
   }
 
-  getInvoiceId(){
-    this.menuService.getInvoiceId()
-      .subscribe(invoiceId => this.invoiceId = invoiceId);
-  }
+  // getInvoiceId(){
+  //   this.menuService.getInvoiceId()
+  //     .subscribe(invoiceId => this.invoiceId = invoiceId);
+  // }
 
   ordered() {
     let invoiceId = localStorage.getItem("invoiceId");
@@ -290,10 +293,10 @@ export class MenuComponent implements OnInit {
   }
 
   reguestPayment() {
-    return this.menuService.paymentRequest(this.invoiceId)
-      .subscribe(res => {this.isPayed = res; this.invoiceId = 0; console.log("pay ", this.isPayed );
-        localStorage.removeItem("invoiceId")},
-        err => {console.log(err)});
+    // return this.menuService.paymentRequest(this.invoiceId)
+    //   .subscribe(res => {this.isPayed = res; ; console.log("pay ", this.isPayed );
+    //     localStorage.removeItem("invoiceId")},
+    //     err => {console.log(err)});
   }
 
   public itemSvg:any =
@@ -335,26 +338,14 @@ export class MenuComponent implements OnInit {
   sendRating(): void {
     console.log("food "+ this.itemSvg.selectedPuk);
     console.log("service "+ this.itemSvgService.selectedStars);
+    var foodScore = this.itemSvg.selectedPuk;
+    var serviceScore = this.itemSvgService.selectedStars;
     var numOfpeopleFood = 0;
     var numOfPeopleService = 0;
-    this.menuService.getRate("food", this.itemSvg.selectedPuk)
-        .subscribe(ratingFood => {
-         this.ratingFood = ratingFood;
-         console.log("food rate ", ratingFood);
-         numOfpeopleFood = parseInt(this.ratingFood.numOfPeople);
-         this.ratingFood.numOfPeople = (numOfpeopleFood++).toString();
-         this.menuService.updateRate("food", this.ratingFood);
-         });
-     this.menuService.getRate("service", this.itemSvgService.selectedStars)
-        .subscribe(ratingService => {
-         this.ratingService = ratingService;
-         numOfPeopleService = parseInt(this.ratingService.numOfPeople);
-         this.ratingService.numOfPeople = (numOfPeopleService++).toString();
-         this.menuService.updateRate("service", this.ratingService);
-         $('#rating').modal('hide');},
-         error => {
-           console.log(error);
-         });
+    var newRate= new RatingPost();
+    newRate.invoiceId = this.invoiceId;
+    newRate.score = foodScore + "," + serviceScore;
+    this.menuService.updateRate(newRate);
   }
 
   onKey(event:any) {
