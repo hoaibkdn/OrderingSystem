@@ -2,5 +2,7 @@ export class FoodAndDrinkType {
   id: number;
   name: string;
   detail: string;
-  isVisible: boolean;
+  createdDate: Date;
+  mainDish: boolean;
+  visible: boolean;
 }

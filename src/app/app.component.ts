@@ -65,8 +65,17 @@ export class AppComponent implements OnInit {
         this.token = res.json().token;
         localStorage.setItem('token', this.token);
         console.log(this.token);
-        if(this.inputEmail === "admin@alfrescos.com") this.router.navigate(["/admin"]);
-        else this.router.navigate([""]);
+        switch (this.inputEmail) {
+          case 'admin@alfrescos.com':
+            this.router.navigate(["/admin"]);
+            break;
+          case 'hoai@alfrescos.com':
+            this.router.navigate(["/staff"]);
+            break;
+          default:
+            this.router.navigate([""]);
+            break;
+        }
         $('#login').modal('hide');
       }
     )

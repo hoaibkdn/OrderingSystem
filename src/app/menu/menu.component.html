@@ -130,7 +130,7 @@
                 <div class="ordering__btn">
                   <a (click)="ordered()" class="ordering__btn--order btn--suggest" *ngIf="permitedOrder">Order</a>
                   <a class="ordering__btn--order btn--normal" *ngIf="!permitedOrder">Order</a>
-                  <a (click)="reguestPayment()" data-toggle="modal" data-target="#rating" class="ordering__btn--payment btn--normal">Payment</a>
+                  <a data-toggle="modal" data-target="#paymentForm" class="ordering__btn--payment btn--normal">Payment</a>
                 </div>
               </div>
             </div>
@@ -151,37 +151,70 @@
 
         <div class="show-detail__info">
           <div class="show-detail__content">
-            <h2>Pizza</h2>
+            <h2>{{afood.name}}</h2>
             <p class="show-detail__disc">{{afood.detail}}</p>
             <div class="show-detail__quanity flex-box">
               <p class="show-detail__price" >{{afood.price}} d</p>
               <div class="show-detail__choosing flex-box">
                 <button (click) = "quantityUp()" id="btn-up" type="button" class="show-detail__btn-arrow icon-arrow-up"></button>
-                <input id="quantity" type="text" [(ngModel)] = "quantity" class="show-detail__number" name="inputQuantity">
+                <input id="quantity" type="text" [(ngModel)] = "quantity" class="show-detail__number" name="inputQuantity" (keyup)="changePrice($event)">
                 <button (click) = "quantityDown()" id="btn-down" type="button" class="show-detail__btn-arrow icon-arrow-down"></button>
               </div>
             </div>
             <div class="show-detail__btn ">
               <a (click)="ordering(afood)" class="btn--suggest">Ok</a>
-              <a (click)="cancel()" class="btn--normal close" data-dismiss="modal" aria-label="Close">Cancel</a>
+              <a (click)="closeFoodDetail(afood)" class="btn--normal">Cancel</a>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-body show-suggest overfollow">
         <div class="show-suggest__text">
-          <p>Should eat it with these food</p>
+          <p>Main Dish</p>
         </div>
         <div class="show-suggest__content">
-          <div class="show-suggest__food">
+          <div class="show-suggest__food" *ngFor = "let foodCombination of foodCombinations">
             <img src="../../assets/slice/food.png" alt="">
-            <p>Pizza</p>
-          </div>
-          <div class="show-suggest__food">
-            <img src="../../assets/slice/food.png" alt="">
-            <p>Pizza</p>
+            <p>{{foodCombination.mainDish.name}}</p>
           </div>
         </div>
+      </div>
+      <div class="modal-body show-suggest overfollow">
+        <div class="show-suggest__text">
+          <p>Drink or Desert</p>
+        </div>
+        <div class="show-suggest__content">
+          <div class="show-suggest__food" *ngFor = "let foodCombination of foodCombinations">
+            <img src="../../assets/slice/food.png" alt="">
+            <p>{{foodCombination.drinkOrDesert.name}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--modal paymentform-->
+<div class="modal fade" id="paymentForm" tabindex="-1" role="dialog" aria-labelledby="ratingLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h5 class="modal-title" id="myModalLabel">Please choose payment form and Rating for our restaurant</h5>
+      </div>
+      <div class="modal-body">
+        <div class="payment-form">
+          <label class="radio-inline">
+            <input type="radio" [(ngModel)]="paymentForm"  name="paymentForm" value="cash">CASH
+          </label>
+          <label class="radio-inline">
+            <input type="radio" [(ngModel)]="paymentForm"  name="paymentForm" value="bank_cash">BANK_CASH
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button (click)="requestPayment()" type="button" class="btn btn-warning" data-toggle="modal" data-target="#rating" >Send</button>
       </div>
     </div>
   </div>
@@ -193,7 +226,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h5 class="modal-title" id="myModalLabel">Please rating for these food, you will get some promotions</h5>
+        <h5 class="modal-title" id="myModalLabel">Please choose payment form and Rating for our restaurant</h5>
       </div>
       <div class="modal-body">
         <div class="rating-food">

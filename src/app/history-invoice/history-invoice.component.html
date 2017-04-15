@@ -8,11 +8,11 @@
     </tr>
   </thead>
   <tbody>
-    <tr  *ngFor = 'let invoice of invoices | paginate: { itemsPerPage: 6, currentPage: p }' data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
-      <td >{{invoice.id}}</td>
-      <td>day</td>
-      <td>{{invoice.pay}}</td>
-      <td>Internet banking</td>
+    <tr  *ngFor = 'let invoice of invoices | paginate: { itemsPerPage: 6, currentPage: p }; let i = index' data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
+      <td >{{i+1}}</td>
+      <td>{{invoice.payingTime | date: fomart}}</td>
+      <td>{{invoice.totalAmount}}</td>
+      <td>{{invoice.paymentType}}</td>
     </tr>
   </tbody>
 </table>
@@ -24,10 +24,28 @@
     <div class="modal-content" >
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Invoice date: 20/03/2017</h4>
+        <h4 class="modal-title" id="myModalLabel">Invoice detail</h4>
       </div>
-      <div class="modal-body" *ngIf='invoiceDetail'>
-        {{invoiceDetail[0].id}}
+      <div class="modal-body" *ngIf='invoiceDetails'>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Name</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr  *ngFor = 'let invoiceDetail of invoiceDetails; let i = index'>
+              <td >{{i+1}}</td>
+              <td>{{invoiceDetail.foodAndDrink.name}}</td>
+              <td>{{invoiceDetail.quantity}}</td>
+              <td>{{invoiceDetail.price}}</td>
+            </tr>
+          </tbody>
+        </table>
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

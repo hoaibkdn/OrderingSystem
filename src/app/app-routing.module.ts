@@ -5,6 +5,7 @@ import { MenuComponent }      from './menu/menu.component';
 import { AppComponent }  from './app.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { HistoryComponent } from './history/history.component';
+import { StaffComponent } from './staff/staff.component';
 
 import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
 import { CanDeactivateGuard } from './can-deactivate-guard.service'
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: 'admin',
     loadChildren: 'app/admin/admin.module#AdminModule'
+  },
+  {
+    path: 'staff',
+    component: StaffComponent,
   }
 
 ];

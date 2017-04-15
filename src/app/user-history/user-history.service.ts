@@ -17,7 +17,7 @@ export class UserHistoryService {
   ){}
 
   getAllDetail(): Observable<InvoiceDetail[]>{
-    const url = 'http://192.168.0.106:8080/api/invoice-detail/all';
+    const url = 'https://backend-os-v2.herokuapp.com/api/invoice-detail/all';
     if(!this.headers.get('Authorization')) {
       let token = localStorage.getItem('token');
       this.headers.append('Authorization', token);

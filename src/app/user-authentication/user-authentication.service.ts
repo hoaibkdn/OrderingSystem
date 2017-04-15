@@ -9,7 +9,7 @@ export class UserAuthenticationService {
 	  }
 
 	  logIn(email: String, password: String, urlPath: String) {
-	  	let postUrl = "https://backend-os.herokuapp.com/api/auth/login";
+	  	let postUrl = "https://backend-os-v2.herokuapp.com/api/auth/login";
 	  	let headers = new Headers({'Content-Type': 'application/json'});
 	        return this.http
 	            .post(
@@ -37,5 +37,6 @@ export class UserAuthenticationService {
 	            JSON.stringify({ idTokenString }),
 	            { headers: headers});
 	  }
+
 
 }

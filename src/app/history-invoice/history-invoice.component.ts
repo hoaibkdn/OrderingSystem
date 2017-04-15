@@ -12,7 +12,7 @@ import { InvoiceDetail } from '../models/invoice-detail';
 })
 export class HistoryInvoiceComponent implements OnInit {
   invoices: Invoice[];
-  invoiceDetail: InvoiceDetail;
+  invoiceDetails: InvoiceDetail[];
   // invoiceId: number;
   // @Input() id: number;
   constructor(
@@ -27,12 +27,12 @@ export class HistoryInvoiceComponent implements OnInit {
       });
   }
 
-  getInvoiceDetail(id: number) {
+  getInvoiceDetail(id: string) {
     console.log('id detail ', id);
 
     this.historyInvoiceService.getInvoiceDetail(id)
-      .subscribe(invoiceDetail => {this.invoiceDetail = invoiceDetail;
-        console.log('invoice detail ', this.invoiceDetail[0]);
+      .subscribe(invoiceDetails => {this.invoiceDetails = invoiceDetails;
+        console.log('invoice detail ', this.invoiceDetails);
       });
   }
 }

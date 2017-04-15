@@ -5,6 +5,9 @@ export class FoodAndDrink {
   name: string;
   price: number;
   detail: string;
+  numOrdered: number;
   foodAndDrinkType: FoodAndDrinkType;
-  isVisible: boolean;
+  tags: string;
+  createdDate: Date;
+  visible: boolean;
 }

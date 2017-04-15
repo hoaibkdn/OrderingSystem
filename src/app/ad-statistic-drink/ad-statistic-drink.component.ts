@@ -4,6 +4,7 @@ import { ViewEncapsulation } from '@angular/core';
 import { AdStatisticDrinkService } from './ad-statistic-drink.service';
 import { Rating } from '../models/Rating';
 import { Chart } from 'angular-highcharts';
+import { Highcharts } from 'angular-highcharts';
 // declare var Chart: any;
 
 @Component({
@@ -25,12 +26,19 @@ export class AdStatisticDrinkComponent implements OnInit{
       // var point = null;
       this.adStatisticDrinkService.getRatingDrink()
           .subscribe(ratingArr => {this.ratingArr = ratingArr; console.log(this.ratingArr);
-            this.chart = new Chart({
-      chart: {
+          this.chart = new Chart( {
+          chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,
             plotShadow: false,
-            type: 'pie'
+            type: 'pie',
+            events:{
+                  click: function (event) {
+                    alert(
+                      "current " + this.data
+                    );
+                  }
+                }
           },
           title: {
               text: 'Statistic by food and drink'
@@ -46,17 +54,18 @@ export class AdStatisticDrinkComponent implements OnInit{
                       enabled: true,
                       format: '<b>{point.name}</b>: {point.percentage:.1f} %',
 
-                  },
+                  }
               },
               series: {
+                allowPointSelect: true,
                 cursor: 'pointer',
                 events:{
                   click: function (event) {
-                      alert(
-                        "current "
-                      );
+                    // console.log(this.name);
+                    console.log(event.currentTarget);
+                    // console.log(this.series.d);
                   }
-              }
+                }
 
             }
           },
@@ -80,6 +89,14 @@ export class AdStatisticDrinkComponent implements OnInit{
                   name: '1*',
                   y: parseInt(this.ratingArr[0].numOfPeople)
               }]
+              // events:{
+              //     click: function (event) {
+              //       alert(
+              //         "current " + event
+              //       );
+              //     }
+              //   }
+              // // }
           }]
         }
       );

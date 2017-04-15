@@ -25,6 +25,7 @@ import { Ng2PaginationModule } from 'ng2-pagination';
 import { RatingFoodComponent } from './rating-food/rating-food.component';
 import { RatingServiceComponent } from './rating-service/rating-service.component';
 import { GoogleSignInComponent } from './google-sign-in/google-sign-in.component';
+import { StaffComponent } from './staff/staff.component';
 
 // import { HistoryService } from './history/history.service';
 
@@ -44,7 +45,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     UserProfileComponent,
     RatingServiceComponent,
     GoogleSignInComponent,
-    MenuDirective
+    MenuDirective,
+    StaffComponent
   ],
   imports: [
     BrowserModule,

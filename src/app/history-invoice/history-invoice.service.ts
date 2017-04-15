@@ -17,7 +17,7 @@ export class HistoryInvoiceService {
   constructor( private http: Http) {}
 
   getAllInvoice(): Observable<any> {
-    const url = 'https://backend-os.herokuapp.com/api/invoice/all';
+    const url = 'http://backend-os-v2.herokuapp.com/api/invoice/all';
     if(!this.headers.get('Authorization')) {
       let token = localStorage.getItem('token');
       this.headers.append('Authorization', token);
@@ -26,13 +26,13 @@ export class HistoryInvoiceService {
         .map(response => response.json());
   }
 
-  getInvoiceDetail(id:number): Observable<InvoiceDetail> {
-    const url = 'https://backend-os.herokuapp.com/api/invoice-detail/'+id;
+  getInvoiceDetail(id:string): Observable<InvoiceDetail[]> {
+    const url = 'https://backend-os-v2.herokuapp.com/api/invoice-detail/'+id;
     if(!this.headers.get('Authorization')) {
       let token = localStorage.getItem('token');
       this.headers.append('Authorization', token);
     }
     return this.http.get(url, {headers: this.headers})
-        .map(response => response.json() as InvoiceDetail);
+        .map(response => response.json() as InvoiceDetail[]);
   }
 }
