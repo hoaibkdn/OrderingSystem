@@ -32,6 +32,8 @@
     "express": "^4.15.0",
     "highcharts": "^5.0.10",
     "lodash": "^4.17.4",
+    "ng2-bootstrap": "^1.6.3",
+    "ng2-facebook-sdk": "^2.2.0",
     "ng2-pagination": "^2.0.1",
     "rxjs": "^5.1.0",
     "sass-loader": "^6.0.3",
