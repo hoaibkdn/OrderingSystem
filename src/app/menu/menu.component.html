@@ -74,54 +74,25 @@
 
                   <div id="ordered-food__wrap" class="collapse">
                     <!--food that ordered will be put here-->
-                    <!--<div class="ordering__food--text inner-odered flex-box food1">
-                      <p class="ordered__food--name">Noodle</p>
+                    <!--<div class="ordering__food--text inner-odered flex-box food1" *ngFor="let foodLocal of foodLocalStorages" *ngIf=" foodLocal.ordered === true">
+                      <p class="ordered__food--name">{{foodLocal.foodAndDrink.name}}</p>
                       <p class="ordered__food--quantity">2</p>
                       <p class="ordered__food--price">90000 d</p>
-                      <button (click)="clearFood('food1')" class="ordered__food--clear">x</button>
-                    </div>
-                    <div class="ordering__food--text inner-odered flex-box food3">
-                      <p class="ordered__food--name">Ice cream</p>
-                      <p class="ordered__food--quantity">1</p>
-                      <p class="ordered__food--price">18000 d</p>
                       <button (click)="clearFood('food1')" class="ordered__food--clear">x</button>
                     </div>-->
                   </div>
 
                   <!--food ordering-->
+                  <div *ngIf = "foodLocalStorages">
+                    <div class="ordering__food--text ordered__food flex-box food2" *ngFor="let foodLocal of foodLocalStorages">
+                      <p class="ordered__food--name" *ngIf=" foodLocal.ordering === true">{{foodLocal.}}</p>
+                      <p class="ordered__food--quantity" *ngIf=" foodLocal.ordering === true">1</p>
+                      <p class="ordered__food--price" *ngIf=" foodLocal.ordering === true">30000 d</p>
+                      <button (click)="clearFood('food2')" class="ordered__food--clear" *ngIf=" foodLocal.ordering === true">x</button>
+                    </div>
 
-                  <!--<div class="ordering__food--text ordered__food flex-box food2">
-                    <p class="ordered__food--name">Noodle</p>
-                    <p class="ordered__food--quantity">1</p>
-                    <p class="ordered__food--price">30000 d</p>
-                    <button (click)="clearFood('food2')" class="ordered__food--clear">x</button>
                   </div>
-                  <div class="ordering__food--text ordered__food flex-box food4">
-                    <p class="ordered__food--name">Pizsa</p>
-                    <p class="ordered__food--quantity">1</p>
-                    <p class="ordered__food--price">180000 d</p>
-                    <button (click)="clearFood('food2')" class="ordered__food--clear">x</button>
-                  </div>-->
 
-                  <!--<div class="ordering__food--text ordered__food flex-box food1">
-                    <p class="ordered__food--name">Noodle</p>
-                    <p class="ordered__food--quantity">2</p>
-                    <p class="ordered__food--price">90.000 d</p>
-                    <button (click)="clearFood('food1')" class="ordered__food--clear">x</button>
-                  </div>
-                  <div class="ordering__food--text ordered__food flex-box food2">
-                    <p class="ordered__food--name">Noodle</p>
-                    <p class="ordered__food--quantity">1</p>
-                    <p class="ordered__food--price">30.000 d</p>
-                    <button (click)="clearFood('food2')" class="ordered__food--clear">x</button>
-                  </div>-->
-                  <!--<div class="ordering__food--text ordered__food flex-box food3">
-                    <p class="ordered__food--name">Hamberger</p>
-                    <p class="ordered__food--quantity">2</p>
-                    <p class="ordered__food--price">90.000 d</p>
-                    <button (click)="clearFood('food3')" class="ordered__food--clear">x</button>
-                  </div>-->
-                </div>
                 <div class="ordering__total overfollow">
                   <p class="ordering__total--text">Total
                     <span class="ordering__total--money">180.000 d</span>
@@ -137,6 +108,7 @@
           </div>
         </div>
     </div>
+  </div>
   </div>
 </section>
 
