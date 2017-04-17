@@ -42,6 +42,7 @@ export class MenuComponent implements OnInit {
   paymentForm: string;
   foodCombinations: FoodCombination[];
   foodLocalStorages: FoodLocalStorage[];
+  loadDone: boolean;
 
   //search
   text: string;
@@ -52,18 +53,26 @@ export class MenuComponent implements OnInit {
               private elementRef: ElementRef) { }
 
   ngOnInit() {
+    // localStorage.removeItem('foodOrderLocal');
+    this.loadDone = false;
     this.quantity = 1;
     this.menuService.getAllFood()
         .subscribe(allFood => {this.allFood = allFood;
-        this.food = this.getFood(1)});
+        this.food = this.getFood(1);
+        if(localStorage.getItem('foodOrderLocal')) {
+        this.foodLocalStorages = JSON.parse(localStorage.getItem('foodOrderLocal'));
+        console.log("123", this.foodLocalStorages);
+        this.showFoodFromLocalStorage(this.foodLocalStorages);
+        // setTimeout(() => {
+        //   this.showFoodFromLocalStorage(this.foodLocalStorages);
+        //   console.log('localStorage ', this.foodLocalStorages);
+        // }, 1500);
+    }
+    });
     this.totalMoney();
     this.textSearch = "";
     this.permitedOrder = false;
-    if(localStorage.getItem('foodOrderLocal')) {
-      this.foodLocalStorages = JSON.parse(localStorage.getItem('foodOrderLocal'));
-      console.log('localStorage ', this.foodLocalStorages);
 
-    }
     console.log('differ ', _.includes([10, 11], 11));
   }
 
@@ -124,6 +133,8 @@ export class MenuComponent implements OnInit {
   }
 
   clearFood(event) {
+    console.log('event ', event);
+
     var parent = document.getElementsByClassName("ordering__food")[0];
     var foodClear = document.getElementsByClassName(event)[0];
     var listChild = parent.children;
@@ -165,17 +176,23 @@ export class MenuComponent implements OnInit {
   // save food into LocalStorage
   saveFoodIntoLocal(foodSaving: FoodLocalStorage) {
     var foodLocalStorages = JSON.parse(localStorage.getItem('foodOrderLocal'));
-    if(foodLocalStorages) {
+    console.log('@@@local ', foodLocalStorages.length);
+
+    if(foodLocalStorages && foodLocalStorages.length > 0) {
       var sizeFoodLocalStorages = foodLocalStorages.length;
       for(var i = 0; i < sizeFoodLocalStorages; i++) {
+        console.log('infor @@@@ ');
         if((foodSaving.foodAndDrink.id === foodLocalStorages[i].foodAndDrink.id) &&
             (foodLocalStorages[i].ordered === foodSaving.ordered)) {
-          foodLocalStorages[i].quantity += foodSaving.quantity;
-          foodLocalStorages[i].total += foodSaving.total;
-          localStorage.setItem('foodOrderLocal', JSON.stringify(foodLocalStorages));
-          return;
+              console.log('test $$$ ', i);
+
+              foodLocalStorages[i].quantity += foodSaving.quantity;
+              foodLocalStorages[i].total += foodSaving.total;
+              localStorage.setItem('foodOrderLocal', JSON.stringify(foodLocalStorages));
+              return;
         }
-        else if(i === sizeFoodLocalStorages) {
+        else if(i === (sizeFoodLocalStorages-1)) {
+          console.log('test @@@@ ', foodSaving);
           foodLocalStorages.push(foodSaving);
           localStorage.setItem('foodOrderLocal', JSON.stringify(foodLocalStorages));
         }
@@ -184,8 +201,54 @@ export class MenuComponent implements OnInit {
     else {
       var local = [];
       local.push(foodSaving);
+      console.log('not existed ', foodSaving);
       localStorage.setItem('foodOrderLocal', JSON.stringify(local));
     }
+  }
+
+  //remove out of local
+  removeFromLocalStorage(foodRemoving: FoodLocalStorage) {
+    var foodLocalStorages = JSON.parse(localStorage.getItem('foodOrderLocal'));
+    var sizeFoodLocalStorages = foodLocalStorages.length;
+    for(var i = 0; i < sizeFoodLocalStorages; i++) {
+      if((foodRemoving.foodAndDrink.id === foodLocalStorages[i].foodAndDrink.id)) {
+        console.log('remove ', foodLocalStorages[i]);
+
+        foodLocalStorages.splice(i, 1);
+        localStorage.setItem('foodOrderLocal', JSON.stringify(foodLocalStorages));
+        return;
+      }
+    }
+  }
+
+  showFoodFromLocalStorage(foodLocals: FoodLocalStorage[]) {
+    var self = this;
+    window.addEventListener('load', function () {
+      var foodLocalUI = document.getElementsByClassName('no-food');
+      console.log(foodLocalUI);
+      for(var i = 0; i < foodLocalUI.length; i++) {
+        if(foodLocalUI[i].children[4]) {
+          console.log('element 4 ', foodLocalUI[i].children[4]);
+
+          var idFoodUI = parseInt(foodLocalUI[i].children[4].innerHTML);
+          for(var j = 0; j < foodLocals.length; j++) {
+            if(idFoodUI == foodLocals[j].foodAndDrink.id) {
+              foodLocalUI[i].classList.add(foodLocals[j].currentClass);
+              console.log('UI ', foodLocalUI);
+              var btnClear = foodLocalUI[i].children[3];
+              btnClear.classList.add(foodLocals[j].currentClass);
+              btnClear.addEventListener("click", () => {
+                self.clearFood(foodLocals[j].currentClass);
+                self.removeFromLocalStorage(foodLocals[j]);
+              });
+              if(self.foodLocalStorages[j].ordering) self.permitedOrder = true;
+            }
+            return;
+          }
+        }
+      }
+    });
+    console.log("cxcxccxc");
   }
 
   // //insert food choosed into ordering board
@@ -222,15 +285,16 @@ export class MenuComponent implements OnInit {
     }
 
     //save into localStorage
+    console.log('current class ', newClassDiv);
     var savingFoodLocal = new FoodLocalStorage();
     savingFoodLocal.foodAndDrink = afood;
     savingFoodLocal.ordered = false;
     savingFoodLocal.ordering = true;
     savingFoodLocal.quantity = this.quantity;
     savingFoodLocal.total = afood.price;
-
-    // this.lo
+    savingFoodLocal.currentClass = newClassDiv;
     this.saveFoodIntoLocal(savingFoodLocal);
+    console.log('@@@saved ', savingFoodLocal);
 
     this.permitedOrder = true;
     var buttonClear = this.elementRef.nativeElement.getElementsByClassName(newClassDiv)[1];
@@ -243,11 +307,6 @@ export class MenuComponent implements OnInit {
     var btnOrder = document.getElementsByClassName("ordering__btn--order")[0];
     btnOrder.classList.add("btn--suggest");
     afood.price = this.thisPrice;
-
-    //save into localStorage
-    // var foodOrderingsSave = [];
-
-
     $('#detailFood').modal('hide');
   }
 
@@ -268,11 +327,6 @@ export class MenuComponent implements OnInit {
 
     //if doesn't exist food ordered, append all food ordering to list ordered
     else if(sizeOrderedFoodLst === 0) {
-      while(orderingFoodLst.length > 0) {
-        orderedFood.appendChild(orderingFoodLst[0]);
-        orderingFoodLst[0].classList.add("inner-odered");
-        orderingFoodLst[0].classList.remove("ordered__food");
-      }
 
       var orderIdLst = orderedFood.children;
       var idArr = "";
@@ -286,6 +340,12 @@ export class MenuComponent implements OnInit {
           idArr += orderIdLst[a].children[4].innerHTML+ ",";
           quantityId += orderIdLst[a].children[1].innerHTML+ ",";
         }
+      }
+
+      while(orderingFoodLst.length > 0) {
+        orderedFood.appendChild(orderingFoodLst[0]);
+        orderingFoodLst[0].classList.add("inner-odered");
+        orderingFoodLst[0].classList.remove("ordered__food");
       }
 
       console.log("id "+ idArr);
@@ -312,14 +372,17 @@ export class MenuComponent implements OnInit {
       //list order send to server
       var orderingIds = [];
       for(var b = 0; b < sizeOrderingFoodLst; b++) {
-        orderingIds.push(parseInt(orderingFoodLst[b].children[4].innerHTML));
-        if(b === (sizeOrderingFoodLst-1)) {
-          arrNewId += orderingFoodLst[b].children[4].innerHTML;
-          arrNewQuantity += orderingFoodLst[b].children[1].innerHTML;
-        }
-        else {
-          arrNewId += orderingFoodLst[b].children[4].innerHTML + ',';
-          arrNewQuantity += orderingFoodLst[b].children[1].innerHTML + ',';
+        console.log('orderingFoodLst[b].children[4].innerHTML ', orderingFoodLst[b]);
+        if(orderingFoodLst[b].children) {
+          orderingIds.push(parseInt(orderingFoodLst[b].children[4].innerHTML));
+          if(b === (sizeOrderingFoodLst-1)) {
+            arrNewId += orderingFoodLst[b].children[4].innerHTML;
+            arrNewQuantity += orderingFoodLst[b].children[1].innerHTML;
+          }
+          else {
+            arrNewId += orderingFoodLst[b].children[4].innerHTML + ',';
+            arrNewQuantity += orderingFoodLst[b].children[1].innerHTML + ',';
+          }
         }
       }
       var orderedIds = [];
@@ -385,6 +448,9 @@ export class MenuComponent implements OnInit {
       else foodLocalOrdered.push(food);
     });
 
+    console.log('##food ordered ', foodLocalOrdered);
+    console.log('##food ordering ', foodLocalOrdering);
+
     var indexOrderingCommon = [];
     var indexOrderings = [];
     foodLocalOrdered.forEach(function(foodOrdered, indexOrdered) {
@@ -398,15 +464,18 @@ export class MenuComponent implements OnInit {
       })
     });
     var differOrdering = _.difference(indexOrderings, indexOrderingCommon);
+    console.log('differOrdering ', differOrdering);
+    console.log('common ', indexOrderingCommon);
     foodLocalOrdering.forEach(function(foodOrdering, index) {
       if(differOrdering[index] === index) {
-        foodOrdering.order = true;
+        foodOrdering.ordered = true;
+        console.log('ordered $$$ ', foodOrdering);
         foodOrdering.ordering = false;
         foodLocalOrdered.push(foodOrdering);
       }
     });
     localStorage.setItem('foodOrderLocal', JSON.stringify(foodLocalOrdering));
-
+    console.log('ordered ', foodLocalOrdering);
      //  remove btn clear
      var btnRemove = document.getElementsByClassName("ordered__food--clear");
      var size = btnRemove.length;
@@ -431,11 +500,13 @@ export class MenuComponent implements OnInit {
     var payment = new Payment;
     payment.invoiceId = this.invoiceId;
     payment.paymentType = this.paymentForm;
+    localStorage.removeItem("foodOrderLocal");
+    this.foodLocalStorages = JSON.parse(localStorage.getItem("foodOrderLocal"));
     $('#paymentForm').modal('hide');
-    return this.menuService.paymentRequest(payment)
-      .subscribe(res => {this.isPayed = res; ; console.log("pay ", this.isPayed );
-        localStorage.removeItem("invoiceId")},
-        err => {console.log(err)});
+    // return this.menuService.paymentRequest(payment)
+    //   .subscribe(res => {this.isPayed = res; ; console.log("pay ", this.isPayed );
+    //     localStorage.removeItem("invoiceId")},
+    //     err => {console.log(err)});
   }
 
   public itemSvg:any =

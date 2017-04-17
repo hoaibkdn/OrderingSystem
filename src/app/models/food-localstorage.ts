@@ -6,4 +6,5 @@ export class FoodLocalStorage {
   ordered: boolean;
   quantity: number;
   total: number;
+  currentClass: string;
 }
