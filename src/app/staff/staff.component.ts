@@ -14,6 +14,7 @@ export class StaffComponent implements OnInit {
 
   message: any;
 	stompClient: any;
+  stompClient1: any;
 	socket: any;
 	date: Date;
 	permissionList: string;
@@ -32,6 +33,7 @@ export class StaffComponent implements OnInit {
       this.addMessage(listMessage[i]);
       }
     }
+    
     this.stompClient = Stomp.client("ws://backend-os-v2.herokuapp.com/admin");
     this.stompClient.connect({}, (frame) => {
                     console.log('Connected: ' + frame);
@@ -42,6 +44,10 @@ export class StaffComponent implements OnInit {
                       console.log(messageOutput.body);
                       this.message = messageOutput.body;
                       this.addMessage(messageOutput.body);
+                      setInterval(() => {
+                        console.log("Interval");
+                        this.stompClient.send("/app/admin", {}, "");
+                      }, 50000);
                     });
                 });
 	};

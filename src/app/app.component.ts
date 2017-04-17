@@ -9,6 +9,7 @@ import { UserProfileService } from './user-profile/user-profile.service';
 
 declare var $:any;
 declare var Stomp: any;
+declare var SockJS: any;
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,7 @@ export class AppComponent implements OnInit {
   userName: string;
   permissions: Permission[];
   stompClient: any;
+  stompClient1: any;
   constructor(
     private router: Router, private facebookService: FacebookService, private userAuthenticationService: UserAuthenticationService, private userProfileService: UserProfileService) {
       let fbParams: InitParams = {
@@ -131,6 +133,7 @@ export class AppComponent implements OnInit {
   logOut() {
     localStorage.removeItem('token');
     localStorage.removeItem('userInfo');
+    localStorage.removeItem('allMessage');
     this.userName = "Anonymous user";
     this.token = null;
     this.router.navigate(["/"]);
@@ -139,16 +142,23 @@ export class AppComponent implements OnInit {
   connectAdmin(): void {
     this.stompClient = Stomp.client("ws://backend-os-v2.herokuapp.com/admin");
     this.stompClient.connect({}, (frame) => {
-                    console.log('Connected: ' + frame);
+                    console.log('Connected admin: ' + frame);
                     this.stompClient.subscribe('/request/admin', (messageOutput) => {
                       var tag = document.getElementsByClassName('chat-box')[0];
                       console.log(messageOutput.body);
+                      setInterval(() => {
+                        console.log("Interval");
+                        this.stompClient.send("/app/admin", {}, "");
+                      }, 30000);
                     });
                 });
   }
 
   sendMessageAdmin(): void {
-    let message = this.userName + " is needing some help.";
+    if(!this.stompClient.connected){
+      this.connectAdmin();
+    }
+    let message = this.userName? this.userName : "Anonymous" + " is needing some help.";
     this.stompClient.send("/app/admin", {}, message);
   };
 }
