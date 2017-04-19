@@ -8,11 +8,14 @@
     </tr>
   </thead>
   <tbody>
-    <tr  *ngFor = 'let food of favoriteFood' data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
-      <td >1</td>
+    <tr  *ngFor = 'let food of favoriteFood | paginate: { itemsPerPage: 6, currentPage: page }; let i = index' data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
+      <td >{{i+1}}</td>
       <td>{{food.name}}</td>
       <td>{{food.quantity}}</td>
-      <td>{{food.price}}</td>
+      <td>{{food.price | currency:'vnd':true:'1.0-2'}}</td>
     </tr>
   </tbody>
 </table>
+<!--paging-->
+<pagination-controls (pageChange)="page = $event" style="text-align: center;">
+</pagination-controls>

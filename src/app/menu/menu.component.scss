@@ -48,6 +48,17 @@
   padding-top: 10px;
   padding-bottom: 10px;
   text-align: center;
+  &-group {
+    position: relative;
+  }
+  &__btn-hot-order {
+    position: absolute;
+    @include circle(15px);
+    background: #EA6D24;
+    top: 0;
+    right: 0;
+    padding: 0;
+  }
   &__name {
     display: block;
     padding: 5px;

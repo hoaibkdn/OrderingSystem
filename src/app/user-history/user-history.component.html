@@ -26,8 +26,8 @@
       <td class="history-food-quantity">2</td>
       <td class="history-food-total">300.000 d</td>
     </tr>-->
-    <tr *ngFor="let invoiceDetail of invoiceDetails | paginate: { itemsPerPage: 6, currentPage: page }" data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
-      <td>{{invoiceDetail.id}}</td>
+    <tr *ngFor="let invoiceDetail of invoiceDetails | paginate: { itemsPerPage: 6, currentPage: page }; let i = index" data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
+      <td>{{i+1}}</td>
       <td>15/03/2017</td>
       <td>8:00PM</td>
       <td>{{invoiceDetail.name}}</td>

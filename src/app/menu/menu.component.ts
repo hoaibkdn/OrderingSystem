@@ -42,7 +42,8 @@ export class MenuComponent implements OnInit {
   paymentForm: string;
   foodCombinations: FoodCombination[];
   foodLocalStorages: FoodLocalStorage[];
-  loadDone: boolean;
+  foodLocalStoragesOrdered: FoodLocalStorage[];
+  foodLocalStoragesOrdering: FoodLocalStorage[];
 
   //search
   text: string;
@@ -50,16 +51,15 @@ export class MenuComponent implements OnInit {
 
   constructor(private menuService: MenuService,
               private componentFactoryResolver: ComponentFactoryResolver,
-              private elementRef: ElementRef) { }
+              private elementRef: ElementRef) {
+                this.foodLocalStorages = [];
+               }
 
   ngOnInit() {
-    // localStorage.removeItem('foodOrderLocal');
-    this.loadDone = false;
+    this.foodLocalStoragesOrdering = [];
+    this.foodLocalStoragesOrdered = [];
     this.quantity = 1;
-    this.menuService.getAllFood()
-        .subscribe(allFood => {this.allFood = allFood;
-        this.food = this.getFood(1);
-        if(localStorage.getItem('foodOrderLocal')) {
+    if(localStorage.getItem('foodOrderLocal')) {
         this.foodLocalStorages = JSON.parse(localStorage.getItem('foodOrderLocal'));
         console.log("123", this.foodLocalStorages);
         this.showFoodFromLocalStorage(this.foodLocalStorages);
@@ -68,6 +68,10 @@ export class MenuComponent implements OnInit {
         //   console.log('localStorage ', this.foodLocalStorages);
         // }, 1500);
     }
+    this.menuService.getAllFood()
+        .subscribe(allFood => {this.allFood = allFood;
+        this.food = this.getFood(1);
+
     });
     this.totalMoney();
     this.textSearch = "";
@@ -176,8 +180,6 @@ export class MenuComponent implements OnInit {
   // save food into LocalStorage
   saveFoodIntoLocal(foodSaving: FoodLocalStorage) {
     var foodLocalStorages = JSON.parse(localStorage.getItem('foodOrderLocal'));
-    console.log('@@@local ', foodLocalStorages.length);
-
     if(foodLocalStorages && foodLocalStorages.length > 0) {
       var sizeFoodLocalStorages = foodLocalStorages.length;
       for(var i = 0; i < sizeFoodLocalStorages; i++) {
@@ -215,6 +217,7 @@ export class MenuComponent implements OnInit {
         console.log('remove ', foodLocalStorages[i]);
 
         foodLocalStorages.splice(i, 1);
+        console.log('after remove ', foodLocalStorages);
         localStorage.setItem('foodOrderLocal', JSON.stringify(foodLocalStorages));
         return;
       }
@@ -223,31 +226,58 @@ export class MenuComponent implements OnInit {
 
   showFoodFromLocalStorage(foodLocals: FoodLocalStorage[]) {
     var self = this;
-    window.addEventListener('load', function () {
-      var foodLocalUI = document.getElementsByClassName('no-food');
-      console.log(foodLocalUI);
-      for(var i = 0; i < foodLocalUI.length; i++) {
-        if(foodLocalUI[i].children[4]) {
-          console.log('element 4 ', foodLocalUI[i].children[4]);
+    var sizeFoodLocals = foodLocals.length;
+    for(var j = 0; j < sizeFoodLocals; j++) {
+      if(foodLocals[j].ordering) {
+        this.foodLocalStoragesOrdering.push(foodLocals[j]);
+        this.permitedOrder = true;
+      }
+      if(foodLocals[j].ordered) {
+        this.foodLocalStoragesOrdered.push(foodLocals[j]);
+      }
+    }
+    window.addEventListener('DOMContentLoaded', function () {
+      var foodOrderedUI = document.getElementsByClassName('inner-odered');
+      var foodOrderingUI = document.getElementsByClassName('ordered__food');
 
-          var idFoodUI = parseInt(foodLocalUI[i].children[4].innerHTML);
-          for(var j = 0; j < foodLocals.length; j++) {
-            if(idFoodUI == foodLocals[j].foodAndDrink.id) {
-              foodLocalUI[i].classList.add(foodLocals[j].currentClass);
-              console.log('UI ', foodLocalUI);
-              var btnClear = foodLocalUI[i].children[3];
-              btnClear.classList.add(foodLocals[j].currentClass);
-              btnClear.addEventListener("click", () => {
-                self.clearFood(foodLocals[j].currentClass);
-                self.removeFromLocalStorage(foodLocals[j]);
-              });
-              if(self.foodLocalStorages[j].ordering) self.permitedOrder = true;
-            }
-            return;
+      // set class on ordered
+      for(var i = 0; i < self.foodLocalStoragesOrdered.length; i++) {
+        for(var j = 0; j < foodOrderedUI.length; j++) {
+          var idFoodUI = parseInt(foodOrderedUI[j].children[3].innerHTML);
+          if(idFoodUI == self.foodLocalStoragesOrdered[i].foodAndDrink.id) {
+            console.log('idFoodUI ', idFoodUI);
+            foodOrderedUI[j].classList.add(self.foodLocalStoragesOrdered[i].currentClass);
           }
         }
       }
-    });
+      for(var i = 0; i < self.foodLocalStoragesOrdering.length; i++) {
+        for(var j = 0; j < foodOrderingUI.length; j++) {
+          var idFoodUI = parseInt(foodOrderingUI[j].children[4].innerHTML);
+          if(idFoodUI == self.foodLocalStoragesOrdering[i].foodAndDrink.id) {
+            var currentFood = self.foodLocalStoragesOrdering[i];
+            var currentClass = currentFood.currentClass;
+            foodOrderingUI[j].classList.add(currentClass);
+            console.log('UI ', foodOrderingUI);
+            var btnClear = foodOrderingUI[j].children[3];
+            btnClear.classList.add(currentClass);
+            (function(j, currentFood) {
+
+              var btnClear = foodOrderingUI[j].children[3];
+              btnClear.addEventListener("click", () => {
+                console.log('btn clear ', btnClear);
+
+                var classNameClear =  btnClear.className.split(" ")[1];
+                console.log('classNameClear@@@@ ', classNameClear);
+
+                self.clearFood(classNameClear);
+                self.removeFromLocalStorage(currentFood);
+              });
+            }(j,currentFood));
+          }
+        }
+      }
+      self.totalMoney();
+    }, true);
     console.log("cxcxccxc");
   }
 
@@ -264,7 +294,9 @@ export class MenuComponent implements OnInit {
     for(var i = 0; i < sizeOrderedFoodList; i++ ) {
       if(orderedFoodList[i].children[0].innerHTML == afood.name) {
         var currentQuantity =parseInt(orderedFoodList[i].children[1].innerHTML);
+        var currentPrice =parseFloat(orderedFoodList[i].children[2].innerHTML.split(' ')[0]);
         orderedFoodList[i].children[1].innerHTML = (currentQuantity+ this.quantity).toString();
+        orderedFoodList[i].children[2].innerHTML = (currentPrice + afood.price).toString();
         isExist = true;
         break;
       }
@@ -272,7 +304,7 @@ export class MenuComponent implements OnInit {
     if (!isExist) {
       var addFood = document.createElement("div");
       var newClassDiv = "food"+order;
-      var newClassClear = "clear"+order;
+      // var newClassClear = "clear"+order;
       addFood.setAttribute("class", "ordering__food--text ordered__food no-food flex-box "+newClassDiv);
       addFood.innerHTML =`
         <p class="ordered__food--name">`+afood.name+`</p>
@@ -307,7 +339,15 @@ export class MenuComponent implements OnInit {
     var btnOrder = document.getElementsByClassName("ordering__btn--order")[0];
     btnOrder.classList.add("btn--suggest");
     afood.price = this.thisPrice;
+    console.log('this.thisPrice ', this.thisPrice);
+
     $('#detailFood').modal('hide');
+  }
+
+  hotOrder(afood: FoodAndDrink) {
+    this.thisPrice = afood.price;
+    this.quantity = 1;
+    this.ordering(afood);
   }
 
   ordered() {
@@ -372,8 +412,8 @@ export class MenuComponent implements OnInit {
       //list order send to server
       var orderingIds = [];
       for(var b = 0; b < sizeOrderingFoodLst; b++) {
-        console.log('orderingFoodLst[b].children[4].innerHTML ', orderingFoodLst[b]);
-        if(orderingFoodLst[b].children) {
+        console.log('orderingFoodLst[b].children[4] ', orderingFoodLst[b].children);
+        if(orderingFoodLst[b].children.length !== 0) {
           orderingIds.push(parseInt(orderingFoodLst[b].children[4].innerHTML));
           if(b === (sizeOrderingFoodLst-1)) {
             arrNewId += orderingFoodLst[b].children[4].innerHTML;
@@ -387,7 +427,9 @@ export class MenuComponent implements OnInit {
       }
       var orderedIds = [];
       for(var t = 0; t < sizeOrderedFoodLst; t++) {
-        orderedIds.push(parseInt(orderedFoodLst[t].children[3].innerHTML));
+        if(orderedFoodLst[t].children.length > 0) {
+          orderedIds.push(parseInt(orderedFoodLst[t].children[3].innerHTML));
+        }
       }
 
       console.log('ing ', orderingIds, ' ed ', orderedIds);
@@ -453,9 +495,12 @@ export class MenuComponent implements OnInit {
 
     var indexOrderingCommon = [];
     var indexOrderings = [];
+    foodLocalOrdering.forEach(function(foodOrdering, indexOrdering) {
+      indexOrderings.push(indexOrdering);
+      console.log('index ordering ', indexOrdering);
+    });
     foodLocalOrdered.forEach(function(foodOrdered, indexOrdered) {
       foodLocalOrdering.forEach(function(foodOrdering, indexOrdering) {
-        indexOrderings.push(indexOrdering);
         if(foodOrdered.foodAndDrink.id === foodOrdering.foodAndDrink.id) {
           foodOrdered.quantity += foodOrdering.quantity;
           foodOrdered.total += foodOrdering.total;
@@ -464,6 +509,7 @@ export class MenuComponent implements OnInit {
       })
     });
     var differOrdering = _.difference(indexOrderings, indexOrderingCommon);
+    console.log('indexOrderings ', indexOrderings);
     console.log('differOrdering ', differOrdering);
     console.log('common ', indexOrderingCommon);
     foodLocalOrdering.forEach(function(foodOrdering, index) {
@@ -474,8 +520,9 @@ export class MenuComponent implements OnInit {
         foodLocalOrdered.push(foodOrdering);
       }
     });
-    localStorage.setItem('foodOrderLocal', JSON.stringify(foodLocalOrdering));
-    console.log('ordered ', foodLocalOrdering);
+    localStorage.setItem('foodOrderLocal', JSON.stringify(foodLocalOrdered));
+    console.log('ordered ', foodLocalOrdered);
+
      //  remove btn clear
      var btnRemove = document.getElementsByClassName("ordered__food--clear");
      var size = btnRemove.length;
@@ -488,6 +535,7 @@ export class MenuComponent implements OnInit {
      var btnOrder = document.getElementsByClassName("ordering__btn--order")[0];
      btnOrder.classList.add("btn--normal");
      btnOrder.classList.remove("btn--suggest");
+     this.totalMoney();
   }
 
   getCombination(food) {
@@ -502,6 +550,9 @@ export class MenuComponent implements OnInit {
     payment.paymentType = this.paymentForm;
     localStorage.removeItem("foodOrderLocal");
     this.foodLocalStorages = JSON.parse(localStorage.getItem("foodOrderLocal"));
+    this.foodLocalStoragesOrdered = [];
+    this.foodLocalStoragesOrdering = [];
+    this.totalMoney();
     $('#paymentForm').modal('hide');
     // return this.menuService.paymentRequest(payment)
     //   .subscribe(res => {this.isPayed = res; ; console.log("pay ", this.isPayed );

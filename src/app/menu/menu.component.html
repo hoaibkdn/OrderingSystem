@@ -40,7 +40,7 @@
                         <div class="col-xs-10">
                             <div class="menu__board overfollow" [componentFood]="food">
                                 <div class="col-xs-12">
-                                    <div class="col-xs-4" *ngFor="let afood of food | paginate: {itemsPerPage: 3, currentPage: page}">
+                                    <div class="col-xs-4 food-group" *ngFor="let afood of food | paginate: {itemsPerPage: 3, currentPage: page}">
                                         <div class="row">
                                             <a (click)="getDetail(afood)" class="food__name" data-toggle="modal" data-target="#detailFood">
                                                 <img class="food__img" src="../../assets/slice/food.png" alt="">
@@ -50,6 +50,7 @@
                                                 </div>
                                             </a>
                                         </div>
+                                        <button (click)="hotOrder(afood)" type="button" class="btn btn-default food__btn-hot-order"></button>
                                     </div>
                                 </div>
 
@@ -72,32 +73,19 @@
                                 </a>
 
                                 <div id="ordered-food__wrap" class="collapse">
-                                  <template *ngFor="let foodLocal of foodLocalStorages">
-                                    <div *ngIf=" foodLocal.ordered === true" class="ordering__food--text ordered__food no-food flex-box food0">
+                                  <template [ngIf]="foodLocalStoragesOrdered.length > 0">
+                                    <div *ngFor="let foodLocal of foodLocalStoragesOrdered" class="ordering__food--text no-food flex-box inner-odered">
                                       <p class="ordered__food--name" *ngIf=" foodLocal.ordered === true">{{foodLocal.foodAndDrink.name}}</p>
                                       <p class="ordered__food--quantity" *ngIf=" foodLocal.ordered === true">{{foodLocal.quantity}}</p>
                                       <p class="ordered__food--price" *ngIf=" foodLocal.ordered === true">{{foodLocal.total}} d</p>
                                       <p class="ordered__food--id" *ngIf=" foodLocal.ordered === true">{{foodLocal.foodAndDrink.id}}</p>
                                     </div>
                                   </template>
-                                    <!--food that ordered will be put here-->
-                                    <!--<div class="ordering__food--text inner-odered flex-box food1">
-                      <p class="ordered__food--name">Noodle</p>
-                      <p class="ordered__food--quantity">2</p>
-                      <p class="ordered__food--price">90000 d</p>
-                      <button (click)="clearFood('food1')" class="ordered__food--clear">x</button>
-                    </div>
-                    <div class="ordering__food--text inner-odered flex-box food3">
-                      <p class="ordered__food--name">Ice cream</p>
-                      <p class="ordered__food--quantity">1</p>
-                      <p class="ordered__food--price">18000 d</p>
-                      <button (click)="clearFood('food1')" class="ordered__food--clear">x</button>
-                    </div>-->
                                 </div>
 
                                 <!--food ordering-->
-                                <template [ngIf] = "foodLocalStorages">
-                                  <div *ngFor="let foodLocal of foodLocalStorages" class="ordering__food--text ordered__food no-food flex-box">
+                                <template [ngIf]="foodLocalStoragesOrdering.length > 0" >
+                                  <div *ngFor="let foodLocal of foodLocalStoragesOrdering" class="ordering__food--text ordered__food no-food flex-box">
                                     <p class="ordered__food--name" *ngIf=" foodLocal.ordering === true">{{foodLocal.foodAndDrink.name}}</p>
                                     <p class="ordered__food--quantity" *ngIf=" foodLocal.ordering === true">{{foodLocal.quantity}}</p>
                                     <p class="ordered__food--price" *ngIf=" foodLocal.ordering === true">{{foodLocal.total}} d</p>
@@ -152,28 +140,30 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-body show-suggest overfollow">
-                <div class="show-suggest__text">
-                    <p>Main Dish</p>
-                </div>
-                <div class="show-suggest__content">
-                    <div class="show-suggest__food" *ngFor="let foodCombination of foodCombinations">
-                        <img src="../../assets/slice/food.png" alt="">
-                        <p>{{foodCombination.mainDish.name}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-body show-suggest overfollow">
-                <div class="show-suggest__text">
-                    <p>Drink or Desert</p>
-                </div>
-                <div class="show-suggest__content">
-                    <div class="show-suggest__food" *ngFor="let foodCombination of foodCombinations">
-                        <img src="../../assets/slice/food.png" alt="">
-                        <p>{{foodCombination.drinkOrDesert.name}}</p>
-                    </div>
-                </div>
-            </div>
+            <template [ngIf]="afood">
+              <div class="modal-body show-suggest overfollow" *ngIf="!afood.foodAndDrinkType.mainDish">
+                  <div class="show-suggest__text">
+                      <p>Main Dish</p>
+                  </div>
+                  <div class="show-suggest__content">
+                      <div class="show-suggest__food" *ngFor="let foodCombination of foodCombinations">
+                          <img src="../../assets/slice/food.png" alt="">
+                          <p>{{foodCombination.mainDish.name}}</p>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-body show-suggest overfollow" *ngIf="afood.foodAndDrinkType.mainDish">
+                  <div class="show-suggest__text">
+                      <p>Drink or Desert</p>
+                  </div>
+                  <div class="show-suggest__content">
+                      <div class="show-suggest__food" *ngFor="let foodCombination of foodCombinations">
+                          <img src="../../assets/slice/food.png" alt="">
+                          <p>{{foodCombination.drinkOrDesert.name}}</p>
+                      </div>
+                  </div>
+              </div>
+            </template>
         </div>
     </div>
 </div>
