@@ -27,7 +27,6 @@ export class AppComponent implements OnInit {
   userName: string;
   permissions: Permission[];
   stompClient: any;
-  stompClient1: any;
   constructor(
     private router: Router, private facebookService: FacebookService, private userAuthenticationService: UserAuthenticationService, private userProfileService: UserProfileService) {
       let fbParams: InitParams = {
@@ -39,6 +38,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.connectAdmin();
+    let that = this;
     var token = localStorage.getItem('token');
     if(token && token != null) {
       console.log('token logined ', token);
@@ -50,7 +51,6 @@ export class AppComponent implements OnInit {
         console.log("Error: ", err);
       });
     }
-    this.connectAdmin();
   }
 
   typeOfAccount(permissions: Permission[]): string{
@@ -143,22 +143,25 @@ export class AppComponent implements OnInit {
     this.stompClient = Stomp.client("ws://backend-os-v2.herokuapp.com/admin");
     this.stompClient.connect({}, (frame) => {
                     console.log('Connected admin: ' + frame);
+                    console.log(this.stompClient);
+                    setInterval(() => {
+                        if(!this.stompClient.connected){
+                          console.log("Failed to connect");
+                        } else {
+                          console.log("Interval at " + new Date());
+                          this.stompClient.send("/app/admin", {}, "");
+                        }
+                      }, 30000);
                     this.stompClient.subscribe('/request/admin', (messageOutput) => {
                       var tag = document.getElementsByClassName('chat-box')[0];
-                      console.log(messageOutput.body);
-                      setInterval(() => {
-                        console.log("Interval");
-                        this.stompClient.send("/app/admin", {}, "");
-                      }, 30000);
+                      console.log("Received message: ", messageOutput.body);
                     });
                 });
   }
 
   sendMessageAdmin(): void {
-    if(!this.stompClient.connected){
-      this.connectAdmin();
-    }
-    let message = this.userName? this.userName : "Anonymous" + " is needing some help.";
-    this.stompClient.send("/app/admin", {}, message);
+      let message = (this.userName? this.userName : "Anonymous") + " is needing some help.";
+      console.log("Message to send: ", message);
+      this.stompClient.send("/app/admin", {}, message);
   };
 }

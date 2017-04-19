@@ -8,6 +8,7 @@ import { HistoryComponent } from './history/history.component';
 import { StaffComponent } from './staff/staff.component';
 
 import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { CanDeactivateGuard } from './can-deactivate-guard.service'
 
 const routes: Routes = [
@@ -36,11 +37,12 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [ RouterModule.forRoot(routes, { preloadingStrategy: SelectivePreloadingStrategy })],
+  imports: [ RouterModule.forRoot(routes)],
   exports: [ RouterModule ],
   providers: [
     CanDeactivateGuard,
-    SelectivePreloadingStrategy
+    SelectivePreloadingStrategy,
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ]
 })
 export class AppRoutingModule {}

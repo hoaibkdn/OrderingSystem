@@ -31,23 +31,31 @@ export class StaffComponent implements OnInit {
       let listMessage = allMessage.split('?');
       for (var i = 1; i < listMessage.length; i++) {
       this.addMessage(listMessage[i]);
+      console.log(1);
       }
     }
-    
+
     this.stompClient = Stomp.client("ws://backend-os-v2.herokuapp.com/admin");
     this.stompClient.connect({}, (frame) => {
                     console.log('Connected: ' + frame);
+                    this.stompClient.send("/app/admin", {}, this.userInfo.name + " is available.");
+                    console.log(this.stompClient);
+                    setInterval(() => {
+                        if(!this.stompClient.connected){
+                          console.log("Failed to connect");
+                        } else {
+                          console.log("Interval at " + new Date());
+                          this.stompClient.send("/app/admin", {}, "");
+                        }
+                      }, 30000);
                     this.stompClient.subscribe('/request/admin', (messageOutput) => {
+                      console.log(2);
                       var tag = document.getElementsByClassName('chat-box')[0];
                       let allMessage = localStorage.getItem('allMessage') == null ? "" : localStorage.getItem('allMessage');
                       localStorage.setItem('allMessage', allMessage + "?" + messageOutput.body);
-                      console.log(messageOutput.body);
+                      console.log("Received message: ", messageOutput.body);
                       this.message = messageOutput.body;
                       this.addMessage(messageOutput.body);
-                      setInterval(() => {
-                        console.log("Interval");
-                        this.stompClient.send("/app/admin", {}, "");
-                      }, 50000);
                     });
                 });
 	};
