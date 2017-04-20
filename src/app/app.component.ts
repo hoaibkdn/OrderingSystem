@@ -82,8 +82,9 @@ export class AppComponent implements OnInit {
   }
 
   logOut() {
-    localStorage.removeItem;
+    localStorage.removeItem("token");
+    localStorage.removeItem("foodOrderLocal");
     this.token = null;
-    this.router.navigate([""]);
+    this.router.navigate(["/"]);
   }
 }

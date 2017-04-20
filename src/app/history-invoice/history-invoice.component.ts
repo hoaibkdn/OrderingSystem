@@ -21,8 +21,6 @@ export class HistoryInvoiceComponent implements OnInit {
 
   ngOnInit() {
     this.historyInvoiceService.getAllInvoice()
-    // console.log('xxx ', this.historyInvoiceService.getAllInvoice());
-
       .subscribe(invoices => {this.invoices = invoices; console.log('all invoice: ', this.invoices);
       });
   }

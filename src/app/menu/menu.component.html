@@ -1,266 +1,225 @@
-<section class="menu" >
-  <div class="container">
-    <div class="row">
-        <div class="col-xs-12 col-sm-8">
-          <div class="menu__bg">
-                <form class="search">
-                  <div class="search__group">
-                    <input [componentFood]="food" id="textSearch" type="text" class="search__box" placeholder="Search" name="textSearch" [(ngModel)]="textSearch" (keyup)="onKey($event)">
-                    <button type="submit" class="btn btn-default search__btn icon-search"></button>
-                  </div>
-                </form>
+<section class="menu">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8">
+                <div class="menu__bg">
+                    <form class="search">
+                        <div class="search__group">
+                            <input [componentFood]="food" id="textSearch" type="text" class="search__box" placeholder="Search" name="textSearch" [(ngModel)]="textSearch" (keyup)="onKey($event)">
+                            <button type="submit" class="btn btn-default search__btn icon-search"></button>
+                        </div>
+                    </form>
 
-                <div class="food overfollow">
-                  <div class="col-xs-2">
-                    <div class="row">
-                      <a (click) = "getFood(1)" class="btn-menu">
-                        <div class="btn-menu__img">
-                          <p class="btn-menu__text">Bakery</p>
-                        </div>
-                      </a>
-                      <a (click) = "getFood(2)" class="btn-menu">
-                        <div class="btn-menu__img">
-                          <p class="btn-menu__text">Bakery</p>
-                        </div>
-                      </a>
-                      <a (click) = "getFood(3)" class="btn-menu">
-                        <div class="btn-menu__img">
-                          <p class="btn-menu__text">Bakery</p>
-                        </div>
-                      </a>
-                      <a (click) = "getFood(4)" class="btn-menu">
-                        <div class="btn-menu__img">
-                          <p class="btn-menu__text">Bakery</p>
-                        </div>
-                      </a>
+                    <div class="food overfollow">
+                        <div class="col-xs-2">
+                            <div class="row">
+                                <a (click)="getFood(1)" class="btn-menu">
+                                    <div class="btn-menu__img">
+                                        <p class="btn-menu__text">Bakery</p>
+                                    </div>
+                                </a>
+                                <a (click)="getFood(2)" class="btn-menu">
+                                    <div class="btn-menu__img">
+                                        <p class="btn-menu__text">Bakery</p>
+                                    </div>
+                                </a>
+                                <a (click)="getFood(3)" class="btn-menu">
+                                    <div class="btn-menu__img">
+                                        <p class="btn-menu__text">Bakery</p>
+                                    </div>
+                                </a>
+                                <a (click)="getFood(4)" class="btn-menu">
+                                    <div class="btn-menu__img">
+                                        <p class="btn-menu__text">Bakery</p>
+                                    </div>
+                                </a>
 
+                            </div>
+                        </div>
+
+                        <div class="col-xs-10">
+                            <div class="menu__board overfollow" [componentFood]="food">
+                                <div class="col-xs-12">
+                                    <div class="col-xs-4 food-group" *ngFor="let afood of food | paginate: {itemsPerPage: 3, currentPage: page}">
+                                        <div class="row">
+                                            <a (click)="getDetail(afood)" class="food__name" data-toggle="modal" data-target="#detailFood">
+                                                <img class="food__img" src="../../assets/slice/food.png" alt="">
+                                                <div class="food__board">
+                                                    <p class="food__board--name">{{afood.name}}</p>
+                                                    <p class="food__board--price">{{afood.price}} d</p>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <button (click)="hotOrder(afood)" type="button" class="btn btn-default food__btn-hot-order"></button>
+                                    </div>
+                                </div>
+
+                                <!--paging-->
+                                <pagination-controls style="font-size:15px;" (pageChange)="page = $event" #api> </pagination-controls>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-
-                  <div class="col-xs-10">
-                    <div class="menu__board overfollow" [componentFood]="food">
-                      <div class="col-xs-12">
-                        <div class="col-xs-4" *ngFor="let afood of food | paginate: {itemsPerPage: 3, currentPage: page}" >
-                          <div class="row">
-                            <a (click) = "getDetail(afood)" class="food__name" data-toggle="modal" data-target="#detailFood">
-                              <img class="food__img" src="../../assets/slice/food.png" alt="">
-                              <div class="food__board">
-                                <p class="food__board--name">{{afood.name}}</p>
-                                <p class="food__board--price">{{afood.price}} d</p>
-                              </div>
-                            </a>
-                          </div>
-                        </div>
-
-                      </div>
-
-                      <!--paging-->
-					            <pagination-controls style="font-size:15px;" (pageChange)="page = $event" #api> </pagination-controls>
-                    </div>
-                  </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-sm-4">
-          <div class="ordering">
-            <div class="ordering__box">
-              <div class="ordering__box--inner">
-                <h2 class="ordering__title">Ordering</h2>
-                <div class="ordering__food">
-                  <a class="ordering__btn-ordered" role="button" data-toggle="collapse" href="#ordered-food__wrap" aria-expanded="false" aria-controls="ordered-food__wrap">
-                    &rsaquo; Ordered
-                  </a>
+            <div class="col-sm-4">
+                <div class="ordering">
+                    <div class="ordering__box">
+                        <div class="ordering__box--inner">
+                            <h2 class="ordering__title">Ordering</h2>
+                            <div class="ordering__food">
+                                <a class="ordering__btn-ordered" role="button" data-toggle="collapse" href="#ordered-food__wrap" aria-expanded="false" aria-controls="ordered-food__wrap">
+                                  &rsaquo; Ordered
+                                </a>
 
-                  <div id="ordered-food__wrap" class="collapse">
-                    <!--food that ordered will be put here-->
-                    <!--<div class="ordering__food--text inner-odered flex-box food1">
-                      <p class="ordered__food--name">Noodle</p>
-                      <p class="ordered__food--quantity">2</p>
-                      <p class="ordered__food--price">90000 d</p>
-                      <button (click)="clearFood('food1')" class="ordered__food--clear">x</button>
+                                <div id="ordered-food__wrap" class="collapse">
+                                  <template [ngIf]="foodLocalStoragesOrdered.length > 0">
+                                    <div *ngFor="let foodLocal of foodLocalStoragesOrdered" class="ordering__food--text no-food flex-box inner-odered">
+                                      <p class="ordered__food--name" *ngIf=" foodLocal.ordered === true">{{foodLocal.foodAndDrink.name}}</p>
+                                      <p class="ordered__food--quantity" *ngIf=" foodLocal.ordered === true">{{foodLocal.quantity}}</p>
+                                      <p class="ordered__food--price" *ngIf=" foodLocal.ordered === true">{{foodLocal.total}} d</p>
+                                      <p class="ordered__food--id" *ngIf=" foodLocal.ordered === true">{{foodLocal.foodAndDrink.id}}</p>
+                                    </div>
+                                  </template>
+                                </div>
+
+                                <!--food ordering-->
+                                <template [ngIf]="foodLocalStoragesOrdering.length > 0" >
+                                  <div *ngFor="let foodLocal of foodLocalStoragesOrdering" class="ordering__food--text ordered__food no-food flex-box">
+                                    <p class="ordered__food--name" *ngIf=" foodLocal.ordering === true">{{foodLocal.foodAndDrink.name}}</p>
+                                    <p class="ordered__food--quantity" *ngIf=" foodLocal.ordering === true">{{foodLocal.quantity}}</p>
+                                    <p class="ordered__food--price" *ngIf=" foodLocal.ordering === true">{{foodLocal.total}} d</p>
+                                    <button class="ordered__food--clear" *ngIf=" foodLocal.ordering === true">x</button>
+                                    <p class="ordered__food--id" *ngIf=" foodLocal.ordering === true">{{foodLocal.foodAndDrink.id}}</p>
+                                  </div>
+                                </template>
+                            </div>
+                            <div class="ordering__total overfollow">
+                                <p class="ordering__total--text">Total
+                                    <span class="ordering__total--money">180.000 d</span>
+                                </p>
+                            </div>
+                            <div class="ordering__btn">
+                                <a (click)="ordered()" class="ordering__btn--order btn--suggest" *ngIf="permitedOrder">Order</a>
+                                <a class="ordering__btn--order btn--normal" *ngIf="!permitedOrder">Order</a>
+                                <a data-toggle="modal" data-target="#paymentForm" class="ordering__btn--payment btn--normal">Payment</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="ordering__food--text inner-odered flex-box food3">
-                      <p class="ordered__food--name">Ice cream</p>
-                      <p class="ordered__food--quantity">1</p>
-                      <p class="ordered__food--price">18000 d</p>
-                      <button (click)="clearFood('food1')" class="ordered__food--clear">x</button>
-                    </div>-->
-                  </div>
-
-                  <!--food ordering-->
-
-                  <!--<div class="ordering__food--text ordered__food flex-box food2">
-                    <p class="ordered__food--name">Noodle</p>
-                    <p class="ordered__food--quantity">1</p>
-                    <p class="ordered__food--price">30000 d</p>
-                    <button (click)="clearFood('food2')" class="ordered__food--clear">x</button>
-                  </div>
-                  <div class="ordering__food--text ordered__food flex-box food4">
-                    <p class="ordered__food--name">Pizsa</p>
-                    <p class="ordered__food--quantity">1</p>
-                    <p class="ordered__food--price">180000 d</p>
-                    <button (click)="clearFood('food2')" class="ordered__food--clear">x</button>
-                  </div>-->
-
-                  <!--<div class="ordering__food--text ordered__food flex-box food1">
-                    <p class="ordered__food--name">Noodle</p>
-                    <p class="ordered__food--quantity">2</p>
-                    <p class="ordered__food--price">90.000 d</p>
-                    <button (click)="clearFood('food1')" class="ordered__food--clear">x</button>
-                  </div>
-                  <div class="ordering__food--text ordered__food flex-box food2">
-                    <p class="ordered__food--name">Noodle</p>
-                    <p class="ordered__food--quantity">1</p>
-                    <p class="ordered__food--price">30.000 d</p>
-                    <button (click)="clearFood('food2')" class="ordered__food--clear">x</button>
-                  </div>-->
-                  <!--<div class="ordering__food--text ordered__food flex-box food3">
-                    <p class="ordered__food--name">Hamberger</p>
-                    <p class="ordered__food--quantity">2</p>
-                    <p class="ordered__food--price">90.000 d</p>
-                    <button (click)="clearFood('food3')" class="ordered__food--clear">x</button>
-                  </div>-->
                 </div>
-                <div class="ordering__total overfollow">
-                  <p class="ordering__total--text">Total
-                    <span class="ordering__total--money">180.000 d</span>
-                  </p>
-                </div>
-                <div class="ordering__btn">
-                  <a (click)="ordered()" class="ordering__btn--order btn--suggest" *ngIf="permitedOrder">Order</a>
-                  <a class="ordering__btn--order btn--normal" *ngIf="!permitedOrder">Order</a>
-                  <a data-toggle="modal" data-target="#paymentForm" class="ordering__btn--payment btn--normal">Payment</a>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
     </div>
-  </div>
 </section>
 
 <!--modal show choose a food-->
 <div class="modal fade" id="detailFood" tabindex="-1" role="dialog" aria-labelledby="detailFoodLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content modal-detail">
-      <div class="modal-body show-detail overfollow" *ngIf="afood">
-        <div class="show-detail__img">
-          <img class="show-detail__img--food" src="../../assets/slice/food.png" alt="">
-        </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content modal-detail">
+            <div class="modal-body show-detail overfollow" *ngIf="afood">
+                <div class="show-detail__img">
+                    <img class="show-detail__img--food" src="../../assets/slice/food.png" alt="">
+                </div>
 
-        <div class="show-detail__info">
-          <div class="show-detail__content">
-            <h2>{{afood.name}}</h2>
-            <p class="show-detail__disc">{{afood.detail}}</p>
-            <div class="show-detail__quanity flex-box">
-              <p class="show-detail__price" >{{afood.price}} d</p>
-              <div class="show-detail__choosing flex-box">
-                <button (click) = "quantityUp()" id="btn-up" type="button" class="show-detail__btn-arrow icon-arrow-up"></button>
-                <input id="quantity" type="text" [(ngModel)] = "quantity" class="show-detail__number" name="inputQuantity" (keyup)="changePrice($event)">
-                <button (click) = "quantityDown()" id="btn-down" type="button" class="show-detail__btn-arrow icon-arrow-down"></button>
+                <div class="show-detail__info">
+                    <div class="show-detail__content">
+                        <h2>{{afood.name}}</h2>
+                        <p class="show-detail__disc">{{afood.detail}}</p>
+                        <div class="show-detail__quanity flex-box">
+                            <p class="show-detail__price">{{afood.price}} d</p>
+                            <div class="show-detail__choosing flex-box">
+                                <button (click)="quantityUp()" id="btn-up" type="button" class="show-detail__btn-arrow icon-arrow-up"></button>
+                                <input id="quantity" type="text" [(ngModel)]="quantity" class="show-detail__number" name="inputQuantity" (keyup)="changePrice($event)">
+                                <button (click)="quantityDown()" id="btn-down" type="button" class="show-detail__btn-arrow icon-arrow-down"></button>
+                            </div>
+                        </div>
+                        <div class="show-detail__btn ">
+                            <a (click)="ordering(afood)" class="btn--suggest">Ok</a>
+                            <a (click)="closeFoodDetail(afood)" class="btn--normal">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <template [ngIf]="afood">
+              <div class="modal-body show-suggest overfollow" *ngIf="!afood.foodAndDrinkType.mainDish">
+                  <div class="show-suggest__text">
+                      <p>Main Dish</p>
+                  </div>
+                  <div class="show-suggest__content">
+                      <div class="show-suggest__food" *ngFor="let foodCombination of foodCombinations">
+                          <img src="../../assets/slice/food.png" alt="">
+                          <p>{{foodCombination.mainDish.name}}</p>
+                      </div>
+                  </div>
               </div>
-            </div>
-            <div class="show-detail__btn ">
-              <a (click)="ordering(afood)" class="btn--suggest">Ok</a>
-              <a (click)="closeFoodDetail(afood)" class="btn--normal">Cancel</a>
-            </div>
-          </div>
+              <div class="modal-body show-suggest overfollow" *ngIf="afood.foodAndDrinkType.mainDish">
+                  <div class="show-suggest__text">
+                      <p>Drink or Desert</p>
+                  </div>
+                  <div class="show-suggest__content">
+                      <div class="show-suggest__food" *ngFor="let foodCombination of foodCombinations">
+                          <img src="../../assets/slice/food.png" alt="">
+                          <p>{{foodCombination.drinkOrDesert.name}}</p>
+                      </div>
+                  </div>
+              </div>
+            </template>
         </div>
-      </div>
-      <div class="modal-body show-suggest overfollow">
-        <div class="show-suggest__text">
-          <p>Main Dish</p>
-        </div>
-        <div class="show-suggest__content">
-          <div class="show-suggest__food" *ngFor = "let foodCombination of foodCombinations">
-            <img src="../../assets/slice/food.png" alt="">
-            <p>{{foodCombination.mainDish.name}}</p>
-          </div>
-        </div>
-      </div>
-      <div class="modal-body show-suggest overfollow">
-        <div class="show-suggest__text">
-          <p>Drink or Desert</p>
-        </div>
-        <div class="show-suggest__content">
-          <div class="show-suggest__food" *ngFor = "let foodCombination of foodCombinations">
-            <img src="../../assets/slice/food.png" alt="">
-            <p>{{foodCombination.drinkOrDesert.name}}</p>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <!--modal paymentform-->
 <div class="modal fade" id="paymentForm" tabindex="-1" role="dialog" aria-labelledby="ratingLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h5 class="modal-title" id="myModalLabel">Please choose payment form and Rating for our restaurant</h5>
-      </div>
-      <div class="modal-body">
-        <div class="payment-form">
-          <label class="radio-inline">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title" id="myModalLabel">Please choose payment form and Rating for our restaurant</h5>
+            </div>
+            <div class="modal-body">
+                <div class="payment-form">
+                    <label class="radio-inline">
             <input type="radio" [(ngModel)]="paymentForm"  name="paymentForm" value="cash">CASH
           </label>
-          <label class="radio-inline">
+                    <label class="radio-inline">
             <input type="radio" [(ngModel)]="paymentForm"  name="paymentForm" value="bank_cash">BANK_CASH
           </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button (click)="requestPayment()" type="button" class="btn btn-warning" data-toggle="modal" data-target="#rating">Send</button>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button (click)="requestPayment()" type="button" class="btn btn-warning" data-toggle="modal" data-target="#rating" >Send</button>
-      </div>
     </div>
-  </div>
 </div>
 
 <!--modal rating-->
 <div class="modal fade" id="rating" tabindex="-1" role="dialog" aria-labelledby="ratingLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h5 class="modal-title" id="myModalLabel">Please choose payment form and Rating for our restaurant</h5>
-      </div>
-      <div class="modal-body">
-        <div class="rating-food">
-          <p class="text">Rate for food </p>
-          <puk-rating
-                [pukCount]="itemSvg.puk"
-                [pukModel]="itemSvg.selectedPuk"
-                [pukIconBase] = "'icon-color'"
-                [pukEmptyIcon]="'icon-star-empty'"
-                [pukFullIcon]="'icon-star-full'"
-                [pukIconColor]="'#000'"
-                [pukIconSize]="'20px'"
-                (pukClick)="pukChangeSvg($event)">
-          </puk-rating>
-          <p class="text">{{itemSvg.selectedPuk}} stars selected </p>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title" id="myModalLabel">Please choose payment form and Rating for our restaurant</h5>
+            </div>
+            <div class="modal-body">
+                <div class="rating-food">
+                    <p class="text">Rate for food </p>
+                    <puk-rating [pukCount]="itemSvg.puk" [pukModel]="itemSvg.selectedPuk" [pukIconBase]="'icon-color'" [pukEmptyIcon]="'icon-star-empty'" [pukFullIcon]="'icon-star-full'" [pukIconColor]="'#000'" [pukIconSize]="'20px'" (pukClick)="pukChangeSvg($event)">
+                    </puk-rating>
+                    <p class="text">{{itemSvg.selectedPuk}} stars selected </p>
+                </div>
+                <div class="rating-service">
+                    <p class="text">Rate for service </p>
+                    <service-rating [serviceCount]="itemSvgService.stars" [serviceModel]="itemSvgService.selectedStars" [serviceEmptyIcon]="'icon-star-empty'" [serviceFullIcon]="'icon-star-full'" [serviceIconColor]="'#000'" [serviceIconSize]="'20px'" (serviceClick)="serviceChangeSvg($event)">
+                    </service-rating>
+                    <p class="text">{{itemSvgService.selectedStars}} stars selected </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button (click)="sendRating()" type="button" class="btn btn-warning">Send</button>
+            </div>
         </div>
-        <div class="rating-service">
-          <p class="text">Rate for service </p>
-          <service-rating
-                  [serviceCount]="itemSvgService.stars"
-                  [serviceModel]="itemSvgService.selectedStars"
-                  [serviceEmptyIcon]="'icon-star-empty'"
-                  [serviceFullIcon]="'icon-star-full'"
-                  [serviceIconColor]="'#000'"
-                  [serviceIconSize]="'20px'"
-                  (serviceClick)="serviceChangeSvg($event)">
-          </service-rating>
-          <p class="text">{{itemSvgService.selectedStars}} stars selected </p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button (click)="sendRating()" type="button" class="btn btn-warning">Send</button>
-      </div>
     </div>
-  </div>
 </div>
