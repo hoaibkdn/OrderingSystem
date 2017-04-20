@@ -19,7 +19,7 @@ export class UserAuthenticationService {
 	    }
 
 	  loginByFacebook(accessToken: String): Observable<any> {
-	    let url = "https://backend-os.herokuapp.com/api/auth/social/facebook";
+	    let url = "https://backend-os-v2.herokuapp.com/api/auth/social/facebook";
 	    let headers = new Headers({'Content-Type': 'application/json'});
 	    return this.http
 	            .post(
@@ -29,7 +29,7 @@ export class UserAuthenticationService {
 	  }
 
 	  loginByGoogle(idTokenString: String): Observable<any> {
-	    let url = "https://backend-os.herokuapp.com/api/auth/social/google";
+	    let url = "https://backend-os-v2.herokuapp.com/api/auth/social/google";
 	    let headers = new Headers({'Content-Type': 'application/json'});
 	    return this.http
 	            .post(

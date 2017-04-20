@@ -1,6 +1,10 @@
 import { Component, ElementRef, AfterViewInit } from '@angular/core';
 import { UserAuthenticationService } from '../user-authentication/user-authentication.service';
+import { UserProfileService } from '../user-profile/user-profile.service';
+import { Permission } from '../models/permission';
+import { Router } from '@angular/router';
 declare const gapi: any;
+declare var $:any;
 
 @Component({
   selector: 'app-google-sign-in',
@@ -9,7 +13,7 @@ declare const gapi: any;
 })
 export class GoogleSignInComponent implements AfterViewInit {
 
-  constructor(private element: ElementRef, private userAuthenticationService: UserAuthenticationService) {
+  constructor(private router: Router, private element: ElementRef, private userAuthenticationService: UserAuthenticationService, private userProfileService: UserProfileService) {
   }
 
   private clientId:string = '841843481336-uaje8r0pj66c5g4dj099o9vqa1lmb78g.apps.googleusercontent.com';
@@ -21,6 +25,41 @@ export class GoogleSignInComponent implements AfterViewInit {
     'https://www.googleapis.com/auth/contacts.readonly',
     'https://www.googleapis.com/auth/admin.directory.user.readonly'
   ].join(' ');
+
+  doAfterLogin(){
+    this.userProfileService.getInfo().subscribe(res => {
+        localStorage.setItem("userInfo", JSON.stringify(res));
+        }, err => {
+          console.log("Error: ", err);
+        });
+        this.userProfileService.getPermission().subscribe(res => {
+          let typeOfAccount = this.typeOfAccount(res);
+          console.log("Type of account: ", typeOfAccount);
+          switch (typeOfAccount) {
+            case "ADMIN":
+              this.router.navigate(["/admin"]);
+              $('#login').modal('hide');
+            break;
+            case "STAFF":
+              this.router.navigate(["/staff"]);
+              $('#login').modal('hide');
+              break;
+            default:
+              this.router.navigate([""]);
+              $('#login').modal('hide');
+              break;
+          }
+        });
+  }
+  typeOfAccount(permissions: Permission[]): string{
+    for (var i = 0; i < permissions.length; i++) {
+      if(permissions[i].role.name.includes('ROLE_ADMIN')){
+        return "ADMIN";
+      } else if(permissions[i].role.name.includes('ROLE_STAFF')){
+        return "STAFF";
+      }
+    } return "CUSTOMER";
+  }
 
   public auth2: any;
   public googleInit() {
@@ -43,7 +82,9 @@ export class GoogleSignInComponent implements AfterViewInit {
             that.userAuthenticationService.loginByGoogle(googleUser.getAuthResponse().id_token).subscribe(res => {
             let token = res.json().token;
             console.log(token);
+            localStorage.setItem('token', token);
             // Hoai: Do some logic code after logged in here
+            that.doAfterLogin();
             window.location.reload();
           },
           err => {
@@ -57,4 +98,8 @@ export class GoogleSignInComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.googleInit();
   }
+
+  
 }
+
+
