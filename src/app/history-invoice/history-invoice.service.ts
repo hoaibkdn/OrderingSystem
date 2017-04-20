@@ -17,7 +17,7 @@ export class HistoryInvoiceService {
   constructor( private http: Http) {}
 
   getAllInvoice(): Observable<any> {
-    const url = 'http://backend-os-v2.herokuapp.com/api/invoice/all';
+    const url = 'https://backend-os-v2.herokuapp.com/api/invoice/all';
     if(!this.headers.get('Authorization')) {
       let token = localStorage.getItem('token');
       this.headers.append('Authorization', token);

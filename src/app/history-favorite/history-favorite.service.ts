@@ -18,7 +18,7 @@ export class HistoryFavoriteService {
   ){}
 
   getAllFavorite(): Observable<Favorite[]>{
-    const url = 'http://192.168.0.106:8080/api/invoice-detail/favorite';
+    const url = 'https://backend-os-v2.herokuapp.com/api/invoice-detail/favorite';
     if(!this.headers.get('Authorization')) {
       let token = localStorage.getItem('token');
       this.headers.append('Authorization', token);
