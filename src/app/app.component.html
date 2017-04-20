@@ -9,6 +9,7 @@
           </h1>
         </div>
         <div class="header__btn-group flex-box">
+          <button (click)="goScan()" class="header__btn-qrCode" data-toggle="modal" data-target="#scanQRCode">Scan QR code</button>
           <button class="header__btn-login" data-toggle="modal" data-target="#login" >Log In</button>
           <button (click)="logOut()" class="header__btn-login" *ngIf="token">Log Out</button>
           <a href="#" class="btn btn-default header__btn-waiter" value="Waiter">
@@ -39,6 +40,7 @@
     </div>
   </footer>
 
+<!--modal login-->
 <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content login">
@@ -79,6 +81,44 @@
           <a href="#" class="col-xs-10 col-xs-offset-1 btn btn-primary btn-social__fb" (click)="facebookLogin()">Login with Facebook</a>
           <!-- <a href="#" class="col-xs-10 col-xs-offset-1 btn btn-danger btn-social__gg">Login with Google</a> -->
           <app-google-sign-in></app-google-sign-in>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--modal scan QR code-->
+<div class="modal fade" id="scanQRCode" tabindex="-1" role="dialog" aria-labelledby="scanQRCodeLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content login">
+      <div class="modal-header login__header flex-box">
+        <h2 class="login__title">Scan QR code</h2>
+        <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body login__body">
+        <div class="row">
+          <div class="col-md-4 col-md-offset-3">
+            <form>
+              <div class="form-group">
+                <label for="videoSource">Select Camera</label> <select
+                  id="videoSource" class="form-control"><option selected>Default
+                    Camera</option></select>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-2"><button class="btn btn-info btn-block" onclick="window.history.back();">Back</button></div>
+          <br>
+          <div class="col-md-6 col-md-offset-3">
+            <div class="boxWrapper auto">
+              <div id="hiddenImg"></div>
+              <div id="qrContent" class="alert alert-danger" role="alert">
+                <p>No QR Code in sight!</p>
+              </div>
+            </div>
+            <div id="example"
+              class="thumbnail embed-responsive embed-responsive-4by3">
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -27,8 +27,9 @@
     margin-top: 20px;
     position: relative;
   }
-  &__btn-login {
-    @include retangle(100px, 45px);
+  &__btn-login,
+  &__btn-qrCode {
+    @include retangle(70px, 45px);
     @extend %position-center;
     left: -80%;
     color: $cl-white;
@@ -37,6 +38,9 @@
     background: $cl-dark;
     border-radius: 3px;
 
+  }
+  &__btn-qrCode {
+    left: -155px;
   }
   &__btn-waiter {
     background:$cl-waiter;

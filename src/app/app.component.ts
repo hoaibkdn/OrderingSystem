@@ -4,7 +4,10 @@ import { ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FacebookService, LoginResponse, InitParams } from 'ng2-facebook-sdk';
 import { UserAuthenticationService } from './user-authentication/user-authentication.service';
+import './../assets/qr/effects_saycheese.js'
+
 declare var $:any;
+declare var go: any;
 
 @Component({
   selector: 'app-root',
@@ -86,5 +89,11 @@ export class AppComponent implements OnInit {
     localStorage.removeItem("foodOrderLocal");
     this.token = null;
     this.router.navigate(["/"]);
+  }
+
+  goScan() {
+    go();
+    // console.log('here');
+
   }
 }
