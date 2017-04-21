@@ -66,6 +66,39 @@ export class AdminService {
     return this.http.post("https://backend-os-v2.herokuapp.com/api/food-and-drink-type", body, {headers: headers});
   }
 
+  getAllStaff(): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.get("https://backend-os-v2.herokuapp.com/api/user/all/staff", {headers: headers});
+  }
+
+  getAllWorkingTime(id: any): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.get("https://backend-os-v2.herokuapp.com/api/working-time/all/user/" + id, {headers: headers});
+  }
+
+  deleteWorkingTimeById(id: any): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.delete("https://backend-os-v2.herokuapp.com/api/working-time/delete/" + id, {headers: headers});
+  }
+
+  createStaff(body: any): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    return this.http.post("https://backend-os-v2.herokuapp.com/api/user", body, {headers: headers});
+  }
+
+  deleteStaff(id: any): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.delete("https://backend-os-v2.herokuapp.com/api/user/delete/" + id, {headers: headers});
+  }
+
   private extractData(res: Response) {
         let body = res.json();
         return body.data || {};
