@@ -45,6 +45,27 @@ export class AdminService {
     return this.http.post(this.foodUrl, body, {headers: headers});
   }
 
+  getAllFoodAndDrinkByType(id: any): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.get(this.foodUrl + "/type/" + id, {headers: headers});
+  }
+
+  deleteFoodAndDrinkType(id: any): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.delete("https://backend-os-v2.herokuapp.com/api/food-and-drink-type/delete/" + id, {headers: headers});
+  }
+
+  createFoodAndDrinkType(body: any): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.post("https://backend-os-v2.herokuapp.com/api/food-and-drink-type", body, {headers: headers});
+  }
+
   private extractData(res: Response) {
         let body = res.json();
         return body.data || {};

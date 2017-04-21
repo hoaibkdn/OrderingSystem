@@ -1,3 +1,118 @@
-<p>
-  ad-management-fadt works!
-</p>
+<div class="row">
+    <div class="col-sm-2 col-sm-offset-10">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addFood">Add</button>
+    </div>
+</div>
+<div class="col-sm-12">
+    <table class="table table-hover">
+        <thead>
+            <th>No.</th>
+            <th>Name</th>
+            <th>Detail</th>
+            <th>Date added</th>
+            <th></th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let fadt of foodAndDrinkTypes | paginate: { itemsPerPage: 6, currentPage: p }; let i = index">
+                <td (click)="getAllFoodAndDrinkOfType(fadt)" data-toggle="modal" data-target="#detailFood">{{i + 1}}</td>
+                <td (click)="getAllFoodAndDrinkOfType(fadt)" data-toggle="modal" data-target="#detailFood">{{fadt.name}}</td>
+                <td (click)="getAllFoodAndDrinkOfType(fadt)" data-toggle="modal" data-target="#detailFood">{{fadt.detail}}</td>
+                <td (click)="getAllFoodAndDrinkOfType(fadt)" data-toggle="modal" data-target="#detailFood">{{fadt.createdDate | date:'medium'}}</td>
+                <td>
+                    <button class="btn btn-danger" (click)="deleteFadt(fadt)" data-toggle="modal" data-target="#deleteFood">X</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<pagination-controls (pageChange)="p = $event" style="text-align: center;"></pagination-controls>
+<!-- // Modal detail -->
+<div class="modal fade" id="detailFood" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Food and drink</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" *ngIf="fadt">
+                <table class="table table-hover">
+                    <thead>
+                        <th>No.</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Detail</th>
+                        <th>Num of ordered</th>
+                        <th>Tags</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let fad of foodAndDrinks| paginate: { itemsPerPage: 6, currentPage: p }; let i = index">
+                            <td>{{i + 1}}</td>
+                            <td>{{fad.name}}</td>
+                            <td>{{fad.price}}</td>
+                            <td>{{fad.detail}}</td>
+                            <td>{{fad.numOrdered}}</td>
+                            <td>{{fad.tags}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit" (click)="updateFoodAndDrink()">Update</button>
+                <button class="btn" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- // Modal delete -->
+<div class="modal fade" id="deleteFood" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Confirm delete</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" *ngIf="fadt">
+                <p>Do you want to delete this item?</p>
+                <p>
+                    <b>Name: {{fadt.name}}</b>
+                    <br> Detail: {{fadt.detail}}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="submit" (click)="deleteFoodAndDrinkType()">Yes</button>
+                <button class="btn" type="button" data-dismiss="modal" aria-label="Close">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal add new type-->
+<div class="modal fade" id="addFood" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Add new type</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-6">
+                    <label>Name</label>
+                    <br>
+                    <textarea class="form-control" type="text" name="fadname" [(ngModel)]="name" placeholder="Name of food and drink type"></textarea>
+                    <input type="radio" name="mainDish" value="true" [(ngModel)]="mainDish" checked="checked"> Main dish
+                    <br>
+                    <input type="radio" name="mainDish" value="false" [(ngModel)]="mainDish"> Drink or desert
+                    <br>
+                </div>
+                <div class="col-sm-6">
+                    <label>Detail</label>
+                    <br>
+                    <textarea class="form-control" type="text" name="detail" [(ngModel)]="detail" placeholder="Including source, taste, etc."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit" (click)="addFoodAndDrinkType()">Add</button>
+                <button class="btn" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
