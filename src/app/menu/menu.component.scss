@@ -289,6 +289,21 @@
     display: inline-block;
     text-align: center;
     padding: 5px;
+    @extend %position-center;
+    color: #000;
+  }
+  &__group {
+    display: inline-block;
+    @include circle(150px);
+    background: $cl-white;
+    box-shadow: 2px 5px 5px #ccc;
+    position: relative;
+    margin: 20px;
+    margin-bottom: 80px;
+  }
+  &__quantity {
+    @extend %position-horizontal-center;
+    top: 165px;
   }
 }
 

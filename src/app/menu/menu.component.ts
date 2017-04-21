@@ -12,6 +12,7 @@ import { RatingPost } from '../models/rating-post';
 import { Payment } from '../models/payment';
 import { FoodCombination } from '../models/FoodCombination';
 import { FoodLocalStorage } from '../models/food-localStorage';
+import { OrderingCombination } from '../models/ordering-combination';
 
 import * as _ from 'lodash';
 declare var $:any;
@@ -44,6 +45,7 @@ export class MenuComponent implements OnInit {
   foodLocalStorages: FoodLocalStorage[];
   foodLocalStoragesOrdered: FoodLocalStorage[];
   foodLocalStoragesOrdering: FoodLocalStorage[];
+  orderingCombinations: OrderingCombination[];
 
   //search
   text: string;
@@ -56,6 +58,7 @@ export class MenuComponent implements OnInit {
                }
 
   ngOnInit() {
+    this.orderingCombinations = [];
     this.foodLocalStoragesOrdering = [];
     this.foodLocalStoragesOrdered = [];
     this.quantity = 1;
@@ -112,10 +115,13 @@ export class MenuComponent implements OnInit {
     this.priceNumFirst = this.afood.price;
   }
 
-  quantityUp() {
+  quantityUp(index) {
     this.quantity += 1;
     var priceNum = this.priceNumFirst * this.quantity;
     this.afood.price = priceNum;
+    if(index) {
+
+    }
   }
 
   quantityDown() {
@@ -341,7 +347,7 @@ export class MenuComponent implements OnInit {
     afood.price = this.thisPrice;
     console.log('this.thisPrice ', this.thisPrice);
 
-    $('#detailFood').modal('hide');
+    // $('#detailFood').modal('hide');
   }
 
   hotOrder(afood: FoodAndDrink) {
@@ -538,9 +544,30 @@ export class MenuComponent implements OnInit {
      this.totalMoney();
   }
 
+  filterFoodFromCombination(food: FoodAndDrink, foodCombinations: FoodCombination[]) {
+    // var self = this;
+    var orderingCombinations = [];
+    foodCombinations.forEach(function(foodCom, index) {
+      var foodCombination = new OrderingCombination();
+      foodCombination.quantity = 0;
+      if(food.foodAndDrinkType.mainDish) {
+        foodCombination.food = foodCom.drinkOrDesert;
+      }
+      else {
+        foodCombination.food = foodCom.mainDish;
+      }
+      orderingCombinations.push(foodCombination);
+    });
+    return orderingCombinations;
+  }
+
   getCombination(food) {
     return this.menuService.getCombination(food.id)
-      .subscribe(res => {this.foodCombinations = res; console.log('combination: ', this.foodCombinations)});
+      .subscribe(res => {this.foodCombinations = res;
+        console.log('combination: ', this.foodCombinations);
+        this.orderingCombinations = this.filterFoodFromCombination(food, this.foodCombinations);
+        console.log('combination + quantity ',this.orderingCombinations);
+        });
   }
 
   requestPayment() {

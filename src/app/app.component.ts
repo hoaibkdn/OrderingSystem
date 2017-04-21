@@ -5,11 +5,17 @@ import { ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FacebookService, LoginResponse, InitParams } from 'ng2-facebook-sdk';
 import { UserAuthenticationService } from './user-authentication/user-authentication.service';
+
 import { UserProfileService } from './user-profile/user-profile.service';
+import './../assets/qr/effects_saycheese.js';
 
 declare var $:any;
 declare var Stomp: any;
 declare var SockJS: any;
+
+
+declare var go: any;
+
 
 @Component({
   selector: 'app-root',
@@ -139,6 +145,7 @@ export class AppComponent implements OnInit {
     this.router.navigate(["/"]);
   }
 
+
   connectAdmin(): void {
     this.stompClient = Stomp.client("ws://backend-os-v2.herokuapp.com/admin");
     this.stompClient.connect({}, (frame) => {
@@ -164,4 +171,11 @@ export class AppComponent implements OnInit {
       console.log("Message to send: ", message);
       this.stompClient.send("/app/admin", {}, message);
   };
+
+  goScan() {
+    go();
+    // console.log('here');
+
+  }
+
 }
