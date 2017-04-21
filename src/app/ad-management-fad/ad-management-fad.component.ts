@@ -11,7 +11,7 @@ import { AdminService } from '../admin/admin.service';
   styleUrls: ['./ad-management-fad.component.scss']
 })
 export class AdManagementFadComponent implements OnInit {
-	foodAndDrink: FoodAndDrink[];
+	foodAndDrinks: FoodAndDrink[];
   foodAndDrinkType: FoodAndDrinkType[];
   fad: FoodAndDrink;
   id: number;
@@ -21,11 +21,13 @@ export class AdManagementFadComponent implements OnInit {
   price: number;
   foodAndDrinkTypeId: number;
 
-  constructor(private menuService: MenuService, private adminService: AdminService) { }
+  constructor(private menuService: MenuService, private adminService: AdminService) {
+  this.foodAndDrinkTypeId = 1
+   }
 
   ngOnInit() {
   	this.menuService.getAllFood().subscribe(res => {
-  		this.foodAndDrink = res;
+  		this.foodAndDrinks = res;
   	}, err => {
   		console.log("Error: ", err);
   	});
@@ -88,25 +90,6 @@ export class AdManagementFadComponent implements OnInit {
     this.foodAndDrinkTypeId = 0;
   }
 
-//   {
-//   "createdDate": "2017-04-20T14:26:57.952Z",
-//   "detail": "string",
-//   "foodAndDrinkType": {
-//     "createdDate": "2017-04-20T14:26:57.952Z",
-//     "detail": "string",
-//     "id": 0,
-//     "mainDish": true,
-//     "name": "string",
-//     "visible": true
-//   },
-//   "id": 0,
-//   "name": "string",
-//   "numOrdered": 0,
-//   "price": 0,
-//   "tags": "string",
-//   "visible": true
-// }
-
   addFoodAndDrink(){
     let date = new Date();
     let m = date.getMonth() + 1;
@@ -122,7 +105,6 @@ export class AdManagementFadComponent implements OnInit {
     + ', "tags": "' + this.tags
     + '", "id": ' + 0
     + ', "foodAndDrinkType": { "id": "' + this.foodAndDrinkTypeId + '"}}';
-    // console.log(dateString);
      this.adminService.createFoodAndDrink(JSON.parse(body)).subscribe(res => {
        console.log(res);
        if(res.status == 201){
