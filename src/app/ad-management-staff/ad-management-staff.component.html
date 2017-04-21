@@ -1,3 +1,138 @@
-<p>
-  ad-management-staff works!
-</p>
+<div class="row">
+    <div class="col-sm-2 col-sm-offset-10">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addStaff">Add</button>
+    </div>
+</div>
+<div class="col-sm-12">
+    <table class="table table-hover">
+        <thead>
+            <th>No.</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th></th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let staff of staffs | paginate: { itemsPerPage: 6, currentPage: p }; let i = index">
+                <td (click)="getDetailWorkingTime(staff)" data-toggle="modal" data-target="#detailStaff">{{i + 1}}</td>
+                <td (click)="getDetailWorkingTime(staff)" data-toggle="modal" data-target="#detailStaff">{{staff.name}}</td>
+                <td (click)="getDetailWorkingTime(staff)" data-toggle="modal" data-target="#detailStaff">{{staff.gender == 0 ? 'Male' : 'Female'}}</td>
+                <td>
+                    <button class="btn btn-danger" (click)="deleteStaffAccount(staff)" data-toggle="modal" data-target="#deleteStaff">X</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<pagination-controls (pageChange)="p = $event" style="text-align: center;"></pagination-controls>
+<!-- // Modal detail -->
+<div class="modal fade" id="detailStaff" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Working time</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" *ngIf="staff">
+                <table class="table table-hover">
+                    <thead>
+                        <th>No.</th>
+                        <th>Day working</th>
+                        <th>Shift detail</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let wt of workingTimes| paginate: { itemsPerPage: 6, currentPage: p }; let i = index">
+                            <td>{{i + 1}}</td>
+                            <td>{{wt.date | date:'medium'}}</td>
+                            <td>{{wt.shift.detail}}</td>
+                            <td>
+			                    <button class="btn btn-danger" data-toggle="modal" (click)="deleteWT(wt)" data-target="#deleteWorkingTime">X</button>
+			                </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- // Modal delete -->
+<div class="modal fade" id="deleteWorkingTime" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Confirm delete</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" *ngIf="workingTime">
+                <p>Do you want to delete this item?</p>
+                <p>
+                    Working time: {{workingTime.shift.detail}} of staff: {{workingTime.user.name}} ?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="submit" (click)="deleteWorkingTime(workingTime)">Yes</button>
+                <button class="btn" type="button" data-dismiss="modal" aria-label="Close">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- // Modal delete -->
+<div class="modal fade" id="deleteStaff" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Confirm delete</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" *ngIf="staff">
+                <p>Do you want to delete this staff account?</p>
+                <p>
+                    Name: {{staff.name}}, email: {{staff.email}} ?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="submit" (click)="deleteStaff(staff)">Yes</button>
+                <button class="btn" type="button" data-dismiss="modal" aria-label="Close">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal add new staff -->
+<div class="modal fade" id="addStaff" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Add new staff</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-6">
+                    <label>Name</label>
+                    <br>
+                    <input class="form-control" type="text" name="name" [(ngModel)]="name" placeholder="Name of staff">
+                    <br>
+                    <label>Password</label>
+                    <br>
+                    <input class="form-control" type="password" name="password" [(ngModel)]="password" placeholder="Password">
+                    <br>
+                </div>
+                <div class="col-sm-6">
+                    <label>Email</label>
+                    <br>
+                    <input class="form-control" type="email" name="email" [(ngModel)]="email" placeholder="Email address">
+                    <br>
+                    <label>Confirm password</label>
+                    <br>
+                    <input class="form-control" type="password" name="confirm-password" [(ngModel)]="confirmPassword" placeholder="Confirm password">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit" (click)="addStaff()">Add</button>
+                <button class="btn" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
