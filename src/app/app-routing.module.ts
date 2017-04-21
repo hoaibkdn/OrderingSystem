@@ -44,7 +44,7 @@ const routes: Routes = [
   exports: [ RouterModule ],
   providers: [
     CanDeactivateGuard,
-    // {provide: LocationStrategy, useClass: HashLocationStrategy}
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ]
 })
 export class AppRoutingModule {}
