@@ -16,7 +16,7 @@
             <th></th>
         </thead>
         <tbody>
-            <tr *ngFor="let fad of foodAndDrink | paginate: { itemsPerPage: 6, currentPage: p }; let i = index">
+            <tr *ngFor="let fad of foodAndDrinks | paginate: { itemsPerPage: 6, currentPage: p }; let i = index">
                 <td (click)="getDetail(fad)" data-toggle="modal" data-target="#detailFood">{{i + 1}}</td>
                 <td (click)="getDetail(fad)" data-toggle="modal" data-target="#detailFood">{{fad.name}}</td>
                 <td (click)="getDetail(fad)" data-toggle="modal" data-target="#detailFood">{{fad.foodAndDrinkType.name}}</td>
