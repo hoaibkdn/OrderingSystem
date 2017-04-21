@@ -12,7 +12,7 @@
           <button (click)="goScan()" class="header__btn-qrCode" data-toggle="modal" data-target="#scanQRCode">Scan QR code</button>
           <button class="header__btn-login" data-toggle="modal" data-target="#login" >Log In</button>
           <button (click)="logOut()" class="header__btn-login" *ngIf="token">Log Out</button>
-          <a href="#" class="btn btn-default header__btn-waiter" value="Waiter">
+          <a (click)="sendMessageAdmin()" class="btn btn-default header__btn-waiter" value="Waiter">
             <p class="icon-phone header__btn-waiter--icon"></p>
             Waiter
           </a>

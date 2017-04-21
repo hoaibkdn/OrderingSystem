@@ -1,0 +1,134 @@
+<div class="row">
+    <div class="col-sm-2 col-sm-offset-10">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addFood" (click)="clearOldData()">Add</button>
+    </div>
+</div>
+<div class="col-sm-12">
+    <table class="table table-hover">
+        <thead>
+            <th>No.</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Price</th>
+            <th>Num of ordered</th>
+            <th>Detail</th>
+            <th>Tags</th>
+            <th></th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let fad of foodAndDrink | paginate: { itemsPerPage: 6, currentPage: p }; let i = index">
+                <td (click)="getDetail(fad)" data-toggle="modal" data-target="#detailFood">{{i + 1}}</td>
+                <td (click)="getDetail(fad)" data-toggle="modal" data-target="#detailFood">{{fad.name}}</td>
+                <td (click)="getDetail(fad)" data-toggle="modal" data-target="#detailFood">{{fad.foodAndDrinkType.name}}</td>
+                <td (click)="getDetail(fad)" data-toggle="modal" data-target="#detailFood">{{fad.price}}</td>
+                <td (click)="getDetail(fad)" data-toggle="modal" data-target="#detailFood">{{fad.numOrdered}}</td>
+                <td (click)="getDetail(fad)" data-toggle="modal" data-target="#detailFood">{{fad.detail}}</td>
+                <td (click)="getDetail(fad)" data-toggle="modal" data-target="#detailFood">{{fad.tags}}</td>
+                <td>
+                    <button class="btn btn-danger" (click)="deleteFad(fad)" data-toggle="modal" data-target="#deleteFood">X</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<pagination-controls (pageChange)="p = $event" style="text-align: center;"></pagination-controls>
+<!-- // Modal detail -->
+<div class="modal fade" id="detailFood" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Edit food and drink</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" *ngIf="fad">
+                <input class="form-control" type="hidden" name="id" [(ngModel)]="id" hidden>
+                <div class="col-sm-6">
+                    <label>Name</label>
+                    <br>
+                    <input class="form-control" type="text" name="fadname" [(ngModel)]="name">
+                    <br>
+                    <label>Detail</label>
+                    <br>
+                    <textarea class="form-control" type="text" name="detail" [(ngModel)]="detail"></textarea>
+                </div>
+                <div class="col-sm-6">
+                    <label>Price</label>
+                    <br>
+                    <input class="form-control" type="text" name="fadname" [(ngModel)]="price">
+                    <br>
+                    <label>Tags</label>
+                    <br>
+                    <textarea class="form-control" type="text" name="tags" [(ngModel)]="tags"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit" (click)="updateFoodAndDrink()">Update</button>
+                <button class="btn" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- // Modal delete -->
+<div class="modal fade" id="deleteFood" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Confirm delete</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" *ngIf="fad">
+                <p>Do you want to delete this item?</p>
+                <p>
+                    <b>Name: {{fad.name}}</b>
+                    <br> Price: {{fad.price}}
+                    <br> Detail: {{fad.detail}}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="submit" (click)="deleteFoodAndDrink()">Yes</button>
+                <button class="btn" type="button" data-dismiss="modal" aria-label="Close">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+ <!-- Modal add new food -->
+<div class="modal fade" id="addFood" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Add new food</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-6">
+                    <label>Name</label>
+                    <br>
+                    <input class="form-control" type="text" name="fadname" [(ngModel)]="name" placeholder="Name of food and drink">
+                    <br>
+                    <label>Detail</label>
+                    <br>
+                    <textarea class="form-control" type="text" name="detail" [(ngModel)]="detail" placeholder="Including source, taste, etc."></textarea>
+                    <br>
+                    <label>Food and drink type</label>
+                    <br>
+                    <select name="fadtype" [(ngModel)]="foodAndDrinkTypeId" class="form-control">
+                    <option value="{{fadt.id}}" *ngFor="let fadt of foodAndDrinkType">{{fadt.name}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-6">
+                    <label>Price</label>
+                    <br>
+                    <input class="form-control" type="text" name="fadname" [(ngModel)]="price" placeholder="Price for food">
+                    <br>
+                    <label>Tags</label>
+                    <br>
+                    <textarea class="form-control" type="text" name="tags" [(ngModel)]="tags" placeholder="Tags to easy find the foood"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit" (click)="addFoodAndDrink()">Add</button>
+                <button class="btn" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -19,6 +19,7 @@ import { HistoryFavoriteService } from './history-favorite/history-favorite.serv
 import { MenuDirective } from './menu/menu.directive';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserAuthenticationService } from './user-authentication/user-authentication.service';
+import { UserProfileService } from './user-profile/user-profile.service';
 import { FacebookService } from 'ng2-facebook-sdk';
 
 import { Ng2PaginationModule } from 'ng2-pagination';
@@ -66,7 +67,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     FacebookService,
     HistoryInvoiceService,
     UserHistoryService,
-    HistoryFavoriteService
+    HistoryFavoriteService,
+    UserProfileService
   ],
   bootstrap: [AppComponent]
 })

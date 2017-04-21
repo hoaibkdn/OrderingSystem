@@ -7,6 +7,8 @@ import { AdStatisticDrinkComponent }     from './../ad-statistic-drink/ad-statis
 import { StatisticComponent } from './../statistic/statistic.component';
 import { CanDeactivateGuard }     from './../can-deactivate-guard.service';
 import { AdStatisticMoneyComponent } from './../ad-statistic-money/ad-statistic-money.component';
+import { AdManagementFadComponent } from './../ad-management-fad/ad-management-fad.component';
+
 
 const adminRoutes: Routes = [
   {
@@ -14,18 +16,23 @@ const adminRoutes: Routes = [
     component: AdminComponent,
     children: [
       {
-        path: 'statistic-drink',
+        path: 'statistic/food-and-drink',
         component: AdStatisticDrinkComponent,
         canDeactivate: [CanDeactivateGuard]
       },
       {
-        path: 'statistic-money',
+        path: 'statistic/money',
         component: AdStatisticMoneyComponent,
         canDeactivate: [CanDeactivateGuard]
       },
       {
         path: '',
         component: StatisticComponent,
+        canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'management/food-and-drink',
+        component: AdManagementFadComponent,
         canDeactivate: [CanDeactivateGuard]
       }
     ]
