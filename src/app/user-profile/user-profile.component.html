@@ -9,7 +9,7 @@
               <div class="form-group profile-line">
                 <input type="email" class="form-control profile-email" readonly value="user@gmail.com" name="email" [(ngModel)]="email">
                 <i class="icon-envelop profile-icon"></i>
-                <button (click)="edit('email')" class="btn btn-default icon-pencil profile-edit"></button>
+                <button class="btn btn-default icon-pencil profile-edit"></button>
               </div>
               <div class="form-group profile-line">
                 <input type="name" class="form-control profile-name" placeholder="Name" readonly value="User" name="name" [(ngModel)]="name">
@@ -17,9 +17,9 @@
                 <button (click)="edit('name')" class="btn btn-default icon-pencil profile-edit"></button>
               </div>
               <div class="form-group profile-line">
-                <input type="password" class="form-control profile-password" placeholder="Password" readonly value="123456" name="password" [(ngModel)]="password">
+                <input type="date" class="form-control profile-password" [ngModel]="birthDay|date:'yyyy-MM-dd'" name="birthDay">
                 <i class="icon-key profile-icon"></i>
-                <button (click)="edit('password')" class="btn btn-default icon-pencil profile-edit"></button>
+                <!--<button (click)="edit('password')" class="btn btn-default icon-pencil profile-edit"></button>-->
               </div>
               <div class="form-group profile-line">
                 <input type="password" class="form-control profile-password" placeholder="Password" readonly value="123456" name="password" [(ngModel)]="password">

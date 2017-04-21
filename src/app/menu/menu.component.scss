@@ -256,6 +256,7 @@
     height: 32px;
     border: 1px solid $cl-btn-menu;
     text-align: center;
+    padding-top: 5px;
   }
   &__btn-arrow {
     background: $cl-btn-menu;
@@ -278,32 +279,58 @@
 .show-suggest {
   margin-top: 10px;
   background: #FFFBCE;
+  &__text {
+    position: relative;
+    flex: 1;
+    p {
+      @extend %position-center;
+    }
+  }
+  &__content {
+    flex: 4;
+  }
   &__text,
   &__content {
-    display: table-cell;
-    vertical-align: middle;
     text-align: center;
     padding: 0 10px;
   }
   &__food {
+    cursor: pointer;
     display: inline-block;
     text-align: center;
     padding: 5px;
     @extend %position-center;
     color: #000;
+    &--detail {
+      display: none;
+    }
   }
   &__group {
+    flex: 1;
     display: inline-block;
-    @include circle(150px);
+    @include retangle(150px, 150px);
     background: $cl-white;
     box-shadow: 2px 5px 5px #ccc;
     position: relative;
     margin: 20px;
-    margin-bottom: 80px;
+    margin-bottom: 60px;
+    &:hover {
+      .show-suggest__food--detail {
+        display: block;
+        position: absolute;
+        background: $cl-white;
+        border: 1px solid #ccc;
+        top: 57px;
+        right: -75px;
+        margin-left: 30px;
+        box-shadow: 2px 5px 5px #ccc;
+      }
+    }
   }
   &__quantity {
     @extend %position-horizontal-center;
-    top: 165px;
+    top: 160px;
+    height: 28px;
   }
 }
 
