@@ -66,10 +66,6 @@ export class MenuComponent implements OnInit {
         this.foodLocalStorages = JSON.parse(localStorage.getItem('foodOrderLocal'));
         console.log("123", this.foodLocalStorages);
         this.showFoodFromLocalStorage(this.foodLocalStorages);
-        // setTimeout(() => {
-        //   this.showFoodFromLocalStorage(this.foodLocalStorages);
-        //   console.log('localStorage ', this.foodLocalStorages);
-        // }, 1500);
     }
     this.menuService.getAllFood()
         .subscribe(allFood => {this.allFood = allFood;

@@ -7,8 +7,6 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { HistoryComponent } from './history/history.component';
 import { StaffComponent } from './staff/staff.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { CanDeactivateGuard } from './can-deactivate-guard.service'
 
 const routes: Routes = [
