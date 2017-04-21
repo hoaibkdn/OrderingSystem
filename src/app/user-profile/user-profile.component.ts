@@ -1,5 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
+import { UserProfileService } from './user-profile.service';
+import { User } from './../models/user';
 
 @Component({
   selector: 'app-user-profile',
@@ -12,9 +14,9 @@ export class UserProfileComponent implements OnInit {
   name: string;
   password: string;
   birthDay: any;
-  constructor( private elr: ElementRef) {
-    console.log("%%% here");
-
+  userProfile: User;
+  constructor( private elr: ElementRef,
+              private userProfileService: UserProfileService) {
   }
 
   ngOnInit() {
@@ -36,6 +38,11 @@ export class UserProfileComponent implements OnInit {
         editField[2].removeAttribute("readonly");
         break;
     }
+  }
+
+  getUserProfile() {
+    this.userProfileService.getInfo()
+      .subscribe(res => this.userProfile = res);
   }
 
   saveProfile() {
