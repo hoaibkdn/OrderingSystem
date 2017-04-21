@@ -46,7 +46,7 @@ export class MenuComponent implements OnInit {
   foodLocalStoragesOrdered: FoodLocalStorage[];
   foodLocalStoragesOrdering: FoodLocalStorage[];
   orderingCombinations: OrderingCombination[];
-
+  tableId: number;
   //search
   text: string;
   currentFood = [];
@@ -58,18 +58,17 @@ export class MenuComponent implements OnInit {
                }
 
   ngOnInit() {
+    this.tableId = parseInt(localStorage.getItem("tableId"));
     this.orderingCombinations = [];
     this.foodLocalStoragesOrdering = [];
     this.foodLocalStoragesOrdered = [];
     this.quantity = 1;
+    this.permitedOrder = false;
     if(localStorage.getItem('foodOrderLocal')) {
         this.foodLocalStorages = JSON.parse(localStorage.getItem('foodOrderLocal'));
         console.log("123", this.foodLocalStorages);
         this.showFoodFromLocalStorage(this.foodLocalStorages);
-        // setTimeout(() => {
-        //   this.showFoodFromLocalStorage(this.foodLocalStorages);
-        //   console.log('localStorage ', this.foodLocalStorages);
-        // }, 1500);
+        if(this.foodLocalStoragesOrdering.length > 0) this.permitedOrder = true;
     }
     this.menuService.getAllFood()
         .subscribe(allFood => {this.allFood = allFood;
@@ -78,9 +77,6 @@ export class MenuComponent implements OnInit {
     });
     this.totalMoney();
     this.textSearch = "";
-    this.permitedOrder = false;
-
-    console.log('differ ', _.includes([10, 11], 11));
   }
 
   getFood(id: number) {
@@ -115,20 +111,60 @@ export class MenuComponent implements OnInit {
     this.priceNumFirst = this.afood.price;
   }
 
-  quantityUp(index) {
-    this.quantity += 1;
-    var priceNum = this.priceNumFirst * this.quantity;
-    this.afood.price = priceNum;
-    if(index) {
-
+  quantityUp(type,index) {
+    var foodCombinQuanity = document.getElementsByClassName('show-detail__number');
+    switch (type) {
+      case 'main': {
+        this.quantity += 1;
+        var priceNum = this.priceNumFirst * this.quantity;
+        this.afood.price = priceNum;
+        break;
+      }
+      case 'combind': {
+        var currentQuantityOfCombind = parseInt(foodCombinQuanity[index+1].innerHTML);
+        console.log('combind ', foodCombinQuanity[index+1].innerHTML);
+        foodCombinQuanity[index+1].innerHTML = (currentQuantityOfCombind+1).toString();
+        break;
+      }
     }
   }
 
-  quantityDown() {
-    this.quantity -= 1;
-    if(this.quantity <= 0) this.quantity = 1;
-    var priceNum = this.priceNumFirst * this.quantity;
-    this.afood.price = priceNum;
+  quantityDown(type,index) {
+    var foodCombinQuanity = document.getElementsByClassName('show-detail__number');
+    switch (type) {
+      case 'main': {
+        this.quantity -= 1;
+        if(this.quantity <= 0) this.quantity = 1;
+        var priceNum = this.priceNumFirst * this.quantity;
+        this.afood.price = priceNum;
+        break;
+      }
+      case 'combind': {
+        var currentQuantityOfCombind = parseInt(foodCombinQuanity[index+1].innerHTML);
+        console.log('combind ', foodCombinQuanity[index+1].innerHTML);
+        if(currentQuantityOfCombind === 0) {
+          foodCombinQuanity[index+1].innerHTML = "0";
+        }
+        else {
+          foodCombinQuanity[index+1].innerHTML = (currentQuantityOfCombind-1).toString();
+        }
+        break;
+      }
+    }
+  }
+
+  orderingFoodAndCombind(foodChoosed: FoodAndDrink) {
+    var foodCombinQuanity = document.getElementsByClassName('show-detail__number');
+    var numOfCombind_1 = parseInt(foodCombinQuanity[1].innerHTML);
+    var numOfCombind_2 = parseInt(foodCombinQuanity[2].innerHTML);
+    console.log('numOfCombind_1 ', numOfCombind_1, ' numOfCombind_2', numOfCombind_2);
+    this.ordering(foodChoosed, 0);
+    if(numOfCombind_1 > 0) {
+      this.ordering(this.orderingCombinations[0].food, numOfCombind_1);
+    }
+    if(numOfCombind_2 > 0) {
+      this.ordering(this.orderingCombinations[1].food, numOfCombind_2);
+    }
   }
 
   changePrice(event) {
@@ -288,7 +324,7 @@ export class MenuComponent implements OnInit {
   }
 
   // //insert food choosed into ordering board
-  ordering(afood: FoodAndDrink) {
+  ordering(afood: FoodAndDrink, quantityCombind) {
     var foodOrdering = document.getElementsByClassName("ordering__food")[0];
     var orderedFoodList = document.getElementsByClassName("ordered__food");
     var order = this.getLastestOrder() + 1;
@@ -301,7 +337,12 @@ export class MenuComponent implements OnInit {
       if(orderedFoodList[i].children[0].innerHTML == afood.name) {
         var currentQuantity =parseInt(orderedFoodList[i].children[1].innerHTML);
         var currentPrice =parseFloat(orderedFoodList[i].children[2].innerHTML.split(' ')[0]);
-        orderedFoodList[i].children[1].innerHTML = (currentQuantity+ this.quantity).toString();
+        if(quantityCombind > 0) {
+          orderedFoodList[i].children[1].innerHTML = (currentQuantity + quantityCombind).toString();
+        }
+        else {
+          orderedFoodList[i].children[1].innerHTML = (currentQuantity+ this.quantity).toString();
+        }
         orderedFoodList[i].children[2].innerHTML = (currentPrice + afood.price).toString();
         isExist = true;
         break;
@@ -312,13 +353,24 @@ export class MenuComponent implements OnInit {
       var newClassDiv = "food"+order;
       // var newClassClear = "clear"+order;
       addFood.setAttribute("class", "ordering__food--text ordered__food no-food flex-box "+newClassDiv);
-      addFood.innerHTML =`
-        <p class="ordered__food--name">`+afood.name+`</p>
-        <p class="ordered__food--quantity">`+this.quantity+`</p>
-        <p class="ordered__food--price">`+afood.price+` d</p>
-        <button class="ordered__food--clear `+newClassDiv+`">x</button>
-        <p class="ordered__food--id">`+afood.id+`</p>
-      `;
+      if(quantityCombind > 0) {
+        addFood.innerHTML =`
+          <p class="ordered__food--name">`+afood.name+`</p>
+          <p class="ordered__food--quantity">`+quantityCombind+`</p>
+          <p class="ordered__food--price">`+afood.price+` d</p>
+          <button class="ordered__food--clear `+newClassDiv+`">x</button>
+          <p class="ordered__food--id">`+afood.id+`</p>
+        `;
+      }
+      else {
+        addFood.innerHTML =`
+          <p class="ordered__food--name">`+afood.name+`</p>
+          <p class="ordered__food--quantity">`+this.quantity+`</p>
+          <p class="ordered__food--price">`+afood.price+` d</p>
+          <button class="ordered__food--clear `+newClassDiv+`">x</button>
+          <p class="ordered__food--id">`+afood.id+`</p>
+        `;
+      }
       foodOrdering.appendChild(addFood);
     }
 
@@ -328,7 +380,12 @@ export class MenuComponent implements OnInit {
     savingFoodLocal.foodAndDrink = afood;
     savingFoodLocal.ordered = false;
     savingFoodLocal.ordering = true;
-    savingFoodLocal.quantity = this.quantity;
+    if(quantityCombind > 0) {
+      savingFoodLocal.quantity = quantityCombind;
+    }
+    else {
+      savingFoodLocal.quantity = this.quantity;
+    }
     savingFoodLocal.total = afood.price;
     savingFoodLocal.currentClass = newClassDiv;
     this.saveFoodIntoLocal(savingFoodLocal);
@@ -347,13 +404,13 @@ export class MenuComponent implements OnInit {
     afood.price = this.thisPrice;
     console.log('this.thisPrice ', this.thisPrice);
 
-    // $('#detailFood').modal('hide');
+    $('#detailFood').modal('hide');
   }
 
   hotOrder(afood: FoodAndDrink) {
     this.thisPrice = afood.price;
     this.quantity = 1;
-    this.ordering(afood);
+    this.ordering(afood, 0);
   }
 
   ordered() {
@@ -398,7 +455,7 @@ export class MenuComponent implements OnInit {
       console.log("quantityId "+ quantityId);
 
       let orderBoard = {
-        "tableId": 1 + "",
+        "tableId": this.tableId + "",
         "foodAndDrinkId": idArr,
         "quantity": quantityId
       };

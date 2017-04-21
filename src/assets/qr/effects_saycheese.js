@@ -1,7 +1,7 @@
 // user media
 // inspired by https://www.simpl.info/getusermedia/sources/index.html
 
-var videoSelect = document.querySelector('select#videoSource');
+var videoSelect = $('select#videoSource');
 
 var gotSources = function(sourceInfos) {
 	console.log('Detecting user media video sources...');
@@ -54,7 +54,6 @@ function go() {
 		qrCodeDecoder(snapshot.toDataURL());
 	});
 
-	qrcode.callback = showInfo;
 
 	scanner.on('success', function() {
 		scanCode(scanner);
@@ -62,6 +61,31 @@ function go() {
 
 	console.log('starting scanner...');
 	scanner.start();
+  // if(qrcode.callback) {
+  //   console.log('login QR code');
+  // }
+
+  var valueTable;
+  qrcode.callback = function showInfo(data) {
+    if (data !== 'error decoding QR Code') {
+      var htmldata = linkify(data);
+      $("#qrContent p").html(htmldata);
+      if ($("#qrContent p").html().includes("viber")){
+        valueTable = $("#qrContent p").html();
+
+        console.log("OK ", valueTable);
+        localStorage.setItem("tableId", valueTable);
+        // scanner.stop();
+        // return valueTable;
+        window.location.replace("/");
+      }
+    } else {
+      $("#qrContent p").html('No QR Code in sight!');
+      console.log($("#qrContent p").html());
+    }
+    // return valueTable;
+  };
+  // console.log('login QR code ', valueTable);
 }
 
 // recursive function for scanning code
@@ -79,19 +103,22 @@ function qrCodeDecoder(dataUrl) {
 }
 
 // show info from qr code
-function showInfo(data) {
-	if (data !== 'error decoding QR Code') {
-		var htmldata = linkify(data);
-		$("#qrContent p").html(htmldata);
-		if ($("#qrContent p").html().includes("viber")){
-			console.log("OK");
-			window.location.replace("login?act=loginByMemberAccount&memberID=HQ001&password=123456");
-		}
-	} else {
-		$("#qrContent p").html('No QR Code in sight!');
-		console.log($("#qrContent p").html());
-	}
-}
+// function showInfo(data) {
+//   var valueTable;
+// 	if (data !== 'error decoding QR Code') {
+// 		var htmldata = linkify(data);
+// 		$("#qrContent p").html(htmldata);
+// 		if ($("#qrContent p").html().includes("viber")){
+//       valueTable = $("#qrContent p").html();
+// 			console.log("OK");
+// 			// window.location.replace("login?act=loginByMemberAccount&memberID=HQ001&password=123456");
+// 		}
+// 	} else {
+// 		$("#qrContent p").html('No QR Code in sight!');
+// 		console.log($("#qrContent p").html());
+// 	}
+//   return valueTable;
+// }
 
 // builds a link if there is an uri or a mail address
 function linkify(inputText) {

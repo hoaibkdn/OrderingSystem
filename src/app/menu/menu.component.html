@@ -128,60 +128,42 @@
                         <div class="show-detail__quanity flex-box">
                             <p class="show-detail__price">{{afood.price}} d</p>
                             <div class="show-detail__choosing flex-box">
-                                <button (click)="quantityUp()" id="btn-up" type="button" class="show-detail__btn-arrow icon-arrow-up"></button>
+                                <button (click)="quantityDown('main')" id="btn-down" type="button" class="show-detail__btn-arrow icon-arrow-down"></button>
                                 <input id="quantity" type="text" [(ngModel)]="quantity" class="show-detail__number" name="inputQuantity" (keyup)="changePrice($event)">
-                                <button (click)="quantityDown()" id="btn-down" type="button" class="show-detail__btn-arrow icon-arrow-down"></button>
+                                <button (click)="quantityUp('main')" id="btn-up" type="button" class="show-detail__btn-arrow icon-arrow-up"></button>
                             </div>
                         </div>
                         <div class="show-detail__btn ">
-                            <a (click)="ordering(afood)" class="btn--suggest">Ok</a>
+                            <a (click)="orderingFoodAndCombind(afood)" class="btn--suggest">Ok</a>
                             <a (click)="closeFoodDetail(afood)" class="btn--normal">Cancel</a>
                         </div>
                     </div>
                 </div>
             </div>
             <template [ngIf]="afood">
-              <div class="modal-body show-suggest overfollow">
+              <div class="modal-body show-suggest overfollow flex-box">
                   <div class="show-suggest__text">
                       <p *ngIf="!afood.foodAndDrinkType.mainDish">Main Dish</p>
                       <p *ngIf="afood.foodAndDrinkType.mainDish">Drink or Desert</p>
                   </div>
-                  <div class="show-suggest__content">
+                  <div class="show-suggest__content flex-box">
                     <div class="show-suggest__group" *ngFor="let foodCombination of orderingCombinations; let i = index">
-                      <a class="show-suggest__food">
+                      <div class="show-suggest__food">
                           <img src="../../assets/slice/food.png" alt="">
                           <p>{{foodCombination.food.name}}</p>
                           <p>{{foodCombination.food.price}} d</p>
-                      </a>
+                          <div class="show-suggest__food--detail">
+                            <p>{{foodCombination.food.detail}}</p>
+                          </div>
+                      </div>
                       <div class="show-suggest__quantity flex-box">
-                        <button (click)="quantityUp(i)" id="btn-up" type="button" class="show-detail__btn-arrow icon-arrow-up"></button>
-                        <p class="show-detail__number">{{foodCombination.food.quantity}}</p>
-                        <button (click)="quantityDown(i)" id="btn-down" type="button" class="show-detail__btn-arrow icon-arrow-down"></button>
-                        <a (click)="ordering(afood, foodCombination.food.quantity)" class="btn--suggest">Ok</a>
+                        <button (click)="quantityDown('combind',i)" id="btn-down" type="button" class="show-detail__btn-arrow icon-arrow-down"></button>
+                        <p class="show-detail__number">0</p>
+                        <button (click)="quantityUp('combind',i)" id="btn-up" type="button" class="show-detail__btn-arrow icon-arrow-up"></button>
                       </div>
                     </div>
                   </div>
               </div>
-              <!--<div class="modal-body show-suggest overfollow" *ngIf="afood.foodAndDrinkType.mainDish">
-                  <div class="show-suggest__text">
-                      <p>Drink or Desert</p>
-                  </div>
-                  <div class="show-suggest__content">
-                    <div class="show-suggest__group" *ngFor="let foodCombination of orderingCombinations">
-                      <a class="show-suggest__food" (click)="hotOrder(foodCombination.drinkOrDesert)">
-                          <img src="../../assets/slice/food.png" alt="">
-                          <p>{{foodCombination.food.name}}</p>
-                          <p>{{foodCombination.food.price}}</p>
-                      </a>
-                      <div class="show-suggest__quantity flex-box">
-                        <button (click)="quantityUp()" id="btn-up" type="button" class="show-detail__btn-arrow icon-arrow-up"></button>
-                        <p class="show-detail__number" >{{foodCombination.food.quantity}}</p>
-                        <button (click)="quantityDown()" id="btn-down" type="button" class="show-detail__btn-arrow icon-arrow-down"></button>
-                        <a (click)="ordering(afood)" class="btn--suggest">Ok</a>
-                      </div>
-                    </div>
-                  </div>
-              </div>-->
             </template>
         </div>
     </div>

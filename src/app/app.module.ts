@@ -19,6 +19,7 @@ import { HistoryFavoriteService } from './history-favorite/history-favorite.serv
 import { MenuDirective } from './menu/menu.directive';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserAuthenticationService } from './user-authentication/user-authentication.service';
+import { UserProfileService } from './user-profile/user-profile.service';
 import { FacebookService } from 'ng2-facebook-sdk';
 
 import { Ng2PaginationModule } from 'ng2-pagination';
@@ -26,6 +27,7 @@ import { RatingFoodComponent } from './rating-food/rating-food.component';
 import { RatingServiceComponent } from './rating-service/rating-service.component';
 import { GoogleSignInComponent } from './google-sign-in/google-sign-in.component';
 import { StaffComponent } from './staff/staff.component';
+import { ScanQRCodeComponent } from './scan-qrcode/scan-qrcode.component';
 
 // import { HistoryService } from './history/history.service';
 
@@ -46,7 +48,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     RatingServiceComponent,
     GoogleSignInComponent,
     MenuDirective,
-    StaffComponent
+    StaffComponent,
+    ScanQRCodeComponent
   ],
   imports: [
     BrowserModule,
@@ -66,7 +69,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     FacebookService,
     HistoryInvoiceService,
     UserHistoryService,
-    HistoryFavoriteService
+    HistoryFavoriteService,
+    UserProfileService
   ],
   bootstrap: [AppComponent]
 })
