@@ -16,7 +16,10 @@
     color: $cl-white;
     font-size: 12px;
   }
-  &:hover {
+  &:hover,
+  &:focus,
+  &:active,
+  &:visited {
     background: $cl-btn-menu-active;
     box-shadow: -1px 4px 5px $cl-btn-menu-shadow;
     .btn-menu {
@@ -30,17 +33,17 @@
         transform: rotate(-30deg);
       }
     }
-    &:before {
-      content: "";
-      @extend %position-vertical-center;
-      @include retangle(20px, 20px);
-      transform: rotate(45deg);
-      background: $cl-white;
-      border-left: 1px solid $cl-gray;
-      border-bottom: 1px solid $cl-gray;
-      right: -38px;
-      z-index: 3;
-    }
+    // &:before {
+    //   content: "";
+    //   @extend %position-vertical-center;
+    //   @include retangle(20px, 20px);
+    //   transform: rotate(45deg);
+    //   background: $cl-white;
+    //   border-left: 1px solid $cl-gray;
+    //   border-bottom: 1px solid $cl-gray;
+    //   right: -38px;
+    //   z-index: 3;
+    // }
   }
 }
 

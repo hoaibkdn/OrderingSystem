@@ -4,10 +4,10 @@ import { Observable } from 'rxjs/Observable';
 import '../rxjs-extensions';
 
 import { Permission } from '../models/permission';
+import { User } from '../models/user';
 
 @Injectable()
 export class UserProfileService {
-
   constructor(private http: Http) {
 
   }
@@ -24,6 +24,13 @@ export class UserProfileService {
   	let headers = new Headers({'Content-Type': 'application/json'});
   	headers.append("Authorization", localStorage.getItem('token'));
   	return this.http.get(url, {headers: headers}).map(res => res.json());
+  }
+
+  updateProfile(profile: User):Observable<any> {
+    var url = "https://backend-os-v2.herokuapp.com/api/user/update";
+    let headers = new Headers({'Content-Type': 'application/json'});
+  	headers.append("Authorization", localStorage.getItem('token'));
+    return this.http.put(url, {headers: headers}).map(res => res.json());
   }
 
 }

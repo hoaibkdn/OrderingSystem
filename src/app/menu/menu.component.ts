@@ -59,6 +59,8 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     this.tableId = parseInt(localStorage.getItem("tableId"));
+    console.log('tableId ', this.tableId);
+
     this.orderingCombinations = [];
     this.foodLocalStoragesOrdering = [];
     this.foodLocalStoragesOrdered = [];
