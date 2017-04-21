@@ -27,6 +27,7 @@ import { RatingFoodComponent } from './rating-food/rating-food.component';
 import { RatingServiceComponent } from './rating-service/rating-service.component';
 import { GoogleSignInComponent } from './google-sign-in/google-sign-in.component';
 import { StaffComponent } from './staff/staff.component';
+import { ScanQRCodeComponent } from './scan-qrcode/scan-qrcode.component';
 
 // import { HistoryService } from './history/history.service';
 
@@ -47,7 +48,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     RatingServiceComponent,
     GoogleSignInComponent,
     MenuDirective,
-    StaffComponent
+    StaffComponent,
+    ScanQRCodeComponent
   ],
   imports: [
     BrowserModule,

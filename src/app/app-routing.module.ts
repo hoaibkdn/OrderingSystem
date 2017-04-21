@@ -8,6 +8,7 @@ import { HistoryComponent } from './history/history.component';
 import { StaffComponent } from './staff/staff.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { CanDeactivateGuard } from './can-deactivate-guard.service'
+import { ScanQRCodeComponent } from './scan-qrcode/scan-qrcode.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,10 @@ const routes: Routes = [
   {
     path: 'staff',
     component: StaffComponent,
+  },
+  {
+    path: 'scanQRcode',
+    component: ScanQRCodeComponent
   }
 
 ];

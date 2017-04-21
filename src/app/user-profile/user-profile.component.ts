@@ -11,13 +11,14 @@ export class UserProfileComponent implements OnInit {
   email: string;
   name: string;
   password: string;
+  birthDay: any;
   constructor( private elr: ElementRef) {
     console.log("%%% here");
 
   }
 
   ngOnInit() {
-
+    this.birthDay = new Date('2017, 12, 13');
   }
 
   edit(type) {
