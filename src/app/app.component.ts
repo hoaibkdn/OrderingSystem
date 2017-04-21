@@ -9,8 +9,6 @@ import { UserProfileService } from './user-profile/user-profile.service';
 import './../assets/qr/effects_saycheese.js';
 
 declare var $:any;
-declare var go: any;
-
 declare var Stomp: any;
 declare var SockJS: any;
 
@@ -143,12 +141,40 @@ export class AppComponent implements OnInit {
     this.router.navigate(["/"]);
   }
 
+
+  connectAdmin(): void {
+    this.stompClient = Stomp.client("ws://backend-os-v2.herokuapp.com/admin");
+    this.stompClient.connect({}, (frame) => {
+        console.log('Connected admin: ' + frame);
+        console.log(this.stompClient);
+        setInterval(() => {
+            if(!this.stompClient.connected){
+              console.log("Failed to connect");
+            } else {
+              console.log("Interval at " + new Date());
+              this.stompClient.send("/app/admin", {}, "");
+            }
+          }, 30000);
+        this.stompClient.subscribe('/request/admin', (messageOutput) => {
+          var tag = document.getElementsByClassName('chat-box')[0];
+          console.log("Received message: ", messageOutput.body);
+        });
+    });
+  }
+
+  sendMessageAdmin(): void {
+      let message = (this.userName? this.userName : "Anonymous") + " is needing some help.";
+      console.log("Message to send: ", message);
+      this.stompClient.send("/app/admin", {}, message);
+  };
+
   goScan() {
     go();
     this.router.navigate(["/scanQRcode"]);
     // console.log('here');
 
   }
+
   connectAdmin(): void {
     this.stompClient = Stomp.client("ws://backend-os-v2.herokuapp.com/admin");
     this.stompClient.connect({}, (frame) => {
