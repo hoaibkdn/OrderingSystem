@@ -144,7 +144,7 @@ export class AppComponent implements OnInit {
 
 
   connectAdmin(): void {
-    this.stompClient = Stomp.client("ws://backend-os-v2.herokuapp.com/admin");
+    this.stompClient = Stomp.client("wss://backend-os-v2.herokuapp.com/admin");
     this.stompClient.connect({}, (frame) => {
         console.log('Connected admin: ' + frame);
         console.log(this.stompClient);

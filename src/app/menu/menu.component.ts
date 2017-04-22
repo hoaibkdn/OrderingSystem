@@ -11,7 +11,7 @@ import { Rating } from '../models/Rating';
 import { RatingPost } from '../models/rating-post';
 import { Payment } from '../models/payment';
 import { FoodCombination } from '../models/FoodCombination';
-import { FoodLocalStorage } from '../models/food-localStorage';
+import { FoodLocalStorage } from '../models/food-localstorage';
 import { OrderingCombination } from '../models/ordering-combination';
 
 import * as _ from 'lodash';
@@ -204,7 +204,7 @@ export class MenuComponent implements OnInit {
       var classes = lastestOrderClass.className;
       var rangeClasses = classes.split(' ');
 
-      var foodClasses = _.filter(rangeClasses, function(item) {
+      var foodClasses = _.filter(rangeClasses, function(item: string) {
         return(_.includes(item, 'food'));
       });
       var classOrder = _.last(foodClasses);
