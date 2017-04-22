@@ -351,3 +351,31 @@
   margin-left: 20px;
   display: inline-block;
 }
+
+.btn-type {
+  position: relative;
+  height: 600px;
+  transition-duration: 0.5s;
+  transition-timing-function: ease;
+  transition-property: all;
+  top: 0px;
+  // overflow: hidden;
+  &-group {
+    height:350px;
+    overflow: hidden;
+  }
+}
+// .btn-type:hover {
+//   top:-100px;
+// }
+.transition-down,
+.transition-up {
+  top:0;
+  transition-duration: 0.5s;
+  transition-timing-function: ease;
+  transition-property: all;
+  // height: 380px;
+}
+.transition-up {
+  transform: translate(0px, 100px);
+}
