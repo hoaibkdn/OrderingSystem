@@ -16,7 +16,10 @@
     color: $cl-white;
     font-size: 12px;
   }
-  &:hover {
+  &:hover,
+  &:focus,
+  &:active,
+  &:visited {
     background: $cl-btn-menu-active;
     box-shadow: -1px 4px 5px $cl-btn-menu-shadow;
     .btn-menu {
@@ -30,17 +33,17 @@
         transform: rotate(-30deg);
       }
     }
-    &:before {
-      content: "";
-      @extend %position-vertical-center;
-      @include retangle(20px, 20px);
-      transform: rotate(45deg);
-      background: $cl-white;
-      border-left: 1px solid $cl-gray;
-      border-bottom: 1px solid $cl-gray;
-      right: -38px;
-      z-index: 3;
-    }
+    // &:before {
+    //   content: "";
+    //   @extend %position-vertical-center;
+    //   @include retangle(20px, 20px);
+    //   transform: rotate(45deg);
+    //   background: $cl-white;
+    //   border-left: 1px solid $cl-gray;
+    //   border-bottom: 1px solid $cl-gray;
+    //   right: -38px;
+    //   z-index: 3;
+    // }
   }
 }
 
@@ -347,4 +350,32 @@
 .text {
   margin-left: 20px;
   display: inline-block;
+}
+
+.btn-type {
+  position: relative;
+  height: 600px;
+  transition-duration: 0.5s;
+  transition-timing-function: ease;
+  transition-property: all;
+  top: 0px;
+  // overflow: hidden;
+  &-group {
+    height:350px;
+    overflow: hidden;
+  }
+}
+// .btn-type:hover {
+//   top:-100px;
+// }
+.transition-down,
+.transition-up {
+  top:0;
+  transition-duration: 0.5s;
+  transition-timing-function: ease;
+  transition-property: all;
+  // height: 380px;
+}
+.transition-up {
+  transform: translate(0px, 100px);
 }

@@ -1,6 +1,5 @@
 import { NgModule }       from '@angular/core';
 import { FormsModule }    from '@angular/forms';
-// import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { CommonModule }   from '@angular/common';
 import { AdminComponent } from './admin.component';
@@ -16,6 +15,7 @@ import { AdManagementFadtComponent } from './../ad-management-fadt/ad-management
 import { AdManagementStaffComponent } from './../ad-management-staff/ad-management-staff.component';
 import { Ng2PaginationModule } from 'ng2-pagination';
 import { ChartModule } from 'angular-highcharts';
+// import { AdHomeComponent } from './../ad-home/ad-home.component';
 
 @NgModule({
   imports: [
