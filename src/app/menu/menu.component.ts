@@ -13,8 +13,9 @@ import { Payment } from '../models/payment';
 import { FoodCombination } from '../models/FoodCombination';
 import { FoodLocalStorage } from '../models/food-localstorage';
 import { OrderingCombination } from '../models/ordering-combination';
-
+import { FoodAndDrinkType } from '../models/food-and-drink-type';
 import * as _ from 'lodash';
+import './../../assets/js/menu.js';
 declare var $:any;
 
 @Component({
@@ -47,7 +48,7 @@ export class MenuComponent implements OnInit {
   foodLocalStoragesOrdering: FoodLocalStorage[];
   orderingCombinations: OrderingCombination[];
   tableId: number;
-  //search
+  typeOfFoods: FoodAndDrinkType[];
   text: string;
   currentFood = [];
 
@@ -59,6 +60,8 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     this.tableId = parseInt(localStorage.getItem("tableId"));
+    console.log('tableId ', this.tableId);
+    this.getTypeOfFood();
     this.orderingCombinations = [];
     this.foodLocalStoragesOrdering = [];
     this.foodLocalStoragesOrdered = [];
@@ -77,6 +80,7 @@ export class MenuComponent implements OnInit {
     });
     this.totalMoney();
     this.textSearch = "";
+    this.typeUpDown();
   }
 
   getFood(id: number) {
@@ -744,5 +748,57 @@ export class MenuComponent implements OnInit {
 
     console.log("all food size "+ this.food.length);
     console.log("current food size "+ this.currentFood.length);
+  }
+
+  getTypeOfFood() {
+    this.menuService.getTypeOfFood()
+    .subscribe(res => {this.typeOfFoods = res;
+      console.log('type ', this.typeOfFoods);
+      })
+  }
+
+  typeUpDown() {
+    var top = parseInt($('.btn-type').css('top').split('px')[0]);
+    if(top === 0) {
+      $('.type-down').css({'color': '#EA6D24'});
+      $('.type-up').css({'color': '#ccc'});
+    }
+    $('.menu').on('click', '.type-down', function(event) {
+      event.preventDefault();
+      var top = parseInt($('.btn-type').css('top').split('px')[0]);
+      if(top > -300) {
+        $('.btn-type').css({'top': top-150+'px'});
+        $('.type-down').css({'color': '#EA6D24'});
+        // $('.type-up').css({'color': '#ccc'});
+      }
+      else {
+        $('.type-down').css({'color': '#ccc'});
+        // $('.type-up').css({'color': '#EA6D24'});
+      }
+      if(top === 0) {
+        $('.type-up').css({'color': '#ccc'});
+        $('.type-down').css({'color': '#EA6D24'});
+
+      }
+      console.log('top down', top)
+    });
+    $('.menu').on('click', '.type-up', function(event) {
+      event.preventDefault();
+      var top = parseInt($('.btn-type').css('top').split('px')[0]);
+
+      if(top !== 0) {
+        $('.btn-type').css({'top': top+150+'px'});
+        $('.type-up').css({'color': '#EA6D24'});
+        // $('.type-down').css({'color': '#ccc'});
+      }
+      else {
+        $('.type-up').css({'color': '#ccc'});
+        // $('.type-down').css({'color': '#EA6D24'});
+      }
+      if(top > -300) {
+        $('.type-down').css({'color': '#EA6D24'});
+        $('.type-up').css({'color': '#ccc'});
+      }
+    });
   }
 }

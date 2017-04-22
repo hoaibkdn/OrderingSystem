@@ -4,37 +4,52 @@
       <div class="profile-wrap overfollow">
         <div class="col-xs-12 profile-group">
           <img class="profile-qrcode" src="./../../assets/slice/qr-code.jpg" alt="">
-          <div class="profile-info">
+          <div class="profile-info" *ngIf="userProfile">
             <form action="#">
               <div class="form-group profile-line">
-                <input type="email" class="form-control profile-email" readonly value="user@gmail.com" name="email" [(ngModel)]="email">
+                <input type="email" class="form-control profile-email" readonly name="email" [(ngModel)]="userProfile.email">
                 <i class="icon-envelop profile-icon"></i>
                 <button class="btn btn-default icon-pencil profile-edit"></button>
               </div>
               <div class="form-group profile-line">
-                <input type="name" class="form-control profile-name" placeholder="Name" readonly value="User" name="name" [(ngModel)]="name">
+                <input type="name" class="form-control profile-name" placeholder="Name" readonly  name="name" [(ngModel)]="userProfile.name">
                 <i class="icon-user profile-icon"></i>
                 <button (click)="edit('name')" class="btn btn-default icon-pencil profile-edit"></button>
               </div>
               <div class="form-group profile-line">
                 <input type="date" class="form-control profile-password" [ngModel]="birthDay|date:'yyyy-MM-dd'" name="birthDay">
                 <i class="icon-key profile-icon"></i>
-                <!--<button (click)="edit('password')" class="btn btn-default icon-pencil profile-edit"></button>-->
               </div>
               <div class="form-group profile-line">
-                <input type="password" class="form-control profile-password" placeholder="Password" readonly value="123456" name="password" [(ngModel)]="password">
-                <i class="icon-key profile-icon"></i>
-                <button (click)="edit('password')" class="btn btn-default icon-pencil profile-edit"></button>
+                <label class="radio-inline">
+                  <input type="radio" [(ngModel)]="gender"  name="gender" value="Female" checked>Female
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" [(ngModel)]="gender"  name="gender" value="Male">Male
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" [(ngModel)]="gender"  name="gender" value="Other">Other
+                </label>
               </div>
               <div class="form-group profile-line">
-                <input type="password" class="form-control profile-password" placeholder="Password" readonly value="123456" name="password" [(ngModel)]="password">
+                <input type="text" class="form-control profile-password" placeholder="Some information about you" [(ngModel)]="userProfile.detail"  name="detail">
                 <i class="icon-key profile-icon"></i>
-                <button (click)="edit('password')" class="btn btn-default icon-pencil profile-edit"></button>
+                <button (click)="edit('detail')" class="btn btn-default icon-pencil profile-edit"></button>
               </div>
-              <div class="form-group profile-line">
-                <input type="password" class="form-control profile-password" placeholder="Password" readonly value="123456" name="password" [(ngModel)]="password">
-                <i class="icon-key profile-icon"></i>
-                <button (click)="edit('password')" class="btn btn-default icon-pencil profile-edit"></button>
+              <div class="profile-password-group">
+                <label>Change password</label>
+                <div class="form-group profile-line">
+                  <input type="password" class="form-control profile-password" placeholder="Type your password" name="password" [(ngModel)]="userProfile.password">
+                  <i class="icon-key profile-icon"></i>
+                </div>
+                <div class="form-group profile-line">
+                  <input type="password" class="form-control profile-password" placeholder="New password" name="newPassword" [(ngModel)]="newPassword">
+                  <i class="icon-key profile-icon"></i>
+                </div>
+                <div class="form-group profile-line">
+                  <input type="password" class="form-control profile-password" placeholder="Re-type new password" name="reNewPassword" [(ngModel)]="reNewPassword">
+                  <i class="icon-key profile-icon"></i>
+                </div>
               </div>
               <button type="submit" (click)="saveProfile()" class="btn btn-default btn--suggest profile-btn">Save</button>
             </form>

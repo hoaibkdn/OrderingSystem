@@ -11,6 +11,7 @@ import { Rating } from '../models/Rating';
 import { RatingPost } from '../models/rating-post';
 import { Payment } from '../models/payment';
 import { FoodCombination } from '../models/FoodCombination';
+import { FoodAndDrinkType } from '../models/food-and-drink-type';
 
 @Injectable()
 export class MenuService {
@@ -85,18 +86,23 @@ export class MenuService {
 
     let token = localStorage.getItem('token');
     console.log(token);
-    // this.headers.append('Authorization', token);
     if(!this.headers) this.headers.append('Authorization', token);
     console.log(this.headers);
-
     return this.http.put(url, JSON.stringify(payment), {headers: this.headers});
   }
 
   getCombination(id: number): Observable<FoodCombination[]> {
-    const url="https://backend-os-v2.herokuapp.com//api/order-combination/"+id;
+    const url="https://backend-os-v2.herokuapp.com/api/order-combination/"+id;
     return this.http.get(url)
         .map(response => response.json());
   }
+
+  getTypeOfFood():Observable<FoodAndDrinkType[]> {
+    const url="https://backend-os-v2.herokuapp.com/api/food-and-drink-type/all";
+    return this.http.get(url)
+      .map(res => res.json());
+  }
+
   private extractData(res: Response) {
         let body = res.json();
         return body.data || {};

@@ -3,9 +3,13 @@ export class User {
   email: string;
   name: string;
   gender: number;
+  dateOfBirth: number;
   avatar: string;
+  detail: string;
   membershipPoint: number;
   accountCode: string;
+  avatarContent: string;
+  createdDate: number;
   deleted: boolean;
+  password: string;
 }
-

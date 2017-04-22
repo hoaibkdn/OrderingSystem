@@ -1,5 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
+import { UserProfileService } from './user-profile.service';
+import { User } from './../models/user';
 
 @Component({
   selector: 'app-user-profile',
@@ -8,24 +10,22 @@ import { ViewEncapsulation } from '@angular/core';
   encapsulation: ViewEncapsulation.None
 })
 export class UserProfileComponent implements OnInit {
-  email: string;
-  name: string;
-  password: string;
-  birthDay: any;
-  constructor( private elr: ElementRef) {
-    console.log("%%% here");
-
+  gender: string;
+  newPassword: string;
+  reNewPassword: string;
+  userProfile: User;
+  constructor( private elr: ElementRef,
+              private userProfileService: UserProfileService) {
   }
 
   ngOnInit() {
-    this.birthDay = new Date('2017, 12, 13');
+    this.getUserProfile();
   }
 
   edit(type) {
     var editField = this.elr.nativeElement.getElementsByTagName("input");
     switch (type) {
       case "email":
-        // var inputEmail = this.email;
         editField[0].removeAttribute("readonly");
 
         break;
@@ -38,12 +38,22 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
+  getUserProfile() {
+    this.userProfileService.getInfo()
+      .subscribe(res => {this.userProfile = res;
+        console.log("user profile ", this.userProfile);
+        if(this.userProfile.gender === 1) this.gender = "Male";
+        else if(this.userProfile.gender === 0) this.gender = "Female";
+        else if(this.userProfile.gender !== 0 && this.userProfile.gender !== 1) this.gender = "Other";
+        });
+  }
+
   saveProfile() {
     console.log("$$$$");
-
-    console.log("email "+ this.email);
-    console.log("pass "+ this.password);
-    console.log("name "+ this.name);
-
+    var profileUpdated = new User();
+    profileUpdated = this.userProfile;
+    profileUpdated.password = this.reNewPassword;
+    console.log("user profile ", profileUpdated);
+    this.userProfileService.updateProfile(profileUpdated);
   }
 }

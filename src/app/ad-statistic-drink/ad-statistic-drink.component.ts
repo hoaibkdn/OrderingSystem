@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
-// import { GoogleChart } from 'angular2-google-chart/directives/angular2-google-chart.directive';
 import { AdStatisticDrinkService } from './ad-statistic-drink.service';
 import { Rating } from '../models/Rating';
 import { Chart } from 'angular-highcharts';
 import { Highcharts } from 'angular-highcharts';
-// declare var Chart: any;
 
 @Component({
   selector: 'app-ad-statistic-drink',

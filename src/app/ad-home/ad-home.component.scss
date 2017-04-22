@@ -1,0 +1,30 @@
+@import "../helper/all";
+
+$cl-ordering: yellow;
+$cl-done: green;
+$cl-nothing: #e2e2e2;
+.table-order {
+  border-spacing: 10px;
+  background: $cl-white;
+  border-collapse: initial;
+  width: 100%;
+  &__col {
+    text-align: right;
+    padding: 10px;
+    background: $cl-nothing;
+    position: relative;
+  }
+  &__number {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
+}
+
+.has-done {
+   background: $cl-done;
+}
+
+.is-ordering {
+  background: $cl-ordering;
+}
