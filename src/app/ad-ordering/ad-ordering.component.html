@@ -3,22 +3,16 @@
       <div class="ordering__box--inner">
           <h2 class="ordering__title">Ordering</h2>
           <div class="ordering__food">
-            <div class="ordering__food--text ordered__food no-food flex-box">
-              <p class="ordered__food--name">Pizza</p>
-              <p class="ordered__food--quantity">2</p>
-              <p class="ordered__food--price">130000 d</p>
-              <p class="ordered__food--id">2</p>
-            </div>
-            <div class="ordering__food--text ordered__food no-food flex-box">
-              <p class="ordered__food--name">Pizza Mexico</p>
-              <p class="ordered__food--quantity">2</p>
-              <p class="ordered__food--price">130000 d</p>
-              <p class="ordered__food--id">2</p>
+            <div class="ordering__food--text ordered__food no-food flex-box" *ngFor="let invoiceDetail of invoiceDetails">
+              <p class="ordered__food--name">{{invoiceDetail.foodAndDrink.name}}</p>
+              <p class="ordered__food--quantity">{{invoiceDetail.quantity}}</p>
+              <p class="ordered__food--price">{{invoiceDetail.quantity * invoiceDetail.price}} d</p>
+              <p class="ordered__food--id">{{invoiceDetail.foodAndDrink.id}}</p>
             </div>
           </div>
           <div class="ordering__total overfollow">
               <p class="ordering__total--text">Total
-                  <span class="ordering__total--money">260000 d</span>
+                  <span class="ordering__total--money">{{totalMoney}} d</span>
               </p>
           </div>
           <div class="ordering__btn">
