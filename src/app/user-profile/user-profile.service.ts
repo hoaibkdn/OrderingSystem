@@ -33,4 +33,10 @@ export class UserProfileService {
     return this.http.put(url, {headers: headers}).map(res => res.json());
   }
 
+  getLocation():Observable<any>{
+    var url = "https://backend-os-v2.herokuapp.com/location";
+    let headers = new Headers({'Content-Type': 'application/json'});
+    return this.http.get(url, headers);
+  }
+
 }
