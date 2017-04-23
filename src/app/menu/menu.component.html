@@ -13,7 +13,7 @@
                     <div class="food overfollow">
                         <div class="col-xs-2">
                           <div class="row">
-                              <a class="type-up icon-home3"></a>
+                              <a class="type-up icon-circle-up"></a>
                               <div class="btn-type-group">
                                   <div class="row btn-type">
                                       <a (click)="getFood(1)" class="btn-menu">
@@ -48,14 +48,14 @@
                                       </a>
                                   </div>
                               </div>
-                              <a href="#" class="type-down icon-home3"></a>
+                              <a href="#" class="type-down icon-circle-down"></a>
                           </div>
                         </div>
 
                         <div class="col-xs-10">
                             <div class="menu__board overfollow" [componentFood]="food">
                                 <div class="col-xs-12">
-                                    <div class="col-xs-4 food-group" *ngFor="let afood of food | paginate: {itemsPerPage: 3, currentPage: page}">
+                                    <div class="col-xs-4 food-group" *ngFor="let afood of food | paginate: {itemsPerPage: 6, currentPage: page}">
                                         <div class="row">
                                             <a (click)="getDetail(afood)" class="food__name" data-toggle="modal" data-target="#detailFood">
                                                 <img class="food__img" src="../../assets/slice/food.png" alt="">

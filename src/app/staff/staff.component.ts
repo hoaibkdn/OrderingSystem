@@ -19,12 +19,16 @@ export class StaffComponent implements OnInit {
 	date: Date;
 	permissionList: string;
   userInfo: any;
-
+  audio: any;
+  hasMessage: boolean;
   constructor(private userProfileService: UserProfileService) {
-
+    this.audio = new Audio();
+    this.audio.src = "./../assets/music/nokia_tuneoriginal.mp3";
   }
 
   ngOnInit() {
+    this.hasMessage = false;
+    this.music("off",this.audio);
     this.userInfo = JSON.parse(localStorage.getItem('userInfo'));
     let allMessage = localStorage.getItem('allMessage') == null ? "" : localStorage.getItem('allMessage');
     if (allMessage.includes("?")){
@@ -38,6 +42,8 @@ export class StaffComponent implements OnInit {
     this.stompClient = Stomp.client("wss://backend-os-v2.herokuapp.com/admin");
     this.stompClient.connect({}, (frame) => {
                     console.log('Connected: ' + frame);
+                    // this.music("on",this.audio);
+                    console.log('turn on music ');
                     this.stompClient.send("/app/admin", {}, this.userInfo.name + " is available.");
                     console.log(this.stompClient);
                     setInterval(() => {
@@ -66,13 +72,34 @@ export class StaffComponent implements OnInit {
     } else {
       this.stompClient.send("/app/admin", {}, this.userInfo.name + " is available.");
     }
+    this.music("off", this.audio);
+    this.hasMessage = false;
 	};
 
 	addMessage(message: string) {
+    this.hasMessage = true;
+    this.music("on", this.audio);
 	  let ul = document.getElementsByClassName("message")[0];
-	  let li = document.createElement("li");
-	  li.appendChild(document.createTextNode(message));
-	  ul.appendChild(li);
+    var existLi = document.getElementsByTagName('li');
+    if(!existLi) {
+      let li = document.createElement("li");
+      li.appendChild(document.createTextNode(message));
+      ul.appendChild(li);
+    }
 	}
 
+  music(type, audio) {
+    switch (type) {
+      case "on": {
+        audio.load();
+        audio.play();
+        break;
+      }
+      case "off": {
+        audio.pause();
+        console.log('turn off music');
+        break;
+      }
+    }
+  }
 }

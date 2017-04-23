@@ -29,6 +29,9 @@ export class AppComponent implements OnInit {
   userName: string;
   permissions: Permission[];
   stompClient: any;
+  countDown: number;
+  isCustomer: boolean;
+
   constructor(
     private router: Router, private facebookService: FacebookService, private userAuthenticationService: UserAuthenticationService, private userProfileService: UserProfileService) {
       let fbParams: InitParams = {
@@ -37,9 +40,19 @@ export class AppComponent implements OnInit {
                                      version: 'v2.5'
                                      };
       this.facebookService.init(fbParams);
+
   }
 
   ngOnInit() {
+    var isCustomer = localStorage.getItem('isCustomer');
+    if(isCustomer) {
+      this.isCustomer = (isCustomer === "true");
+      console.log('isCustomer ', this.isCustomer);
+    }
+    else {
+      this.isCustomer = true;
+    }
+    this.countDown = 0;
     this.connectAdmin();
     let that = this;
     var token = localStorage.getItem('token');
@@ -117,14 +130,20 @@ export class AppComponent implements OnInit {
           console.log("Type of account: ", typeOfAccount);
           switch (typeOfAccount) {
             case "ADMIN":
+              this.isCustomer = false;
+              localStorage.setItem('isCustomer', this.isCustomer.toString());
               this.router.navigate(["/admin"]);
               $('#login').modal('hide');
             break;
             case "STAFF":
+              this.isCustomer = false;
+              localStorage.setItem('isCustomer', this.isCustomer.toString());
               this.router.navigate(["/staff"]);
               $('#login').modal('hide');
               break;
             default:
+              this.isCustomer = true;
+              localStorage.setItem('isCustomer', this.isCustomer.toString());
               this.router.navigate([""]);
               $('#login').modal('hide');
               break;
@@ -137,6 +156,7 @@ export class AppComponent implements OnInit {
     localStorage.removeItem('userInfo');
     localStorage.removeItem('allMessage');
     localStorage.removeItem('foodOrderLocal');
+    localStorage.removeItem('isCustomer');
     this.userName = "Anonymous user";
     this.token = null;
     this.router.navigate(["/"]);
@@ -164,15 +184,29 @@ export class AppComponent implements OnInit {
   }
 
   sendMessageAdmin(): void {
-      let message = (this.userName? this.userName : "Anonymous") + " is needing some help.";
-      console.log("Message to send: ", message);
-      this.stompClient.send("/app/admin", {}, message);
+    let message = (this.userName? this.userName : "Anonymous") + " is needing some help.";
+    console.log("Message to send: ", message);
+    this.stompClient.send("/app/admin", {}, message);
+    this.startCountDown();
   };
 
   goScan() {
     go();
     this.router.navigate(["/scanQRcode"]);
     // console.log('here');
+
+  }
+
+  startCountDown() {
+    this.countDown = 10;
+    var self = this;
+    var count = 10;
+    console.log('count down ', this.countDown);
+    var startCount = setInterval(function() {
+      self.countDown--;
+      console.log('count down ', self.countDown);
+      if(self.countDown === 0) clearInterval(startCount);
+    }, 1000);
 
   }
 }

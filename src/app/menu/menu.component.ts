@@ -769,36 +769,38 @@ export class MenuComponent implements OnInit {
       if(top > -300) {
         $('.btn-type').css({'top': top-150+'px'});
         $('.type-down').css({'color': '#EA6D24'});
-        // $('.type-up').css({'color': '#ccc'});
       }
       else {
         $('.type-down').css({'color': '#ccc'});
-        // $('.type-up').css({'color': '#EA6D24'});
       }
-      if(top === 0) {
-        $('.type-up').css({'color': '#ccc'});
-        $('.type-down').css({'color': '#EA6D24'});
-
+      if(top > -200 && top <= 0) {
+        $('.type-up').css({'color': '#EA6D24'});
       }
-      console.log('top down', top)
+      if(top > -300 && top < -100) {
+         $('.type-down').css({'color': '#ccc'});
+      }
+      console.log('top down', top);
     });
     $('.menu').on('click', '.type-up', function(event) {
       event.preventDefault();
       var top = parseInt($('.btn-type').css('top').split('px')[0]);
 
-      if(top !== 0) {
+      if(top < 0) {
         $('.btn-type').css({'top': top+150+'px'});
         $('.type-up').css({'color': '#EA6D24'});
-        // $('.type-down').css({'color': '#ccc'});
       }
       else {
         $('.type-up').css({'color': '#ccc'});
-        // $('.type-down').css({'color': '#EA6D24'});
       }
-      if(top > -300) {
+      if(top > -100) {
         $('.type-down').css({'color': '#EA6D24'});
         $('.type-up').css({'color': '#ccc'});
       }
+      if(top > -200 && top < 0) {
+        $('.type-down').css({'color': '#EA6D24'});
+        $('.type-up').css({'color': '#ccc'});
+      }
+      console.log('top down', top);
     });
   }
 }
