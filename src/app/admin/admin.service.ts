@@ -99,6 +99,26 @@ export class AdminService {
     return this.http.delete("https://backend-os-v2.herokuapp.com/api/user/delete/" + id, {headers: headers});
   }
 
+  getAllTable(): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    return this.http.get("https://backend-os-v2.herokuapp.com/api/table/all", {headers: headers});
+    
+  }
+
+  getAllUnpaidInvoice(): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.get("https://backend-os-v2.herokuapp.com/api/invoice/unpaid-invoice/", {headers: headers});
+  }
+
+  getInvoiceDetailForInvoice(invoiceID: any): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.get("https://backend-os-v2.herokuapp.com/api/invoice-detail/" + invoiceID, {headers: headers});
+  }
+
   private extractData(res: Response) {
         let body = res.json();
         return body.data || {};
