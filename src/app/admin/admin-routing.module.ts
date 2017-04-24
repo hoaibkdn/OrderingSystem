@@ -11,6 +11,7 @@ import { AdManagementFadComponent } from './../ad-management-fad/ad-management-f
 import { AdManagementFadtComponent } from './../ad-management-fadt/ad-management-fadt.component';
 import { AdManagementStaffComponent } from './../ad-management-staff/ad-management-staff.component';
 import { AdHomeComponent } from './../ad-home/ad-home.component';
+import { AdStatisticServiceComponent } from './../ad-statistic-service/ad-statistic-service.component';
 
 const adminRoutes: Routes = [
   {
@@ -25,6 +26,11 @@ const adminRoutes: Routes = [
       {
         path: 'statistic/money',
         component: AdStatisticMoneyComponent,
+        canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'statistic/service',
+        component: AdStatisticServiceComponent,
         canDeactivate: [CanDeactivateGuard]
       },
       {

@@ -47,7 +47,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     GoogleSignInComponent,
     MenuDirective,
     StaffComponent,
-    ScanQRCodeComponent,
+    ScanQRCodeComponent
   ],
   imports: [
     BrowserModule,
