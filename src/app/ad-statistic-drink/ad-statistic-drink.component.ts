@@ -15,13 +15,9 @@ import { Highcharts } from 'angular-highcharts';
 export class AdStatisticDrinkComponent implements OnInit{
   chart: Chart;
   point: any;
-  // chartData: any;
-  // chartOptions: any;
   ratingArr: Rating[];
   constructor(private adStatisticDrinkService: AdStatisticDrinkService) {}
     ngOnInit(){
-      // console.log(this.chart);
-      // var point = null;
       this.adStatisticDrinkService.getRatingDrink()
           .subscribe(ratingArr => {this.ratingArr = ratingArr; console.log(this.ratingArr);
           this.chart = new Chart( {
@@ -57,13 +53,13 @@ export class AdStatisticDrinkComponent implements OnInit{
               series: {
                 allowPointSelect: true,
                 cursor: 'pointer',
-                events:{
-                  click: function (event) {
-                    // console.log(this.name);
-                    console.log(event.currentTarget);
-                    // console.log(this.series.d);
-                  }
-                }
+                // events:{
+                //   click: function (event) {
+                //     // console.log(this.name);
+                //     console.log(event.currentTarget);
+                //     // console.log(this.series.d);
+                //   }
+                // }
 
             }
           },
@@ -87,14 +83,6 @@ export class AdStatisticDrinkComponent implements OnInit{
                   name: '1*',
                   y: parseInt(this.ratingArr[0].numOfPeople)
               }]
-              // events:{
-              //     click: function (event) {
-              //       alert(
-              //         "current " + event
-              //       );
-              //     }
-              //   }
-              // // }
           }]
         }
       );

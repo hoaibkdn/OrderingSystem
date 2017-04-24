@@ -47,13 +47,7 @@ export class AdHomeComponent implements OnInit {
     })
   }
 
-  openInvoice(table: Table){
-
-  }
-
-  detailTable(table: Table) {
-    // console.log('detailTable ', id);
-
-    this.router.navigate([table.id], { relativeTo: this.route });
+  detailTable(id: number) {
+    this.router.navigate([id], { relativeTo: this.route });
   }
 }

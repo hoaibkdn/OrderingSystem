@@ -11,7 +11,7 @@ const adHomeRoutes: Routes = [
     component: AdHomeComponent,
     children: [
       {
-        path: 'build/:id',
+        path: ':id',
         component: AdOrderingComponent,
         canDeactivate: [CanDeactivateGuard],
         resolve: {

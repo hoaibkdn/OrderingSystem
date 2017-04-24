@@ -2,7 +2,7 @@
   <table class="table-order">
     <tbody>
       <tr class="table-order__row" *ngFor="let group of groupThreeTables">
-        <td routerLink="build/{{table.id}}" class="table-order__col" *ngFor="let table of group">
+        <td (click) = "detailTable(table.id)" class="table-order__col" *ngFor="let table of group">
           <p class="table-order__number">Table {{table.id}}</p>
           <p class="table-order__size">{{table.size}} people</p>
           <p class="table-order__order-time">Order <span>1</span></p>
