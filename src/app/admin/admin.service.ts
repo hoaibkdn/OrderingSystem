@@ -102,7 +102,7 @@ export class AdminService {
   getAllTable(): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     return this.http.get("https://backend-os-v2.herokuapp.com/api/table/all", {headers: headers});
-    
+
   }
 
   getAllUnpaidInvoice(): Observable<any>{
@@ -112,11 +112,16 @@ export class AdminService {
     return this.http.get("https://backend-os-v2.herokuapp.com/api/invoice/unpaid-invoice/", {headers: headers});
   }
 
-  getInvoiceDetailForInvoice(invoiceID: any): Observable<any>{
+  getInvoiceDetailForInvoice(invoiceID: any): Observable<any> {
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
     return this.http.get("https://backend-os-v2.herokuapp.com/api/invoice-detail/" + invoiceID, {headers: headers});
+  }
+
+  getTotalMonthly(): Observable<any> {
+    var url = "https://backend-os-v2.herokuapp.com/api/invoice/total-monthly";
+    return this.http.get(url);
   }
 
   private extractData(res: Response) {
