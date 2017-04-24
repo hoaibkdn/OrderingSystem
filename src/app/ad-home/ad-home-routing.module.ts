@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AdHomeComponent } from './ad-home.component';
 import { AdOrderingComponent } from './../ad-ordering/ad-ordering.component';
-import { CanDeactivateGuard }     from './../can-deactivate-guard.service';
-
+import { CanDeactivateGuard } from './../can-deactivate-guard.service';
+import { AdOrderingResolve } from './../ad-ordering/ad-ordering-resolve.service';
 const adHomeRoutes: Routes = [
   {
     path: '',
@@ -12,7 +12,11 @@ const adHomeRoutes: Routes = [
     children: [
       {
         path: 'build/:id',
-        component: AdOrderingComponent
+        component: AdOrderingComponent,
+        canDeactivate: [CanDeactivateGuard],
+        resolve: {
+          tableId: AdOrderingResolve
+        }
       }
     ]
   }
@@ -24,6 +28,9 @@ const adHomeRoutes: Routes = [
   ],
   exports: [
     RouterModule
+  ],
+  providers: [
+    AdOrderingResolve
   ]
 })
 export class AdHomeRoutingModule { }
