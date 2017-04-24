@@ -11,12 +11,18 @@ import { Rating } from '../models/Rating';
 @Injectable()
 export class AdStatisticDrinkService {
   private drinkUrl = "http://backend-os.herokuapp.com/api/rate/1/num-of-people";
+  private serviceUrl = "http://backend-os.herokuapp.com/api/rate/2/num-of-people";
   // private drinkUrl = "http://localhost:3000/food";
   constructor(private http: Http) {}
 
   getRatingDrink(): Observable<Rating[]> {
     return this.http.get(this.drinkUrl)
-    // return this.http.get(this.drinkUrl+"/1/num-of-people")
+        .map(response => response.json())
+        .catch(this.handleError);
+  }
+
+  getRatingService(): Observable<Rating[]> {
+    return this.http.get(this.serviceUrl)
         .map(response => response.json())
         .catch(this.handleError);
   }

@@ -16,34 +16,9 @@
                               <a class="type-up icon-circle-up"></a>
                               <div class="btn-type-group">
                                   <div class="row btn-type">
-                                      <a (click)="getFood(1)" class="btn-menu">
+                                      <a (click)="getFood(type.id)" class="btn-menu" *ngFor="let type of typeOfFoods">
                                           <div class="btn-menu__img">
-                                              <p class="btn-menu__text">Bakery</p>
-                                          </div>
-                                      </a>
-                                      <a (click)="getFood(2)" class="btn-menu">
-                                          <div class="btn-menu__img">
-                                              <p class="btn-menu__text">Bakery</p>
-                                          </div>
-                                      </a>
-                                      <a (click)="getFood(3)" class="btn-menu">
-                                          <div class="btn-menu__img">
-                                              <p class="btn-menu__text">Pizza</p>
-                                          </div>
-                                      </a>
-                                      <a (click)="getFood(4)" class="btn-menu">
-                                          <div class="btn-menu__img">
-                                              <p class="btn-menu__text">Matcha</p>
-                                          </div>
-                                      </a>
-                                      <a (click)="getFood(5)" class="btn-menu">
-                                          <div class="btn-menu__img">
-                                              <p class="btn-menu__text">Smothie</p>
-                                          </div>
-                                      </a>
-                                      <a (click)="getFood(6)" class="btn-menu">
-                                          <div class="btn-menu__img">
-                                              <p class="btn-menu__text">Bakery</p>
+                                              <p class="btn-menu__text">{{type.name}}</p>
                                           </div>
                                       </a>
                                   </div>

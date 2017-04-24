@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AdminService } from '../admin/admin.service';
 import { Table } from '../models/table';
 
@@ -13,7 +13,10 @@ export class AdHomeComponent implements OnInit {
   tables:Table[];
   groupThreeTables: any;
 
-  constructor(private router: Router, private adminService: AdminService) { }
+  constructor(
+    private router: Router,
+    private adminService: AdminService,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.adminService.getAllTable().subscribe(res => {
@@ -44,11 +47,7 @@ export class AdHomeComponent implements OnInit {
     })
   }
 
-  openInvoice(table: Table){
-
-  }
-
-  showBuild(id: number) {
-    this.router.navigate(['/build/' + id]);
+  detailTable(id: number) {
+    this.router.navigate([id], { relativeTo: this.route });
   }
 }
