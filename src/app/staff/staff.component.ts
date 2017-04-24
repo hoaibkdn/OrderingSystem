@@ -23,28 +23,27 @@ export class StaffComponent implements OnInit {
   hasMessage: boolean;
   constructor(private userProfileService: UserProfileService) {
     this.audio = new Audio();
-    this.audio.src = "./../assets/music/nokia_tuneoriginal.mp3";
+    this.audio.src = "./../assets/music/demonstrative.mp3";
   }
 
   ngOnInit() {
-    this.hasMessage = false;
+    // this.hasMessage = false;
     this.music("off",this.audio);
     this.userInfo = JSON.parse(localStorage.getItem('userInfo'));
     let allMessage = localStorage.getItem('allMessage') == null ? "" : localStorage.getItem('allMessage');
+    console.log("All message", allMessage);
     if (allMessage.includes("?")){
+      // this.hasMessage = true;
       let listMessage = allMessage.split('?');
       for (var i = 1; i < listMessage.length; i++) {
       this.addMessage(listMessage[i]);
-      console.log(1);
       }
     }
 
     this.stompClient = Stomp.client("wss://backend-os-v2.herokuapp.com/admin");
     this.stompClient.connect({}, (frame) => {
                     console.log('Connected: ' + frame);
-                    // this.music("on",this.audio);
-                    console.log('turn on music ');
-                    this.stompClient.send("/app/admin", {}, this.userInfo.name + " is available.");
+                    
                     console.log(this.stompClient);
                     setInterval(() => {
                         if(!this.stompClient.connected){
@@ -55,37 +54,39 @@ export class StaffComponent implements OnInit {
                         }
                       }, 30000);
                     this.stompClient.subscribe('/request/admin', (messageOutput) => {
-                      console.log(2);
                       var tag = document.getElementsByClassName('chat-box')[0];
                       let allMessage = localStorage.getItem('allMessage') == null ? "" : localStorage.getItem('allMessage');
                       localStorage.setItem('allMessage', allMessage + "?" + messageOutput.body);
                       console.log("Received message: ", messageOutput.body);
+                      if(messageOutput.body.includes("is needing some help")){
+                        this.hasMessage = true;
+                        this.music("on", this.audio);
+                      } else if(messageOutput.body.includes("accept request")){
+                        this.hasMessage = false;
+                      }
                       this.message = messageOutput.body;
                       this.addMessage(messageOutput.body);
                     });
                 });
+    setTimeout(() => {
+      this.stompClient.send("/app/admin", {}, this.userInfo.name + " is available.");
+    }, 4000);
 	};
 
 	sendMessageAdmin(): void {
-		if (this.message != null && this.message.includes("-")){
+		if (this.message != null && this.message.includes("is needing some help")){
       this.stompClient.send("/app/admin", {}, this.userInfo.name + " accept request at " + this.message.split("-")[0].trim());
-    } else {
-      this.stompClient.send("/app/admin", {}, this.userInfo.name + " is available.");
+      this.hasMessage = false;
+      this.music("off", this.audio);
+      console.log(this.hasMessage);
     }
-    this.music("off", this.audio);
-    this.hasMessage = false;
 	};
 
 	addMessage(message: string) {
-    this.hasMessage = true;
-    this.music("on", this.audio);
 	  let ul = document.getElementsByClassName("message")[0];
-    var existLi = document.getElementsByTagName('li');
-    if(!existLi) {
-      let li = document.createElement("li");
-      li.appendChild(document.createTextNode(message));
-      ul.appendChild(li);
-    }
+    let li = document.createElement("li");
+    li.appendChild(document.createTextNode(message));
+    ul.appendChild(li);
 	}
 
   music(type, audio) {

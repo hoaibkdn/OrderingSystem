@@ -159,7 +159,7 @@ export class AppComponent implements OnInit {
 
   signIn() {
     // this.router.navigate(["/admin"]);
-    this.userAuthenticationService.logIn(this.inputEmail, this.inputPassword, "http://localhost:4200").subscribe(
+    this.userAuthenticationService.logIn(this.inputEmail, this.inputPassword, "https://orderingsys.herokuapp.com").subscribe(
       res => {
         this.token = res.json().token;
         localStorage.setItem('token', this.token);
