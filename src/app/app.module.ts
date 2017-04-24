@@ -29,8 +29,6 @@ import { GoogleSignInComponent } from './google-sign-in/google-sign-in.component
 import { StaffComponent } from './staff/staff.component';
 import { ScanQRCodeComponent } from './scan-qrcode/scan-qrcode.component';
 
-// import { HistoryService } from './history/history.service';
-
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp( new AuthConfig({}), http, options);
 }
@@ -49,7 +47,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     GoogleSignInComponent,
     MenuDirective,
     StaffComponent,
-    ScanQRCodeComponent
+    ScanQRCodeComponent,
   ],
   imports: [
     BrowserModule,

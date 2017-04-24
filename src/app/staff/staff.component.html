@@ -2,13 +2,19 @@
   <div class="container">
     <div class="row">
       <div class="col-xs-10 col-xs-offset-1">
-        <div class="chat-box">
+        <div class="chat-box" *ngIf="hasMessage">
+          <div class="calling">
+            <img src="../../assets/slice/retro-telephone-ringing.gif" alt="">
+          </div>
+          <div class="chat-btn">
+            <button (click)="sendMessageAdmin()" type="button" class="chat-btn-confirm btn-warning btn btn-default">OK</button>
+          </div>
           <ul class="message">
-            
           </ul>
         </div>
-        <div class="chat-btn">
-          <button (click)="sendMessageAdmin()" type="button" class="chat-btn-confirm btn-warning">OK</button>
+
+        <div class="confirm-payment">
+          <button (click)="confirmPayment()" type="button" class="chat-btn-confirm btn-warning btn btn-default">Confirm Payment</button>
         </div>
       </div>
     </div>

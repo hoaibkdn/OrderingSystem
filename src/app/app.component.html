@@ -9,12 +9,16 @@
           </h1>
         </div>
         <div class="header__btn-group flex-box">
-          <button routerLink="/scanQRcode" class="header__btn-qrCode" >Scan QR code</button>
-          <button class="header__btn-login" data-toggle="modal" data-target="#login" >Log In</button>
+          <button routerLink="/scanQRcode" class="header__btn-qrCode" *ngIf="isCustomer === true">Scan QR code</button>
+          <button class="header__btn-login" data-toggle="modal" data-target="#login" *ngIf="!token">Log In</button>
           <button (click)="logOut()" class="header__btn-login" *ngIf="token">Log Out</button>
-          <a (click)="sendMessageAdmin()" class="btn btn-default header__btn-waiter" value="Waiter">
+          <a (click)="sendMessageAdmin()" *ngIf="countDown === 0 && isCustomer === true" class="btn btn-default header__btn-waiter" value="Waiter">
             <p class="icon-phone header__btn-waiter--icon"></p>
             Waiter
+          </a>
+          <a *ngIf="countDown > 0" class="btn btn-default header__btn-waiter" value="Waiter">
+            <p class="icon-phone header__btn-waiter--icon"></p>
+            {{countDown}}
           </a>
         </div>
       </div>
@@ -26,12 +30,12 @@
 <router-outlet></router-outlet>
 
   <!--add footer here-->
-  <footer class="footer">
+  <footer class="footer" *ngIf="isCustomer === true">
     <div class="container">
       <div class="row">
         <div class="footer-group">
-          <a routerLink="/history/invoice" class="icon-location icon-outer"  *ngIf="token"></a>
-          <a class="icon-location icon-outer" *ngIf="!token"></a>
+          <a routerLink="/history/invoice" class="icon-address-book icon-outer"  *ngIf="token"></a>
+          <a class="icon-address-book icon-outer" *ngIf="!token"></a>
           <a routerLink="/" class="icon-home3 icon-middle"></a>
           <a routerLink="/userprofile" class="icon-user icon-outer" *ngIf="token"></a>
           <a class="icon-user icon-outer" *ngIf="!token"></a>
