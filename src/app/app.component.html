@@ -35,10 +35,10 @@
       <div class="row">
         <div class="footer-group">
           <a routerLink="/history/invoice" class="icon-address-book icon-outer"  *ngIf="token"></a>
-          <a (click)="signIn()" class="icon-address-book icon-outer" *ngIf="!token"></a>
+          <a data-toggle="modal" data-target="#login" class="icon-address-book icon-outer" *ngIf="!token"></a>
           <a routerLink="/" class="icon-home3 icon-middle"></a>
           <a routerLink="/userprofile" class="icon-user icon-outer" *ngIf="token"></a>
-          <a (click)="signIn()" class="icon-user icon-outer" *ngIf="!token"></a>
+          <a data-toggle="modal" data-target="#login" class="icon-user icon-outer" *ngIf="!token"></a>
         </div>
       </div>
     </div>
