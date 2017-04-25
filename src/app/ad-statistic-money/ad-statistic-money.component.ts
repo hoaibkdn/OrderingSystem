@@ -1,35 +1,44 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Chart } from 'angular-highcharts';
+import { AdminService } from './../admin/admin.service';
+import { TotalMoney } from './../models/total-money';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-ad-statistic-money',
   templateUrl: './ad-statistic-money.component.html',
-  styleUrls: ['./ad-statistic-money.component.scss']
+  styleUrls: ['./ad-statistic-money.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
-export class AdStatisticMoneyComponent {
-  // public line_ChartData = [
-  //       ['Month', 'Money (million)'],
-  //       ['1', 10],
-  //       ['2', 30],
-  //       ['3', 40],
-  //       ['4', 45],
-  //       ['5', 42],
-  //       ['6', 48]];
+export class AdStatisticMoneyComponent implements OnInit{
+  years:number[];
+  totalMoney: TotalMoney[];
+  constructor(
+    private adminService: AdminService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+  ngOnInit() {
+    this.adminService.getTotalMonthly()
+      .subscribe(res => {this.totalMoney = res;
+        this.years = this.filterYear(this.totalMoney);
+        console.log('total money ', this.totalMoney);
+        });
+  }
 
-  // public line_ChartOptions = {
-  //       title: 'Company Performance',
-  //       curveType: 'function',
-  //       legend: {
-  //           position: 'bottom'
-  //       }
-  //   };
-
-  constructor() {
-        // this.options = {
-        //     title : { text : 'simple chart' },
-        //     series: [{
-        //         data: [29.9, 71.5, 106.4, 129],
-        //     }]
-        // };
+  filterYear(allYears: TotalMoney[]) {
+    var size = allYears.length;
+    var years = [];
+    for(var i = 0; i < size; i++) {
+      years.push(parseInt(allYears[i].year));
     }
-    // options: Object;
+    return _.sortedUniq(years);
+  }
+
+  showIncome(year: number) {
+    console.log('showIncome ', year);
+
+    this.router.navigate([year], { relativeTo: this.route });
+  }
 }

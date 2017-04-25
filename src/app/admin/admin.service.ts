@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
-
+import { TotalMoney } from './../models/total-money';
 import { FoodAndDrink } from '../models/food-and-drink';
 
 @Injectable()
@@ -119,9 +119,10 @@ export class AdminService {
     return this.http.get("https://backend-os-v2.herokuapp.com/api/invoice-detail/" + invoiceID, {headers: headers});
   }
 
-  getTotalMonthly(): Observable<any> {
+  getTotalMonthly(): Observable<TotalMoney[]> {
     var url = "https://backend-os-v2.herokuapp.com/api/invoice/total-monthly";
-    return this.http.get(url);
+    return this.http.get(url)
+      .map(res => res.json() );
   }
 
   private extractData(res: Response) {

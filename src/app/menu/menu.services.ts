@@ -99,8 +99,7 @@ export class MenuService {
 
   getTypeOfFood():Observable<FoodAndDrinkType[]> {
     const url="https://backend-os-v2.herokuapp.com/api/food-and-drink-type/all";
-    return this.http.get(url)
-      .map(res => res.json());
+    return this.http.get(url).map(res => res.json());
   }
 
   private extractData(res: Response) {
