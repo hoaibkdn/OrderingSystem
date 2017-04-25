@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
 import { UserProfileService } from '../user-profile/user-profile.service';
-
+import { AdminService } from './../admin/admin.service';
+import { MenuService } from './../menu/menu.services';
+import { Table } from './../models/table';
+import { Invoice } from './../models/invoice';
+import { Payment } from '../models/payment';
 declare var Stomp: any;
 
 @Component({
@@ -21,13 +25,21 @@ export class StaffComponent implements OnInit {
   userInfo: any;
   audio: any;
   hasMessage: boolean;
-  constructor(private userProfileService: UserProfileService) {
+  callPayment: boolean;
+  allTable: Table[];
+  invoices: Invoice[];
+  isPayed: boolean;
+  constructor(
+    private userProfileService: UserProfileService,
+    private adminService: AdminService,
+    private menuService: MenuService) {
     this.audio = new Audio();
     this.audio.src = "./../assets/music/demonstrative.mp3";
   }
 
   ngOnInit() {
     // this.hasMessage = false;
+    this.callPayment = true; //Quang: if customers calls payment => callPayment = true
     this.music("off",this.audio);
     this.userInfo = JSON.parse(localStorage.getItem('userInfo'));
     let allMessage = localStorage.getItem('allMessage') == null ? "" : localStorage.getItem('allMessage');
@@ -43,7 +55,7 @@ export class StaffComponent implements OnInit {
     this.stompClient = Stomp.client("wss://backend-os-v2.herokuapp.com/admin");
     this.stompClient.connect({}, (frame) => {
                     console.log('Connected: ' + frame);
-                    
+
                     console.log(this.stompClient);
                     setInterval(() => {
                         if(!this.stompClient.connected){
@@ -102,5 +114,25 @@ export class StaffComponent implements OnInit {
         break;
       }
     }
+  }
+
+  getAllTableUnpay() {
+    this.allTable = [];
+    this.adminService.getAllUnpaidInvoice()
+      .map(res => res.json())
+      .subscribe(res => {
+        this.invoices = res;
+      });
+  }
+
+  confirmPayment(invoice: Invoice) {
+    // Quang: get paymentType
+    var payment = new Payment;
+    payment.invoiceId = invoice.id.toString();
+    payment.paymentType = '';
+    this.menuService.paymentRequest(payment)
+      .subscribe(res => {this.isPayed = res; ; console.log("pay ", this.isPayed );
+        localStorage.removeItem("invoiceId")},
+        err => {console.log(err)});
   }
 }
