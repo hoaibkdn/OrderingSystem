@@ -5,6 +5,8 @@ import { Invoice } from '../models/invoice';
 import { InvoiceDetail } from '../models/invoice-detail';
 import { Table } from '../models/table';
 
+declare var Stomp: any;
+
 @Component({
   selector: 'app-ad-ordering',
   templateUrl: './ad-ordering.component.html',
@@ -17,15 +19,42 @@ export class AdOrderingComponent implements OnInit {
 	invoiceDetails: InvoiceDetail[];
 	totalMoney: number;
   invoiceDetail: InvoiceDetail;
+  stompClient: any;
   constructor(private route: ActivatedRoute, private adminService: AdminService) {
   	this.totalMoney = 0;
   }
 
   ngOnInit() {
+    this.getAllInvoiceDetails();
+    this.stompClient = Stomp.client("wss://backend-os-v2.herokuapp.com/admin");
+    this.stompClient.connect({}, (frame) => {
+        console.log('Connected admin: ' + frame);
+        console.log(this.stompClient);
+        setInterval(() => {
+            if(!this.stompClient.connected){
+              console.log("Failed to connect");
+            } else {
+              console.log("Interval at " + new Date());
+              this.stompClient.send("/app/admin", {}, "");
+            }
+          }, 30000);
+        this.stompClient.subscribe('/request/admin', (messageOutput) => {
+          var tag = document.getElementsByClassName('chat-box')[0];
+          console.log("Received message: ", messageOutput.body);
+          if(messageOutput.body.includes("is ordering")){
+            this.getAllInvoiceDetails();
+          }
+        });
+    });    
+    
+  }
+
+  getAllInvoiceDetails(){
     this.invoiceDetails = [];
     this.adminService.getAllUnpaidInvoice().subscribe(res => {
       this.unpaidInvoices = JSON.parse(res._body);
       this.route.data.subscribe((data: {tableId: number} ) => {
+        this.invoice = null;
         this.tableId = data.tableId;
         console.log('$$$ id table ', this.tableId);
         for (let i = 0; i < this.unpaidInvoices.length; i++){
@@ -38,14 +67,15 @@ export class AdOrderingComponent implements OnInit {
           this.totalMoney = 0;
           this.adminService.getInvoiceDetailForInvoice(this.invoice.id).subscribe(res => {
               this.invoiceDetails = JSON.parse(res._body);
-              console.log(this.invoiceDetails);
               for(let i = 0; i < this.invoiceDetails.length; i++){
-                console.log("Total: ", this.totalMoney);
                 this.totalMoney += this.invoiceDetails[i].price * this.invoiceDetails[i].quantity;
               }
             }, err => {
               console.log(err);
             });
+        } else {
+          this.invoiceDetails = [];
+          this.totalMoney = 0;
         }
       });
     });
@@ -53,9 +83,19 @@ export class AdOrderingComponent implements OnInit {
 
   changeClassToBeDone(){
     let table = document.getElementsByClassName('table-order__col ' + this.tableId)[0];
-    console.log(table.classList);
-    table.classList.add('has-done');
-    let btnDone = document.getElementsByClassName('btn-done')[0];
-    btnDone.classList.add('disabled');
+    if (!table.classList.contains('has-done')){
+      this.adminService.setMadeForInvoice(this.invoice.id).subscribe(res => {
+          console.log(res._body);
+          table.classList.add('has-done');
+          table.classList.remove('is-ordering');
+          let btnDone = document.getElementsByClassName('btn-done')[0];
+          console.log(this.invoice.id, " - ", this.invoice.table.id);
+          console.log(table.classList.contains('has-done'));
+          this.stompClient.send("/app/admin", {}, "Admin notification - Food and drink for table " + this.tableId + " is ready");
+        }, err => {
+          console.log(err);
+        }
+      )
+    }
   }
 }
