@@ -7,6 +7,7 @@ import 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 
 import { Rating } from '../models/Rating';
+import { RatingGet } from './../models/rating-get';
 
 @Injectable()
 export class AdStatisticDrinkService {
@@ -25,6 +26,11 @@ export class AdStatisticDrinkService {
     return this.http.get(this.serviceUrl)
         .map(response => response.json())
         .catch(this.handleError);
+  }
+
+  getDetailRating(): Observable<RatingGet[]> {
+    var url = "https://backend-os-v2.herokuapp.com/api/rate/all-rates";
+    return this.http.get(url).map(res => res.json());
   }
 
   private extractData(res: Response) {
