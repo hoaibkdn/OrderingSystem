@@ -1,25 +1,62 @@
-<div class="col-xs-6">
-  <div [chart]="chart" style="min-width: 310px; height: 400px; max-width:400px;"></div>
+<div class="col-xs-12">
+  <div [chart]="chart" style="min-width: 310px; height: 400px; max-width:400px; margin: auto"></div>
 </div>
-<div class="col-xs-6">
+<div class="col-xs-12">
   <div class="statistic__group">
-    <!--<table class="table table-hover">
+    <table class="table table-hover">
       <thead>
         <tr>
           <th>No</th>
-          <th>Day</th>
-          <th>Price</th>
-          <th>Payment via</th>
+          <th>UserName</th>
+          <th>Date</th>
+          <th>Invoice (total)</th>
+          <th>Score <i class="icon-star"></i></th>
         </tr>
       </thead>
       <tbody>
-        <tr  *ngFor = 'let invoice of invoices; let i = index' data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
+        <tr  *ngFor = 'let rateDetail of ratingDrinkDetail; let i = index' data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(rateDetail.invoice.id)">
           <td>{{i+1}}</td>
-          <td>{{invoice.payingTime | date: fomart}}</td>
-          <td>{{invoice.totalAmount}}</td>
-          <td>{{invoice.paymentType}}</td>
+          <td>{{rateDetail.user.name }}</td>
+          <td>{{rateDetail.rateTime | date: fomart}}</td>
+          <td>{{rateDetail.invoice.totalAmount}}</td>
+          <td>{{rateDetail.score}}</td>
         </tr>
-      </tbody>-->
-    <!-- </table> -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade" id="invoice-detail" tabindex="-1" role="dialog" aria-labelledby="detailInvoiceLabel" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Invoice detail</h4>
+      </div>
+      <div class="modal-body" *ngIf='invoiceDetails'>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Name</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr  *ngFor = 'let invoiceDetail of invoiceDetails; let i = index'>
+              <td>{{i+1}}</td>
+              <td>{{invoiceDetail.foodAndDrink.name}}</td>
+              <td>{{invoiceDetail.quantity}}</td>
+              <td>{{invoiceDetail.price}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>

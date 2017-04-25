@@ -65,17 +65,14 @@ export class AdStatisticMonthlyComponent implements OnInit {
 
   filterIncomeByYear(allIncome: TotalMoney[], year: number) {
     var size = allIncome.length;
-    var total = [];
+    var total = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     for(var i = 0; i < size; i++) {
       if(parseInt(allIncome[i].year) == year) {
         for(var j = 1; j <= 12; j++) {
+
           console.log('12 months ', parseInt(allIncome[i].month));
           if(parseInt(allIncome[i].month) == j) {
-            console.log('month ', parseInt(allIncome[i].month));
-            total.push(parseFloat(allIncome[i].total));
-          }
-          else {
-            total.push(0);
+            total[j-1] += parseFloat(allIncome[i].total);
           }
         }
         // objMonthly.month =

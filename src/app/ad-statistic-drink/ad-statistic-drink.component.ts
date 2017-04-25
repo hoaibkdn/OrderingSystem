@@ -5,6 +5,8 @@ import { HistoryInvoiceService } from './../history-invoice/history-invoice.serv
 import { Rating } from '../models/Rating';
 import { Chart } from 'angular-highcharts';
 import { Highcharts } from 'angular-highcharts';
+import { RatingGet } from '../models/rating-get';
+import { InvoiceDetail } from '../models/invoice-detail';
 
 @Component({
   selector: 'app-ad-statistic-drink',
@@ -17,8 +19,15 @@ export class AdStatisticDrinkComponent implements OnInit{
   chart: Chart;
   point: any;
   ratingArr: Rating[];
-  constructor(private adStatisticDrinkService: AdStatisticDrinkService) {}
+  ratingDrinkDetail: RatingGet[];
+  ratingServiceDetail: RatingGet[];
+  ratingAll: RatingGet[];
+  invoiceDetails: InvoiceDetail[];
+  constructor(
+    private adStatisticDrinkService: AdStatisticDrinkService,
+    private historyInvoiceService: HistoryInvoiceService) {}
     ngOnInit() {
+      this.getDetailRating();
       this.adStatisticDrinkService.getRatingDrink()
           .subscribe(ratingArr => {this.ratingArr = ratingArr; console.log(this.ratingArr);
           this.chart = new Chart( {
@@ -95,7 +104,31 @@ export class AdStatisticDrinkComponent implements OnInit{
   }
 
     getDetailRating() {
+      this.adStatisticDrinkService.getDetailRating()
+        .subscribe(res => {this.ratingAll = res;
+          console.log('all rate ', this.ratingAll);
+          this.ratingDrinkDetail = this.filterRating(this.ratingAll, 1);
+          this.ratingServiceDetail = this.filterRating(this.ratingAll, 2);
+        });
+    }
 
+    filterRating(allRating: RatingGet[], type: number) {
+      var filteredRating = [];
+      allRating.forEach((rate, index) => {
+        if(rate.rateType.id === type) {
+          filteredRating.push(rate);
+        }
+      });
+      return filteredRating;
+    }
+
+    getInvoiceDetail(id: string) {
+    console.log('id detail ', id);
+
+    this.historyInvoiceService.getInvoiceDetail(id)
+      .subscribe(invoiceDetails => {this.invoiceDetails = invoiceDetails;
+        console.log('invoice detail ', this.invoiceDetails);
+      });
     }
 
 }

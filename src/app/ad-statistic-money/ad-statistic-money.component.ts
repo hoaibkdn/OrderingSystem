@@ -38,7 +38,6 @@ export class AdStatisticMoneyComponent implements OnInit{
 
   showIncome(year: number) {
     console.log('showIncome ', year);
-
     this.router.navigate([year], { relativeTo: this.route });
   }
 }

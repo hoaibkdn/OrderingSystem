@@ -11,7 +11,8 @@
         <div class="header__btn-group flex-box">
           <button routerLink="/scanQRcode" class="header__btn-qrCode" *ngIf="isCustomer === true">Scan QR code</button>
           <button class="header__btn-login" data-toggle="modal" data-target="#login" *ngIf="!token">Log In</button>
-          <button (click)="logOut()" class="header__btn-login" *ngIf="token">Log Out</button>
+          <button (click)="logOut()" class="header__btn-login" *ngIf="token && isCustomer === true">Log Out</button>
+          <button (click)="logOut()" class="header__btn-login position-logout" *ngIf="token && isCustomer === false">Log Out</button>
           <a (click)="sendMessageAdmin()" *ngIf="countDown === 0 && isCustomer === true" class="btn btn-default header__btn-waiter" value="Waiter">
             <p class="icon-phone header__btn-waiter--icon"></p>
             Waiter
