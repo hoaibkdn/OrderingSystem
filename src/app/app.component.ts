@@ -11,7 +11,6 @@ import './../assets/qr/effects_saycheese.js';
 declare var $:any;
 declare var go:any;
 declare var Stomp: any;
-declare var SockJS: any;
 
 @Component({
   selector: 'app-root',
@@ -32,6 +31,8 @@ export class AppComponent implements OnInit {
 
   countDown: number;
   isCustomer: boolean;
+
+  getOrdering: boolean;
 
   longitude: number;
   latitude: number;
@@ -74,6 +75,8 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit() {
+    localStorage.setItem('isCustomer', true + "");
+    this.getOrdering = false;
     var isCustomer = localStorage.getItem('isCustomer');
     if(isCustomer) {
       this.isCustomer = (isCustomer === "true");
@@ -236,6 +239,9 @@ export class AppComponent implements OnInit {
         this.stompClient.subscribe('/request/admin', (messageOutput) => {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
+          if(messageOutput.body.includes("is ordering")){
+            this.getOrdering = true;
+          }
         });
     });
   }

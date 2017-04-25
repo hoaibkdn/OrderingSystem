@@ -17,6 +17,7 @@ import { FoodAndDrinkType } from '../models/food-and-drink-type';
 import * as _ from 'lodash';
 import './../../assets/js/menu.js';
 declare var $:any;
+declare var Stomp: any;
 
 @Component({
   selector: 'app-menu',
@@ -51,6 +52,7 @@ export class MenuComponent implements OnInit {
   typeOfFoods: FoodAndDrinkType[];
   text: string;
   currentFood = [];
+  stompClient: any;
 
   constructor(private menuService: MenuService,
               private componentFactoryResolver: ComponentFactoryResolver,
@@ -60,7 +62,14 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     // this.tableId = parseInt(localStorage.getItem("tableId"));
-    this.tableId = 1;
+    let isCustomer = localStorage.getItem("isCustomer");
+    if(isCustomer.includes("true")){
+      this.connectAdmin();
+    }
+
+    // TODO: Fix table id
+    this.tableId = 4;
+    localStorage.setItem("tableId", 4 + "");
     console.log('tableId ', this.tableId);
     this.getTypeOfFood();
     this.orderingCombinations = [];
@@ -82,6 +91,26 @@ export class MenuComponent implements OnInit {
     this.totalMoney();
     this.textSearch = "";
     this.typeUpDown();
+  }
+
+  connectAdmin(): void {
+    this.stompClient = Stomp.client("wss://backend-os-v2.herokuapp.com/admin");
+    this.stompClient.connect({}, (frame) => {
+        console.log('Connected admin: ' + frame);
+        console.log(this.stompClient);
+        setInterval(() => {
+            if(!this.stompClient.connected){
+              console.log("Failed to connect");
+            } else {
+              console.log("Interval at " + new Date());
+              this.stompClient.send("/app/admin", {}, "");
+            }
+          }, 30000);
+        this.stompClient.subscribe('/request/admin', (messageOutput) => {
+          var tag = document.getElementsByClassName('chat-box')[0];
+          console.log("Received message: ", messageOutput.body);
+        });
+    });
   }
 
   getFood(id: number) {
@@ -470,8 +499,11 @@ export class MenuComponent implements OnInit {
 
       console.log(orderBoard);
       this.menuService.postOrder(orderBoard)
-            .subscribe(res => {this.invoiceId = res._body; console.log(this.invoiceId);
-                              localStorage.setItem("invoiceId", this.invoiceId+"")});
+            .subscribe(res => {
+              this.invoiceId = res._body;
+              console.log(this.invoiceId);
+              this.sendMessageAdmin();
+              localStorage.setItem("invoiceId", this.invoiceId+"")});
     }
 
     //if existed, check all food, if the same food, increase quantity, opposite, append into list ordered
@@ -546,7 +578,10 @@ export class MenuComponent implements OnInit {
 
       console.log(orderNew);
       this.menuService.updateOrder(orderNew)
-            .subscribe(res => {console.log(res)});
+            .subscribe(res => {
+              console.log(res);
+              this.sendMessageAdmin();
+            });
       while (orderingFoodLst.length > 0) {
         orderingFoodLst[0].remove();
       }
@@ -807,4 +842,9 @@ export class MenuComponent implements OnInit {
       console.log('top down', top);
     });
   }
+
+  sendMessageAdmin(): void {
+    let tableId = localStorage.getItem("tableId");
+    this.stompClient.send("/app/admin", {}, "Table " + tableId + " is ordering");
+  };
 }
