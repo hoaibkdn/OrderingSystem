@@ -5,6 +5,8 @@ import { Invoice } from '../models/invoice';
 import { InvoiceDetail } from '../models/invoice-detail';
 import { Table } from '../models/table';
 
+declare var Stomp: any;
+
 @Component({
   selector: 'app-ad-ordering',
   templateUrl: './ad-ordering.component.html',
@@ -17,11 +19,37 @@ export class AdOrderingComponent implements OnInit {
 	invoiceDetails: InvoiceDetail[];
 	totalMoney: number;
   invoiceDetail: InvoiceDetail;
+  stompClient: any;
   constructor(private route: ActivatedRoute, private adminService: AdminService) {
   	this.totalMoney = 0;
   }
 
   ngOnInit() {
+    this.getAllInvoiceDetails();
+    this.stompClient = Stomp.client("wss://backend-os-v2.herokuapp.com/admin");
+    this.stompClient.connect({}, (frame) => {
+        console.log('Connected admin: ' + frame);
+        console.log(this.stompClient);
+        setInterval(() => {
+            if(!this.stompClient.connected){
+              console.log("Failed to connect");
+            } else {
+              console.log("Interval at " + new Date());
+              this.stompClient.send("/app/admin", {}, "");
+            }
+          }, 30000);
+        this.stompClient.subscribe('/request/admin', (messageOutput) => {
+          var tag = document.getElementsByClassName('chat-box')[0];
+          console.log("Received message: ", messageOutput.body);
+          if(messageOutput.body.includes("is ordering")){
+            this.getAllInvoiceDetails();
+          }
+        });
+    });    
+    
+  }
+
+  getAllInvoiceDetails(){
     this.invoiceDetails = [];
     this.adminService.getAllUnpaidInvoice().subscribe(res => {
       this.unpaidInvoices = JSON.parse(res._body);
@@ -29,9 +57,7 @@ export class AdOrderingComponent implements OnInit {
         this.invoice = null;
         this.tableId = data.tableId;
         console.log('$$$ id table ', this.tableId);
-        console.log(this.unpaidInvoices.length);
         for (let i = 0; i < this.unpaidInvoices.length; i++){
-          console.log(this.unpaidInvoices[i].table.id);
           if (this.unpaidInvoices[i].table.id == this.tableId){
             this.invoice = this.unpaidInvoices[i];
             break;
@@ -41,9 +67,7 @@ export class AdOrderingComponent implements OnInit {
           this.totalMoney = 0;
           this.adminService.getInvoiceDetailForInvoice(this.invoice.id).subscribe(res => {
               this.invoiceDetails = JSON.parse(res._body);
-              console.log(this.invoiceDetails);
               for(let i = 0; i < this.invoiceDetails.length; i++){
-                console.log("Total: ", this.totalMoney);
                 this.totalMoney += this.invoiceDetails[i].price * this.invoiceDetails[i].quantity;
               }
             }, err => {
@@ -67,11 +91,11 @@ export class AdOrderingComponent implements OnInit {
           let btnDone = document.getElementsByClassName('btn-done')[0];
           console.log(this.invoice.id, " - ", this.invoice.table.id);
           console.log(table.classList.contains('has-done'));
+          this.stompClient.send("/app/admin", {}, "Admin notification - Food and drink for table " + this.tableId + " is ready");
         }, err => {
           console.log(err);
         }
       )
     }
-       
   }
 }

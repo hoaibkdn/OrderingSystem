@@ -43,7 +43,6 @@ export class StaffComponent implements OnInit {
     this.stompClient = Stomp.client("wss://backend-os-v2.herokuapp.com/admin");
     this.stompClient.connect({}, (frame) => {
                     console.log('Connected: ' + frame);
-                    
                     console.log(this.stompClient);
                     setInterval(() => {
                         if(!this.stompClient.connected){
@@ -58,7 +57,7 @@ export class StaffComponent implements OnInit {
                       let allMessage = localStorage.getItem('allMessage') == null ? "" : localStorage.getItem('allMessage');
                       localStorage.setItem('allMessage', allMessage + "?" + messageOutput.body);
                       console.log("Received message: ", messageOutput.body);
-                      if(messageOutput.body.includes("is needing some help")){
+                      if(messageOutput.body.includes("needing some help") || messageOutput.body.includes("ready")){
                         this.hasMessage = true;
                         this.music("on", this.audio);
                       } else if(messageOutput.body.includes("accept request")){
@@ -69,12 +68,14 @@ export class StaffComponent implements OnInit {
                     });
                 });
     setTimeout(() => {
-      this.stompClient.send("/app/admin", {}, this.userInfo.name + " is available.");
-    }, 4000);
+      if(this.userInfo != null){
+        this.stompClient.send("/app/admin", {}, this.userInfo.name + " is available.");
+        }
+      }, 5000);
 	};
 
 	sendMessageAdmin(): void {
-		if (this.message != null && this.message.includes("is needing some help")){
+		if (this.message != null && (this.message.includes("is needing some help") || this.message.includes("ready"))){
       this.stompClient.send("/app/admin", {}, this.userInfo.name + " accept request at " + this.message.split("-")[0].trim());
       this.hasMessage = false;
       this.music("off", this.audio);
