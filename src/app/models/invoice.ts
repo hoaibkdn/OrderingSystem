@@ -12,4 +12,5 @@ export class Invoice {
   paymentType: string;
   paid: boolean;
   visible: boolean;
+  made: boolean;
 }

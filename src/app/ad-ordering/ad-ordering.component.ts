@@ -22,6 +22,7 @@ export class AdOrderingComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.invoiceDetails = [];
     this.adminService.getAllUnpaidInvoice().subscribe(res => {
       this.unpaidInvoices = JSON.parse(res._body);
       this.route.data.subscribe((data: {tableId: number} ) => {
@@ -34,9 +35,12 @@ export class AdOrderingComponent implements OnInit {
           }
         }
         if(this.invoice != null){
+          this.totalMoney = 0;
           this.adminService.getInvoiceDetailForInvoice(this.invoice.id).subscribe(res => {
               this.invoiceDetails = JSON.parse(res._body);
+              console.log(this.invoiceDetails);
               for(let i = 0; i < this.invoiceDetails.length; i++){
+                console.log("Total: ", this.totalMoney);
                 this.totalMoney += this.invoiceDetails[i].price * this.invoiceDetails[i].quantity;
               }
             }, err => {
@@ -45,5 +49,13 @@ export class AdOrderingComponent implements OnInit {
         }
       });
     });
+  }
+
+  changeClassToBeDone(){
+    let table = document.getElementsByClassName('table-order__col ' + this.tableId)[0];
+    console.log(table.classList);
+    table.classList.add('has-done');
+    let btnDone = document.getElementsByClassName('btn-done')[0];
+    btnDone.classList.add('disabled');
   }
 }
