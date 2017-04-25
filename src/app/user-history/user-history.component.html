@@ -3,7 +3,6 @@
     <tr>
       <th>No</th>
       <th>Day</th>
-      <th>Time</th>
       <th>Name</th>
       <th>Quantity</th>
       <th>Total</th>
@@ -12,15 +11,17 @@
   <tbody  cellspacing="10">
     <tr *ngFor="let invoiceDetail of invoiceDetails | paginate: { itemsPerPage: 6, currentPage: page }; let i = index" data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
       <td>{{i+1}}</td>
-      <td>15/03/2017</td>
-      <td>8:00PM</td>
-      <td>{{invoiceDetail.name}}</td>
-      <td class="history-food-quantity">2</td>
-      <td class="history-food-total">300.000 d</td>
+      <td>{{invoiceDetail.orderingTime | day: format}}</td>
+      <td>{{invoiceDetail.foodAndDrink.name}}</td>
+      <td class="history-food-quantity">{{invoiceDetail.quantity}}</td>
+      <td class="history-food-total">{{invoiceDetail.quantity * invoiceDetail.price}} d</td>
     </tr>
   </tbody>
 </table>
 
 <!--paging-->
-<pagination-controls (pageChange)="page = $event" style="text-align: center;">
+<pagination-controls
+  (pageChange)="page = $event" style="text-align: center;"
+  previousLabel=""
+  nextLabel="">
 </pagination-controls>

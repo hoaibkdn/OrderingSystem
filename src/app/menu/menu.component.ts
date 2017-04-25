@@ -681,10 +681,9 @@ export class MenuComponent implements OnInit {
     this.foodLocalStoragesOrdering = [];
     this.totalMoney();
     $('#paymentForm').modal('hide');
-    // return this.menuService.paymentRequest(payment)
-    //   .subscribe(res => {this.isPayed = res; ; console.log("pay ", this.isPayed );
-    //     localStorage.removeItem("invoiceId")},
-    //     err => {console.log(err)});
+
+    // Quang: send message to staff
+
   }
 
   public itemSvg:any =

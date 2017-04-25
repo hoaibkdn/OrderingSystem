@@ -45,7 +45,10 @@
                                 </div>
 
                                 <!--paging-->
-                                <pagination-controls style="font-size:15px;" (pageChange)="page = $event" #api> </pagination-controls>
+                                <pagination-controls style="font-size:15px;"
+                                  (pageChange)="page = $event" #api
+                                  previousLabel=""
+                                  nextLabel=""> </pagination-controls>
                             </div>
                         </div>
                     </div>
