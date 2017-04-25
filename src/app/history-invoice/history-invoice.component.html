@@ -16,7 +16,11 @@
     </tr>
   </tbody>
 </table>
-<pagination-controls (pageChange)="p = $event" style="text-align: center;"></pagination-controls>
+<pagination-controls
+  (pageChange)="p = $event" style="text-align: center;"
+  previousLabel=""
+  nextLabel="">
+</pagination-controls>
 
 
 <div class="modal fade" id="invoice-detail" tabindex="-1" role="dialog" aria-labelledby="detailInvoiceLabel" >

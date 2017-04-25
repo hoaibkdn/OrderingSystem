@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Oleo+Script:400,700&subset=latin-ext');
 * {
   // box-sizing: border-box;
   margin: 0;
@@ -8,11 +9,12 @@
 }
 
 html {
-  font-family: 'Carter One', cursive;
+  font-family: 'Oleo Script', cursive;
   font-size: $font-base;
 }
 
 body {
+  font-family: 'Oleo Script', cursive;
   margin: 0 auto;
 }
 .flex-box {
@@ -44,7 +46,13 @@ a {
 
 @media only screen and (min-width: 1200px) {
   .container {
-    width: 1037px;
+    width: 942px;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .container {
+    width: 942px;
   }
 }
 
