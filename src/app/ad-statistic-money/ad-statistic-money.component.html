@@ -1,3 +1,17 @@
-<!--<h2>  Line Chart</h2>
-<div id="line_chart" [chartData]="line_ChartData" [chartOptions]= "line_ChartOptions" chartType="LineChart" GoogleChart></div>-->
-<!--<chart [options]="options" (selection)="onChartSelection($event)"></chart>-->
+<!--<div [chart]="chart" id="container"></div>-->
+<section class="user">
+  <div class="container">
+    <div class="row">
+      <div class="user__wrap overfollow">
+        <div class="col-xs-8 col-xs-offset-2">
+          <div class="row">
+            <div class="user__menu">
+              <a (click)="showIncome(year)" routerLinkActive="active" class="year" *ngFor="let year of years">{{year}}</a>
+            </div>
+          </div>
+        </div>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</section>

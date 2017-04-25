@@ -7,7 +7,6 @@ import { AdminComponent } from './admin.component';
 import { AdminRoutingModule } from './admin-routing.module';
 import { StatisticComponent } from './../statistic/statistic.component';
 import { AdStatisticDrinkComponent } from './../ad-statistic-drink/ad-statistic-drink.component';
-import { AdStatisticMoneyComponent } from './../ad-statistic-money/ad-statistic-money.component';
 import { AdStatisticDrinkService } from './../ad-statistic-drink/ad-statistic-drink.service';
 import { AdminService } from './../admin/admin.service';
 import { AdManagementFadComponent } from './../ad-management-fad/ad-management-fad.component';
@@ -30,7 +29,6 @@ import { AdStatisticServiceComponent } from './../ad-statistic-service/ad-statis
     AdminComponent,
     StatisticComponent,
     AdStatisticDrinkComponent,
-    AdStatisticMoneyComponent,
     AdManagementFadComponent,
     AdManagementFadtComponent,
     AdManagementStaffComponent,

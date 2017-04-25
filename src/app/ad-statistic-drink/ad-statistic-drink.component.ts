@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
 import { AdStatisticDrinkService } from './ad-statistic-drink.service';
+import { HistoryInvoiceService } from './../history-invoice/history-invoice.service';
 import { Rating } from '../models/Rating';
 import { Chart } from 'angular-highcharts';
 import { Highcharts } from 'angular-highcharts';
@@ -17,7 +18,7 @@ export class AdStatisticDrinkComponent implements OnInit{
   point: any;
   ratingArr: Rating[];
   constructor(private adStatisticDrinkService: AdStatisticDrinkService) {}
-    ngOnInit(){
+    ngOnInit() {
       this.adStatisticDrinkService.getRatingDrink()
           .subscribe(ratingArr => {this.ratingArr = ratingArr; console.log(this.ratingArr);
           this.chart = new Chart( {
@@ -94,6 +95,7 @@ export class AdStatisticDrinkComponent implements OnInit{
   }
 
     getDetailRating() {
-      console.log("detail here");
+
     }
+
 }

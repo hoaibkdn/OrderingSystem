@@ -59,6 +59,7 @@ export class MenuComponent implements OnInit {
                }
 
   ngOnInit() {
+    // this.tableId = parseInt(localStorage.getItem("tableId"));
     this.tableId = 1;
     console.log('tableId ', this.tableId);
     this.getTypeOfFood();
@@ -435,11 +436,14 @@ export class MenuComponent implements OnInit {
     //if doesn't exist food ordered, append all food ordering to list ordered
     else if(sizeOrderedFoodLst === 0) {
 
-      var orderIdLst = orderedFood.children;
+      var orderIdLst = orderingFoodLst;
       var idArr = "";
       var quantityId = "";
-      for(var a=0; a < orderIdLst.length; a++) {
+      for(var a=0; a < sizeOrderingFoodLst; a++) {
+        console.log('657575 ', orderIdLst[a].children[4].innerHTML);
         if(a === orderIdLst.length-1 ) {
+          console.log('657575 ', orderIdLst[a].children[4].innerHTML);
+
           idArr += orderIdLst[a].children[4].innerHTML;
           quantityId += orderIdLst[a].children[1].innerHTML;
         }

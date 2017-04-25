@@ -5,14 +5,14 @@ import { Observable } from 'rxjs/Observable';
 import { AdminService } from '../admin/admin.service';
 
 @Injectable()
-export class AdOrderingResolve implements Resolve<number> {
+export class AdStatisticMonthlyResolve implements Resolve<number> {
   constructor(
     private router: Router,
     private adminService: AdminService) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<number> {
     let id = route.params['id'];
-    console.log("id "+id);
+    console.log("year "+id);
     return id;
   };
 }

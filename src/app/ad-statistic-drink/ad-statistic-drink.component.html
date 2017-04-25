@@ -1,1 +1,25 @@
-<div [chart]="chart" style="min-width: 310px; height: 400px; max-width:400px;"></div>
+<div class="col-xs-6">
+  <div [chart]="chart" style="min-width: 310px; height: 400px; max-width:400px;"></div>
+</div>
+<div class="col-xs-6">
+  <div class="statistic__group">
+    <!--<table class="table table-hover">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Day</th>
+          <th>Price</th>
+          <th>Payment via</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr  *ngFor = 'let invoice of invoices; let i = index' data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
+          <td>{{i+1}}</td>
+          <td>{{invoice.payingTime | date: fomart}}</td>
+          <td>{{invoice.totalAmount}}</td>
+          <td>{{invoice.paymentType}}</td>
+        </tr>
+      </tbody>-->
+    </table>
+  </div>
+</div>
