@@ -14,6 +14,8 @@ import { FoodCombination } from '../models/FoodCombination';
 import { FoodLocalStorage } from '../models/food-localstorage';
 import { OrderingCombination } from '../models/ordering-combination';
 import { FoodAndDrinkType } from '../models/food-and-drink-type';
+import { UserProfileService } from '../user-profile/user-profile.service';
+
 import * as _ from 'lodash';
 import './../../assets/js/menu.js';
 declare var $:any;
@@ -53,12 +55,71 @@ export class MenuComponent implements OnInit {
   text: string;
   currentFood = [];
   stompClient: any;
+  longitude: number;
+  latitude: number;
+  distance: number;
+  resLon: number;
+  resLat: number;
+  options = {
+    timeout: 10000
+  };
 
   constructor(private menuService: MenuService,
               private componentFactoryResolver: ComponentFactoryResolver,
-              private elementRef: ElementRef) {
+              private elementRef: ElementRef,
+              private userProfileService: UserProfileService) {
                 this.foodLocalStorages = [];
-               }
+  }
+
+  error(err) {
+    console.log(err);
+  }
+
+  setPosition(position){
+      this.longitude = position.coords.longitude;
+      this.latitude = position.coords.latitude;
+      this.userProfileService.getLocation().subscribe(res => {
+        let location = res._body;
+        this.resLat = location.split(',')[0];
+        this.resLon = location.split(',')[1];
+        localStorage.setItem('resLat', this.resLat + "");
+        localStorage.setItem('resLon', this.resLon + "");
+        this.distance = this.distanceInKmBetweenEarthCoordinates(this.resLat, this.resLon, this.latitude, this.longitude);
+        console.log("Distance: ", this.distance.toFixed(2), " km");
+      }, err => {
+        console.log(err);
+      })
+  }
+
+  degreesToRadians(degrees) {
+    return degrees * Math.PI / 180;
+  }
+
+  distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
+  // https://en.wikipedia.org/wiki/Haversine_formula
+    var earthRadiusKm = 6371;
+
+    var dLat = this.degreesToRadians(lat2-lat1);
+    var dLon = this.degreesToRadians(lon2-lon1);
+
+    lat1 = this.degreesToRadians(lat1);
+    lat2 = this.degreesToRadians(lat2);
+
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    this.distance = earthRadiusKm * c * 1000
+    return earthRadiusKm * c;
+  }
+
+  // Call to get distance
+  getDistance(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.error, this.options);
+     } else {
+         alert("No location is supported");
+     }
+  }
 
   ngOnInit() {
     // this.tableId = parseInt(localStorage.getItem("tableId"));
