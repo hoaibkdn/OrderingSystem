@@ -3,8 +3,8 @@
     <div class="row">
       <div class="col-xs-10 col-xs-offset-1">
         <div class="chat-box">
-          <div class="calling" *ngIf="hasMessage">
-            <img src="../../assets/slice/retro-telephone-ringing.gif" alt="A customer is needing for help">
+          <div class="calling">
+            <img src="../../assets/slice/retro-telephone-ringing.gif" alt="A customer is needing for help"  *ngIf="hasMessage">
             <ul class="message">
             </ul>
             <div class="chat-btn">
@@ -27,7 +27,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content login">
       <div class="modal-header login__header flex-box">
-        <h2 class="login__title">Unpay tables</h2>
+        <h2 class="login__title">Unpaid tables</h2>
         <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body login__body">
@@ -47,7 +47,7 @@
               <td>{{invoice.table.size}}</td>
               <td>{{invoice.createdDate | date: format}}</td>
               <td>{{invoice.totalAmount}}</td>
-              <td><button (click)="confirmPayment(invoice)" type="button" class="btn btn-default btn-warning">Confirm</button></td>
+              <td><button (click)="confirmPayment(invoice, 'CASH')" type="button" class="btn btn-default btn-warning">CASH</button>&nbsp;&nbsp;/&nbsp;&nbsp;<button (click)="confirmPayment(invoice, 'BANK_CARD')" type="button" class="btn btn-default btn-warning">BANK_CARD</button></td>
             </tr>
           </tbody>
         </table>

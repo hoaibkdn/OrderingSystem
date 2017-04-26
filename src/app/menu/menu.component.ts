@@ -680,9 +680,9 @@ export class MenuComponent implements OnInit {
     this.foodLocalStoragesOrdered = [];
     this.foodLocalStoragesOrdering = [];
     this.totalMoney();
+    this.stompClient.send("/app/admin", {}, "Table: " + localStorage.getItem("tableId") 
+      + " - InvoiceId: " + payment.invoiceId + " is requesting payment with type: " + payment.paymentType);
     $('#paymentForm').modal('hide');
-
-    // Quang: send message to staff
 
   }
 

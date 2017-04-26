@@ -4,9 +4,10 @@
       <tr class="table-order__row" *ngFor="let group of groupThreeTables">
         <td (click) = "detailTable(table.id)" class="table-order__col {{table.id}}" *ngFor="let table of group"
         [class.is-ordering]="invoices[table.id - 1] != null && !invoices[table.id - 1].made" [class.has-done]="invoices[table.id - 1] != null && invoices[table.id - 1].made">
+        <p *ngIf="invoices[table.id - 1] != null">{{invoices[table.id - 1].table.id}}</p>
           <p class="table-order__number">Table {{table.id}}</p>
           <p class="table-order__size">{{table.size}} people</p>
-          <p class="table-order__order-time">Order <span *ngIf="orderOfTable[table.id-1] != null">{{orderOfTable[table.id-1]["order"]}}</span></p>
+          <p class="table-order__order-time" *ngIf="orderOfTable[table.id-1] != null">Order <span >{{orderOfTable[table.id-1]["order"]}}</span></p>
         </td>
       </tr>
 

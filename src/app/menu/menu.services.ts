@@ -83,12 +83,11 @@ export class MenuService {
 
   paymentRequest(payment: Payment):Observable<any> {
     const url="https://backend-os-v2.herokuapp.com/api/invoice/confirm-paid/";
-
+    let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
-    console.log(token);
-    if(!this.headers) this.headers.append('Authorization', token);
-    console.log(this.headers);
-    return this.http.put(url, JSON.stringify(payment), {headers: this.headers});
+    headers.append("Authorization", token);
+    console.log(headers);
+    return this.http.put(url, JSON.stringify(payment), {headers: headers});
   }
 
   getCombination(id: number): Observable<FoodCombination[]> {

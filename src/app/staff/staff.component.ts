@@ -7,6 +7,7 @@ import { Table } from './../models/table';
 import { Invoice } from './../models/invoice';
 import { Payment } from '../models/payment';
 declare var Stomp: any;
+declare var $:any;
 
 @Component({
   selector: 'app-staff',
@@ -39,7 +40,7 @@ export class StaffComponent implements OnInit {
 
   ngOnInit() {
     // this.hasMessage = false;
-    this.callPayment = true; //Quang: if customers calls payment => callPayment = true
+    // this.callPayment = true; //Quang: if customers calls payment => callPayment = true
     this.music("off",this.audio);
     this.userInfo = JSON.parse(localStorage.getItem('userInfo'));
     let allMessage = localStorage.getItem('allMessage') == null ? "" : localStorage.getItem('allMessage');
@@ -74,20 +75,23 @@ export class StaffComponent implements OnInit {
                         this.music("on", this.audio);
                       } else if(messageOutput.body.includes("accept request")){
                         this.hasMessage = false;
+                      } else if(messageOutput.body.includes("payment")){
+                        this.hasMessage = true;
+                        this.callPayment = true;
                       }
                       this.message = messageOutput.body;
                       this.addMessage(messageOutput.body);
                     });
                 });
     setTimeout(() => {
-      if(this.userInfo != null){
+      if(this.userInfo != null && !allMessage.includes("available")){
         this.stompClient.send("/app/admin", {}, this.userInfo.name + " is available.");
         }
       }, 5000);
 	};
 
 	sendMessageAdmin(): void {
-		if (this.message != null && (this.message.includes("is needing some help") || this.message.includes("ready"))){
+		if (this.message != null && (this.message.includes("is needing some help") || this.message.includes("ready") || this.message.includes("payment"))){
       this.stompClient.send("/app/admin", {}, this.userInfo.name + " accept request at " + this.message.split("-")[0].trim());
       this.hasMessage = false;
       this.music("off", this.audio);
@@ -97,6 +101,7 @@ export class StaffComponent implements OnInit {
 
 	addMessage(message: string) {
 	  let ul = document.getElementsByClassName("message")[0];
+    console.log("UL tag for messages: ", ul);
     let li = document.createElement("li");
     li.appendChild(document.createTextNode(message));
     ul.appendChild(li);
@@ -126,14 +131,22 @@ export class StaffComponent implements OnInit {
       });
   }
 
-  confirmPayment(invoice: Invoice) {
+  confirmPayment(invoice: Invoice, paymentType: string) {
     // Quang: get paymentType
     var payment = new Payment;
     payment.invoiceId = invoice.id.toString();
-    payment.paymentType = '';
+    payment.paymentType = paymentType.toUpperCase();
+    console.log("Payment: ", payment);
     this.menuService.paymentRequest(payment)
-      .subscribe(res => {this.isPayed = res; ; console.log("pay ", this.isPayed );
-        localStorage.removeItem("invoiceId")},
+      .subscribe(res => {
+        console.log(res);
+        if(res.status == 201){
+          $('#tableUnpay').modal('hide');
+          this.isPayed = res;
+          console.log("pay ", this.isPayed );
+          localStorage.removeItem("invoiceId");
+        }
+      },
         err => {console.log(err)});
   }
 }

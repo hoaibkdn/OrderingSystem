@@ -53,6 +53,7 @@ export class AdOrderingComponent implements OnInit {
     this.invoiceDetails = [];
     this.adminService.getAllUnpaidInvoice().subscribe(res => {
       this.unpaidInvoices = JSON.parse(res._body);
+      console.log("Unpaid invoice: ", this.unpaidInvoices);
       this.route.data.subscribe((data: {tableId: number} ) => {
         this.invoice = null;
         this.tableId = data.tableId;
@@ -60,6 +61,7 @@ export class AdOrderingComponent implements OnInit {
         for (let i = 0; i < this.unpaidInvoices.length; i++){
           if (this.unpaidInvoices[i].table.id == this.tableId){
             this.invoice = this.unpaidInvoices[i];
+            console.log("Invoice: ", this.invoice);
             break;
           }
         }
