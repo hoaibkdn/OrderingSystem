@@ -2,7 +2,6 @@ import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AdminComponent } from './admin.component';
-
 import { AdStatisticDrinkComponent }     from './../ad-statistic-drink/ad-statistic-drink.component';
 import { StatisticComponent } from './../statistic/statistic.component';
 import { CanDeactivateGuard }     from './../can-deactivate-guard.service';
@@ -11,6 +10,7 @@ import { AdManagementFadtComponent } from './../ad-management-fadt/ad-management
 import { AdManagementStaffComponent } from './../ad-management-staff/ad-management-staff.component';
 import { AdHomeComponent } from './../ad-home/ad-home.component';
 import { AdStatisticServiceComponent } from './../ad-statistic-service/ad-statistic-service.component';
+import { AdStaffsComponent } from './../ad-staffs/ad-staffs.component';
 
 const adminRoutes: Routes = [
   {
@@ -44,6 +44,11 @@ const adminRoutes: Routes = [
       {
         path: 'management/staff',
         component: AdManagementStaffComponent,
+        canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'staff',
+        component: AdStaffsComponent,
         canDeactivate: [CanDeactivateGuard]
       },
       {

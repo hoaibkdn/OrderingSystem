@@ -15,6 +15,7 @@ import { AdManagementStaffComponent } from './../ad-management-staff/ad-manageme
 import { Ng2PaginationModule } from 'ng2-pagination';
 import { ChartModule } from 'angular-highcharts';
 import { AdStatisticServiceComponent } from './../ad-statistic-service/ad-statistic-service.component';
+import { AdStaffsComponent } from './../ad-staffs/ad-staffs.component';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import { AdStatisticServiceComponent } from './../ad-statistic-service/ad-statis
     AdManagementFadComponent,
     AdManagementFadtComponent,
     AdManagementStaffComponent,
-    AdStatisticServiceComponent
+    AdStatisticServiceComponent,
+    AdStaffsComponent
   ],
   providers: [
     AdStatisticDrinkService,

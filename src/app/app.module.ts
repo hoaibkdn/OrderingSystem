@@ -10,7 +10,6 @@ import { MenuComponent } from './menu/menu.component';
 import { AppRoutingModule }     from './app-routing.module';
 import { provideAuth, AuthHttp, AuthConfig }      from 'angular2-jwt';
 
-
 import { MenuService } from './menu/menu.services';
 import { HistoryInvoiceService } from './history-invoice/history-invoice.service';
 import { UserHistoryService } from './user-history/user-history.service';

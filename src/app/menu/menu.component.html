@@ -13,7 +13,7 @@
                     <div class="food overfollow">
                         <div class="col-xs-2">
                           <div class="row">
-                              <a class="type-up icon-circle-up"></a>
+                              <button class="btn btn-default type-up icon-circle-up"></button>
                               <div class="btn-type-group">
                                   <div class="row btn-type">
                                       <a (click)="getFood(type.id)" class="btn-menu" *ngFor="let type of typeOfFoods">
@@ -23,7 +23,7 @@
                                       </a>
                                   </div>
                               </div>
-                              <a href="#" class="type-down icon-circle-down"></a>
+                              <button href="#" class="btn btn-default type-down icon-circle-down"></button>
                           </div>
                         </div>
 
@@ -40,7 +40,7 @@
                                                 </div>
                                             </a>
                                         </div>
-                                        <button (click)="hotOrder(afood)" type="button" class="btn btn-default food__btn-hot-order"></button>
+                                        <button (click)="hotOrder(afood)" type="button" class="btn btn-default food__btn-hot-order">+</button>
                                     </div>
                                 </div>
 
@@ -204,10 +204,14 @@
             <div class="modal-body">
                 <div class="payment-form">
                     <label class="radio-inline">
-                      <input type="radio" [(ngModel)]="paymentForm"  name="paymentForm" value="cash">CASH
+                      <input type="radio" [(ngModel)]="paymentForm"  name="paymentForm" value="cash">
+                        <img class="cash-img" src="../../assets/slice/vnd.png">
+                        <p>CASH</p>
                     </label>
                     <label class="radio-inline">
-                      <input type="radio" [(ngModel)]="paymentForm"  name="paymentForm" value="bank_cash">BANK_CASH
+                      <input type="radio" [(ngModel)]="paymentForm"  name="paymentForm" value="bank_cash">
+                        <img class="post-img" src="../../assets/slice/pos.jpg">
+                        <p>BANK_CARD</p>
                     </label>
                 </div>
             </div>

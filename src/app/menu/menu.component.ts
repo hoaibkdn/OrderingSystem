@@ -3,7 +3,7 @@ import { Component, OnInit, Directive, ElementRef, ComponentFactoryResolver,
 import { MenuService } from './menu.services';
 import { FoodAndDrink } from '../models/food-and-drink';
 import { ViewEncapsulation } from '@angular/core';
-
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Observable }        from 'rxjs/Observable';
 import { Http }       from '@angular/http';
 import 'rxjs/add/operator/map';
@@ -56,7 +56,8 @@ export class MenuComponent implements OnInit {
 
   constructor(private menuService: MenuService,
               private componentFactoryResolver: ComponentFactoryResolver,
-              private elementRef: ElementRef) {
+              private elementRef: ElementRef,
+              private router: Router) {
                 this.foodLocalStorages = [];
                }
 
@@ -207,7 +208,7 @@ export class MenuComponent implements OnInit {
       var priceNum = this.priceNumFirst * this.quantity;
       this.afood.price = priceNum;
     }
-    else if(this.quantity < 0){
+    else if(this.quantity <= 0){
       this.quantity = 1;
     }
   }
@@ -680,6 +681,7 @@ export class MenuComponent implements OnInit {
     this.foodLocalStoragesOrdered = [];
     this.foodLocalStoragesOrdering = [];
     this.totalMoney();
+    this.router.navigate(["/"]);
     $('#paymentForm').modal('hide');
 
     // Quang: send message to staff
@@ -799,7 +801,9 @@ export class MenuComponent implements OnInit {
     var top = parseInt($('.btn-type').css('top').split('px')[0]);
     if(top === 0) {
       $('.type-down').css({'color': '#EA6D24'});
+      $('.type-down').prop('disabled', false);
       $('.type-up').css({'color': '#ccc'});
+      $('.type-up').prop('disabled', true);
     }
     $('.menu').on('click', '.type-down', function(event) {
       event.preventDefault();
@@ -807,15 +811,19 @@ export class MenuComponent implements OnInit {
       if(top > -300) {
         $('.btn-type').css({'top': top-150+'px'});
         $('.type-down').css({'color': '#EA6D24'});
+        $('.type-down').prop('disabled', false);
       }
       else {
         $('.type-down').css({'color': '#ccc'});
+        $('.type-down').prop('disabled', true);
       }
       if(top > -200 && top <= 0) {
         $('.type-up').css({'color': '#EA6D24'});
+        $('.type-up').prop('disabled', false);
       }
       if(top > -300 && top < -100) {
          $('.type-down').css({'color': '#ccc'});
+         $('.type-down').prop('disabled', true);
       }
       console.log('top down', top);
     });
@@ -826,17 +834,22 @@ export class MenuComponent implements OnInit {
       if(top < 0) {
         $('.btn-type').css({'top': top+150+'px'});
         $('.type-up').css({'color': '#EA6D24'});
+        $('.type-up').prop('disabled', false);
       }
       else {
         $('.type-up').css({'color': '#ccc'});
+        $('.type-up').prop('disabled', true);
       }
       if(top > -100) {
         $('.type-down').css({'color': '#EA6D24'});
         $('.type-up').css({'color': '#ccc'});
+        $('.type-up').prop('disabled', true);
       }
       if(top > -200 && top < 0) {
         $('.type-down').css({'color': '#EA6D24'});
         $('.type-up').css({'color': '#ccc'});
+        $('.type-up').prop('disabled', true);
+        $('.type-down').prop('disabled', false);
       }
       console.log('top down', top);
     });

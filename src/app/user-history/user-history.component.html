@@ -11,7 +11,7 @@
   <tbody  cellspacing="10">
     <tr *ngFor="let invoiceDetail of invoiceDetails | paginate: { itemsPerPage: 6, currentPage: page }; let i = index" data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
       <td>{{i+1}}</td>
-      <td>{{invoiceDetail.orderingTime | day: format}}</td>
+      <td>{{invoiceDetail.orderingTime | date: fomart}}</td>
       <td>{{invoiceDetail.foodAndDrink.name}}</td>
       <td class="history-food-quantity">{{invoiceDetail.quantity}}</td>
       <td class="history-food-total">{{invoiceDetail.quantity * invoiceDetail.price}} d</td>

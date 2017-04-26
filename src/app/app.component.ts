@@ -31,6 +31,7 @@ export class AppComponent implements OnInit {
 
   countDown: number;
   isCustomer: boolean;
+  isAdmin: boolean;
 
   getOrdering: boolean;
 
@@ -43,7 +44,10 @@ export class AppComponent implements OnInit {
     timeout: 10000
   };
   constructor(
-    private router: Router, private facebookService: FacebookService, private userAuthenticationService: UserAuthenticationService, private userProfileService: UserProfileService) {
+    private router: Router,
+    private facebookService: FacebookService,
+    private userAuthenticationService: UserAuthenticationService,
+    private userProfileService: UserProfileService) {
       let fbParams: InitParams = {
                                      appId: '830527260415888',
                                      xfbml: true,
@@ -84,6 +88,14 @@ export class AppComponent implements OnInit {
     }
     else {
       this.isCustomer = true;
+    }
+    var isAdmin = localStorage.getItem('isAdmin');
+    if(isAdmin) {
+      this.isAdmin = (isAdmin === "true");
+      console.log('isAdmin ', this.isAdmin);
+    }
+    else {
+      this.isAdmin = false;
     }
     this.countDown = 0;
     if(navigator.geolocation){
@@ -190,19 +202,25 @@ export class AppComponent implements OnInit {
           switch (typeOfAccount) {
             case "ADMIN":
               this.isCustomer = false;
+              this.isAdmin = true;
               localStorage.setItem('isCustomer', this.isCustomer.toString());
+              localStorage.setItem('isAdmin', this.isAdmin.toString());
               this.router.navigate(["/admin"]);
               $('#login').modal('hide');
             break;
             case "STAFF":
               this.isCustomer = false;
               localStorage.setItem('isCustomer', this.isCustomer.toString());
+              this.isAdmin = false;
+              localStorage.setItem('isAdmin', this.isAdmin.toString());
               this.router.navigate(["/staff"]);
               $('#login').modal('hide');
               break;
             default:
               this.isCustomer = true;
               localStorage.setItem('isCustomer', this.isCustomer.toString());
+              this.isAdmin = false;
+              localStorage.setItem('isAdmin', this.isAdmin.toString());
               this.router.navigate([""]);
               $('#login').modal('hide');
               break;
@@ -216,8 +234,11 @@ export class AppComponent implements OnInit {
     localStorage.removeItem('allMessage');
     localStorage.removeItem('foodOrderLocal');
     localStorage.removeItem('isCustomer');
+    localStorage.removeItem('isAdmin');
     this.userName = "Anonymous user";
     this.token = null;
+    this.isCustomer = true;
+    this.isAdmin = false;
     this.router.navigate(["/"]);
     location.reload();
   }
