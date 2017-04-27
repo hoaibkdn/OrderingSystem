@@ -1,5 +1,5 @@
 import { Injectable, HostListener, Directive } from '@angular/core';
-import { Http, Response, Headers } from '@angular/http';
+import { Http, Response, Headers, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
@@ -83,12 +83,11 @@ export class MenuService {
 
   paymentRequest(payment: Payment):Observable<any> {
     const url="https://backend-os-v2.herokuapp.com/api/invoice/confirm-paid/";
-
+    let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
-    console.log(token);
-    if(!this.headers) this.headers.append('Authorization', token);
-    console.log(this.headers);
-    return this.http.put(url, JSON.stringify(payment), {headers: this.headers});
+    headers.append("Authorization", token);
+    console.log(headers);
+    return this.http.put(url, JSON.stringify(payment), {headers: headers});
   }
 
   getCombination(id: number): Observable<FoodCombination[]> {
@@ -100,6 +99,13 @@ export class MenuService {
   getTypeOfFood():Observable<FoodAndDrinkType[]> {
     const url="https://backend-os-v2.herokuapp.com/api/food-and-drink-type/all";
     return this.http.get(url).map(res => res.json());
+  }
+
+  searchTags(keySearch: string): Observable<FoodAndDrink[]> {
+    const url="https://backend-os-v2.herokuapp.com/api/food-and-drink/search/tag";
+    let params = new URLSearchParams();
+    params.set('tag', keySearch);
+    return this.http.get(url, {search: params}).map(res => res.json());
   }
 
   private extractData(res: Response) {

@@ -65,6 +65,16 @@ export class AdHomeComponent implements OnInit {
   getOrderOfTable(){
     this.adminService.getAllTable().subscribe(res => {
         this.tables = JSON.parse(res._body);
+        // let invoiceList = this.invoices;
+        // for( let i = 0; i < this.tables.length; i++){
+        //   for (let k = 0; k < invoiceList.length; k++){
+        //     if (invoiceList[k].table.id == this.tables[i].id){
+        //       this.invoices.push(invoiceList[k]);
+        //     } else {
+        //       this.invoices.push();
+        //     }
+        //   }
+        // }
         console.log("Tables: ", this.tables);
         this.groupThreeTables = [];
         var i = 0;
@@ -85,20 +95,68 @@ export class AdHomeComponent implements OnInit {
             }
           }
         }
-        let invoiceList = [];
+        let invoiceList: Invoice[] = [];
         this.orderOfTable = [];
-        for (let i = 0; i < this.invoices.length; i++){
-          invoiceList.push(this.invoices[i]);
+        for (let i = 0; i < this.tables.length; i++){
+          let isNull = true;
+          for (let k = 0; k < this.invoices.length; k++){
+              if(this.invoices[k] != null && this.invoices[k].table.id == i + 1){
+                console.log("Invoice ", this.invoices[k], " table: ", i + 1);
+                invoiceList.push(this.invoices[k]);
+                isNull = false;
+                break;
+              }
+          }
+          if(isNull){
+            console.log("No find");
+            invoiceList.push(null);
+            console.log("No find: ", invoiceList);
+          }
         }
         invoiceList.sort(function(invoice1: Invoice, invoice2:Invoice) {
-          return (parseInt(invoice1.createdDate + "") - parseInt(invoice2.createdDate + ""));
+          if (invoice1 != null && invoice2 != null){
+            return (parseInt(invoice1.createdDate + "") - parseInt(invoice2.createdDate + ""));
+          } else {
+            return 0;
+          }
         });
+        // this.invoices = invoiceList;
+        // for (let l = 0; l < this.invoices.length; l++){
+        //   if(this.invoices[l] != null){
+        //     console.log("Invoice List: " + this.invoices[l].table.id, " is made " + this.invoices[l].made);
+        //   } else {
+        //     console.log(null);
+        //   }
+        // }
+        this.invoices = [];
+        for (let m = 0; m < invoiceList.length; m++){
+          this.invoices.push(invoiceList[m]);
+        }
+        this.invoices.sort(function(invoice1: Invoice, invoice2:Invoice) {
+          if (invoice1 != null && invoice2 != null){
+            return (parseInt(invoice1.table.id + "") - parseInt(invoice2.table.id + ""));
+          } else {
+            return 0;
+          }
+        })
+        let order = 1;
         for (let k = 1; k <= invoiceList.length; k++){
-           let data = {order: "" + k, tableId: invoiceList[k-1].table.id + ""};
-           this.orderOfTable.push(data);
+          if (invoiceList[k - 1] != null){
+            let data = {order: "" + order, tableId: invoiceList[k-1].table.id + ""};
+            this.orderOfTable.push(data);
+            order++;
+          } else {
+            let data = {order: "", tableId: "0"};
+            this.orderOfTable.push(null);
+          }
         }
         this.orderOfTable.sort((a, b) =>{
-          return parseInt(a["tableId"]) - parseInt(b["tableId"]);
+          if (a != null && b != null){
+            return parseInt(a["tableId"]) - parseInt(b["tableId"]);
+          } else {
+            return 0;
+          }
+          
         })
         console.log("Order of table: ", this.orderOfTable);
       }, err => {

@@ -14,6 +14,8 @@ import { FoodCombination } from '../models/FoodCombination';
 import { FoodLocalStorage } from '../models/food-localstorage';
 import { OrderingCombination } from '../models/ordering-combination';
 import { FoodAndDrinkType } from '../models/food-and-drink-type';
+import { UserProfileService } from '../user-profile/user-profile.service';
+
 import * as _ from 'lodash';
 import './../../assets/js/menu.js';
 declare var $:any;
@@ -53,13 +55,75 @@ export class MenuComponent implements OnInit {
   text: string;
   currentFood = [];
   stompClient: any;
+  longitude: number;
+  latitude: number;
+  distance: number;
+  resLon: number;
+  resLat: number;
+  widthDevice: number;
+  isMobileInvoiceOpen: boolean;
+  isOpenedModal: boolean = false;
+  options = {
+    timeout: 10000
+  };
 
   constructor(private menuService: MenuService,
               private componentFactoryResolver: ComponentFactoryResolver,
               private elementRef: ElementRef,
-              private router: Router) {
+              private router: Router,
+              private userProfileService: UserProfileService) {
                 this.foodLocalStorages = [];
-               }
+  }
+
+  error(err) {
+    console.log(err);
+  }
+
+  setPosition(position){
+      this.longitude = position.coords.longitude;
+      this.latitude = position.coords.latitude;
+      this.userProfileService.getLocation().subscribe(res => {
+        let location = res._body;
+        this.resLat = location.split(',')[0];
+        this.resLon = location.split(',')[1];
+        localStorage.setItem('resLat', this.resLat + "");
+        localStorage.setItem('resLon', this.resLon + "");
+        this.distance = this.distanceInKmBetweenEarthCoordinates(this.resLat, this.resLon, this.latitude, this.longitude);
+        console.log("Distance: ", this.distance.toFixed(2), " km");
+      }, err => {
+        console.log(err);
+      })
+  }
+
+  degreesToRadians(degrees) {
+    return degrees * Math.PI / 180;
+  }
+
+  distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
+  // https://en.wikipedia.org/wiki/Haversine_formula
+    var earthRadiusKm = 6371;
+
+    var dLat = this.degreesToRadians(lat2-lat1);
+    var dLon = this.degreesToRadians(lon2-lon1);
+
+    lat1 = this.degreesToRadians(lat1);
+    lat2 = this.degreesToRadians(lat2);
+
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    this.distance = earthRadiusKm * c * 1000
+    return earthRadiusKm * c;
+  }
+
+  // Call to get distance
+  getDistance(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.error, this.options);
+     } else {
+         alert("No location is supported");
+     }
+  }
 
   ngOnInit() {
     // this.tableId = parseInt(localStorage.getItem("tableId"));
@@ -70,6 +134,7 @@ export class MenuComponent implements OnInit {
 
     // TODO: Fix table id
     this.tableId = 4;
+    this.isOpenedModal = false;
     localStorage.setItem("tableId", 4 + "");
     console.log('tableId ', this.tableId);
     this.getTypeOfFood();
@@ -92,6 +157,45 @@ export class MenuComponent implements OnInit {
     this.totalMoney();
     this.textSearch = "";
     this.typeUpDown();
+    this.getDistance();
+    this.isMobileInvoiceOpen = false;
+    this.isOpenedModal = false;
+    console.log('init modal ', this.isMobileInvoiceOpen);
+    var self = this;
+    // this.checkInvoiceMobileOpen();
+    $('body').on('click', function(e){
+      console.log('@@@@@ modal close1 ', self.isMobileInvoiceOpen);
+      var isOpen = $('#invoiceMobile').hasClass('in');
+      console.log('body isOpenedModal ', self.isOpenedModal);
+      if(self.isMobileInvoiceOpen && self.isOpenedModal) {
+        console.log('@@@@@ modal close2 ', self.isMobileInvoiceOpen);
+        var allInvoice = $('.ordering');
+        var boxInvoiceTb = $('.invoice');
+        boxInvoiceTb.append(allInvoice);
+        self.isMobileInvoiceOpen = false;
+      }
+    });
+  }
+
+  showInvoiceMobile() {
+    var widthDevice = $(window).width();
+    console.log('widthDevice ', widthDevice);
+    if(widthDevice <= 768) {
+      var allInvoice = $('.ordering');
+      var boxInvoiceMb = $('.show-invoice-mobile');
+      boxInvoiceMb.append(allInvoice);
+      this.isMobileInvoiceOpen = true;
+      // this.isOpenedModal = true;
+      //   console.log('isOpenedModal ', this.isOpenedModal);
+      var that = this;
+      setTimeout(function() {
+        console.log('isOpenedModal1 ', that.isOpenedModal);
+        that.isOpenedModal = true;
+        console.log('isOpenedModal2 ', that.isOpenedModal);
+      }, 500);
+      console.log('show invoice ', this.isMobileInvoiceOpen);
+
+    }
   }
 
   connectAdmin(): void {
@@ -189,17 +293,22 @@ export class MenuComponent implements OnInit {
   }
 
   orderingFoodAndCombind(foodChoosed: FoodAndDrink) {
-    var foodCombinQuanity = document.getElementsByClassName('show-detail__number');
-    var numOfCombind_1 = parseInt(foodCombinQuanity[1].innerHTML);
-    var numOfCombind_2 = parseInt(foodCombinQuanity[2].innerHTML);
-    console.log('numOfCombind_1 ', numOfCombind_1, ' numOfCombind_2', numOfCombind_2);
-    this.ordering(foodChoosed, 0);
-    if(numOfCombind_1 > 0) {
-      this.ordering(this.orderingCombinations[0].food, numOfCombind_1);
-    }
-    if(numOfCombind_2 > 0) {
-      this.ordering(this.orderingCombinations[1].food, numOfCombind_2);
-    }
+    // if(this.distance > 1) {
+    //   alert("You cannot order food or drink outside the restaurant");
+    // }
+    // else {
+      var foodCombinQuanity = document.getElementsByClassName('show-detail__number');
+      var numOfCombind_1 = parseInt(foodCombinQuanity[1].innerHTML);
+      var numOfCombind_2 = parseInt(foodCombinQuanity[2].innerHTML);
+      console.log('numOfCombind_1 ', numOfCombind_1, ' numOfCombind_2', numOfCombind_2);
+      this.ordering(foodChoosed, 0);
+      if(numOfCombind_1 > 0) {
+        this.ordering(this.orderingCombinations[0].food, numOfCombind_1);
+      }
+      if(numOfCombind_2 > 0) {
+        this.ordering(this.orderingCombinations[1].food, numOfCombind_2);
+      }
+    // }
   }
 
   changePrice(event) {
@@ -682,9 +791,9 @@ export class MenuComponent implements OnInit {
     this.foodLocalStoragesOrdering = [];
     this.totalMoney();
     this.router.navigate(["/"]);
+    this.stompClient.send("/app/admin", {}, "Table: " + localStorage.getItem("tableId")
+      + " - InvoiceId: " + payment.invoiceId + " is requesting payment with type: " + payment.paymentType);
     $('#paymentForm').modal('hide');
-
-    // Quang: send message to staff
 
   }
 
@@ -763,9 +872,7 @@ export class MenuComponent implements OnInit {
     }
 
     var BACKSPACE_KEY= 8;
-    var ALT_KEY = 18;
-    var CTRL_KEY = 17;
-    var SHIFT_KEY = 16;
+    var ENTER_KEY = 13;
     var keySearch = String.fromCharCode(event.keyCode);
     var indexArr = [];
 
@@ -788,6 +895,17 @@ export class MenuComponent implements OnInit {
 
     console.log("all food size "+ this.food.length);
     console.log("current food size "+ this.currentFood.length);
+
+    if(event.keyCode === ENTER_KEY) {
+      this.searchTags(this.textSearch);
+    }
+  }
+
+  searchTags(text: string) {
+    this.menuService.searchTags(text)
+      .subscribe(res => {this.food = res;
+        console.log('search tag ', this.food);
+        });
   }
 
   getTypeOfFood() {
@@ -859,4 +977,20 @@ export class MenuComponent implements OnInit {
     let tableId = localStorage.getItem("tableId");
     this.stompClient.send("/app/admin", {}, "Table " + tableId + " is ordering");
   };
+
+
+  checkInvoiceMobileOpen() {
+    // var isOpen = $('#invoiceMobile').hasClass('in');
+
+    if(this.isMobileInvoiceOpen) {
+      console.log('@@@@@ modal open');
+      $('body').on('click', function(e){
+        console.log('@@@@@ modal close');
+        var allInvoice = $('.ordering');
+        var boxInvoiceTb = $('.invoice');
+        boxInvoiceTb.append(allInvoice);
+        this.isMobileInvoiceOpen = false;
+      });
+    };
+  }
 }
