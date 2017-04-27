@@ -11,8 +11,8 @@ import { RatingGet } from './../models/rating-get';
 
 @Injectable()
 export class AdStatisticDrinkService {
-  private drinkUrl = "http://backend-os.herokuapp.com/api/rate/1/num-of-people";
-  private serviceUrl = "http://backend-os.herokuapp.com/api/rate/2/num-of-people";
+  private drinkUrl = "https://backend-os.herokuapp.com/api/rate/1/num-of-people";
+  private serviceUrl = "https://backend-os.herokuapp.com/api/rate/2/num-of-people";
   // private drinkUrl = "http://localhost:3000/food";
   constructor(private http: Http) {}
 
