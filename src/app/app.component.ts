@@ -184,8 +184,8 @@ export class AppComponent implements OnInit {
     this.token = null;
     this.isCustomer = true;
     this.isAdmin = false;
-    this.router.navigate(["/"]);
-    location.reload();
+    localStorage.setItem('isCustomer', true + "");
+    this.router.navigate(['']);
   }
 
 
