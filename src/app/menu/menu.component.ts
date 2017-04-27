@@ -15,6 +15,7 @@ import { FoodLocalStorage } from '../models/food-localstorage';
 import { OrderingCombination } from '../models/ordering-combination';
 import { FoodAndDrinkType } from '../models/food-and-drink-type';
 import { UserProfileService } from '../user-profile/user-profile.service';
+import { LoadingPage } from './../loading-indicator/loading-page';
 
 import * as _ from 'lodash';
 import './../../assets/js/menu.js';
@@ -28,10 +29,11 @@ declare var Stomp: any;
   encapsulation: ViewEncapsulation.None
 })
 
-export class MenuComponent implements OnInit {
+export class MenuComponent extends LoadingPage implements OnInit {
   food: FoodAndDrink[];
   allFood: FoodAndDrink[];
   afood: FoodAndDrink;
+  isfilteringFood: boolean = true;
   errorMessage: string;
   quantity: number;
   priceStr: string;
@@ -72,6 +74,7 @@ export class MenuComponent implements OnInit {
               private elementRef: ElementRef,
               private router: Router,
               private userProfileService: UserProfileService) {
+                super(false);
                 this.foodLocalStorages = [];
   }
 
@@ -126,6 +129,9 @@ export class MenuComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.standby();
+    this.isfilteringFood = true;
+    this.isPayed = false;
     // this.tableId = parseInt(localStorage.getItem("tableId"));
     let isCustomer = localStorage.getItem("isCustomer");
     if(isCustomer.includes("true")){
@@ -152,7 +158,7 @@ export class MenuComponent implements OnInit {
     this.menuService.getAllFood()
         .subscribe(allFood => {this.allFood = allFood;
         this.food = this.getFood(1);
-
+        this.ready();
     });
     this.totalMoney();
     this.textSearch = "";
@@ -230,6 +236,7 @@ export class MenuComponent implements OnInit {
   }
 
   getFood(id: number) {
+    this.isfilteringFood = true;
     var foodByType = [];
     this.allFood.forEach( (foodDrink, index) => {
       if(foodDrink.foodAndDrinkType.id === id) foodByType.push(foodDrink);
@@ -758,7 +765,11 @@ export class MenuComponent implements OnInit {
        size--;
      }
      var btnPaymen = document.getElementsByClassName("ordering__btn--payment")[0];
-     btnPaymen.classList.add("btn--suggest");
+    //  btnPaymen.classList.add("btn--suggest");
+    //  btnPaymen.classList.remove("btn--normal");
+     this.isPayed = true;
+     console.log('isPayed ', this.isPayed);
+
      var btnOrder = document.getElementsByClassName("ordering__btn--order")[0];
      btnOrder.classList.add("btn--normal");
      btnOrder.classList.remove("btn--suggest");
@@ -805,7 +816,7 @@ export class MenuComponent implements OnInit {
     this.stompClient.send("/app/admin", {}, "Table: " + localStorage.getItem("tableId")
       + " - InvoiceId: " + payment.invoiceId + " is requesting payment with type: " + payment.paymentType);
     $('#paymentForm').modal('hide');
-
+    location.reload();
   }
 
   public itemSvg:any =
@@ -858,7 +869,62 @@ export class MenuComponent implements OnInit {
     $('#rating').modal('hide');
   }
 
+//   onKey(event:any) {
+//     console.log('on key @@@@ ' , this.textSearch);
+
+//     // reverst food
+//     var sizeCurrentFood = this.currentFood.length;
+//     if(sizeCurrentFood > 0) {
+
+//       //pop all food in food
+//       var sizeAllFood = this.food.length;
+//       while(sizeAllFood > 0) {
+//         this.food.splice(0, 1);
+//         sizeAllFood--;
+//       }
+//       this.currentFood.forEach((value, index) => {
+//         this.food.push(value);
+//       }, this);
+//     }
+
+//     else {
+//       this.food.forEach(function(value, index) {
+//         this.currentFood.push(value);
+//       }, this);
+//     }
+
+//     var BACKSPACE_KEY= 8;
+//     var ENTER_KEY = 13;
+//     var keySearch = String.fromCharCode(event.keyCode);
+//     var indexArr = [];
+
+//     this.currentFood.forEach(function(value, index) {
+//       if(!value.name.includes(this.textSearch)) {
+//         indexArr.push(index);
+//       }
+//     }, this);
+//     var size = indexArr.length;
+
+// // push food out of array => filter for search
+//     for (var x = 0; x < size; x++ ) {
+//       this.food.splice(indexArr[x], 1);
+//       if(size > 0 && x < (size -1)) {
+//         for (var y = 1; y < size; y++ ) {
+//           indexArr[y] -= 1;
+//         }
+//       }
+//     }
+
+//     console.log("all food size "+ this.food.length);
+//     console.log("current food size "+ this.currentFood.length);
+
+//     if(event.keyCode === ENTER_KEY) {
+//       this.searchTags();
+//     }
+//   }
+
   onKey(event:any) {
+    this.isfilteringFood = false;
     console.log('on key @@@@ ' , this.textSearch);
 
     // reverst food
@@ -866,25 +932,23 @@ export class MenuComponent implements OnInit {
     if(sizeCurrentFood > 0) {
 
       //pop all food in food
-      var sizeAllFood = this.food.length;
+      var sizeAllFood = this.allFood.length;
       while(sizeAllFood > 0) {
-        this.food.splice(0, 1);
+        this.allFood.splice(0, 1);
         sizeAllFood--;
       }
       this.currentFood.forEach((value, index) => {
-        this.food.push(value);
+        this.allFood.push(value);
       }, this);
     }
 
     else {
-      this.food.forEach(function(value, index) {
+      this.allFood.forEach(function(value, index) {
         this.currentFood.push(value);
       }, this);
     }
 
-    var BACKSPACE_KEY= 8;
     var ENTER_KEY = 13;
-    var keySearch = String.fromCharCode(event.keyCode);
     var indexArr = [];
 
     this.currentFood.forEach(function(value, index) {
@@ -896,7 +960,7 @@ export class MenuComponent implements OnInit {
 
 // push food out of array => filter for search
     for (var x = 0; x < size; x++ ) {
-      this.food.splice(indexArr[x], 1);
+      this.allFood.splice(indexArr[x], 1);
       if(size > 0 && x < (size -1)) {
         for (var y = 1; y < size; y++ ) {
           indexArr[y] -= 1;
@@ -904,18 +968,20 @@ export class MenuComponent implements OnInit {
       }
     }
 
-    console.log("all food size "+ this.food.length);
+    console.log("all food size "+ this.allFood.length);
     console.log("current food size "+ this.currentFood.length);
 
     if(event.keyCode === ENTER_KEY) {
-      this.searchTags(this.textSearch);
+      this.searchTags();
     }
   }
 
-  searchTags(text: string) {
-    this.menuService.searchTags(text)
-      .subscribe(res => {this.food = res;
-        console.log('search tag ', this.food);
+  searchTags() {
+    console.log('textSearch ', this.textSearch);
+    this.isfilteringFood === false;
+    this.menuService.searchTags(this.textSearch)
+      .subscribe(res => {this.allFood = res;
+        console.log('search tag ', this.allFood);
         });
   }
 

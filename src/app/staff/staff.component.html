@@ -8,13 +8,15 @@
             <ul class="message">
             </ul>
             <div class="chat-btn">
-              <button (click)="sendMessageAdmin()" type="button" class="chat-btn-confirm btn-warning btn btn-default">OK</button>
+              <button (click)="sendMessageAdmin()" type="button" class="btn-warning btn btn-default">OK</button>
             </div>
           </div>
         </div>
-        <div class="comfirm-box" *ngIf="callPayment">
+        <div class="comfirm-box">
           <div class="confirm-payment">
-            <button (click)="getAllTableUnpay()" type="button" class="chat-btn-confirm btn-warning btn btn-default" data-toggle="modal" data-target="#tableUnpay">Confirm Payment</button>
+            <button (click)="getAllTableUnpay()" type="button" class="chat-btn-confirm btn-warning btn btn-default" data-toggle="modal" data-target="#tableUnpay">
+              <p>Confirm <br> Payment</p>
+            </button>
           </div>
         </div>
       </div>
