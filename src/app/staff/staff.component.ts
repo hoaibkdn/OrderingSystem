@@ -35,7 +35,7 @@ export class StaffComponent implements OnInit {
     private adminService: AdminService,
     private menuService: MenuService) {
     this.audio = new Audio();
-    this.audio.src = "./../assets/music/demonstrative.mp3";
+    this.audio.src = "/assets/music/demonstrative.mp3";
   }
 
   ngOnInit() {
