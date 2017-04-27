@@ -167,12 +167,14 @@ export class MenuComponent implements OnInit {
       console.log('@@@@@ modal close1 ', self.isMobileInvoiceOpen);
       var isOpen = $('#invoiceMobile').hasClass('in');
       console.log('body isOpenedModal ', self.isOpenedModal);
-      if(self.isMobileInvoiceOpen && self.isOpenedModal) {
+      if(self.isMobileInvoiceOpen && self.isOpenedModal && !isOpen) {
         console.log('@@@@@ modal close2 ', self.isMobileInvoiceOpen);
         var allInvoice = $('.ordering');
         var boxInvoiceTb = $('.invoice');
         boxInvoiceTb.append(allInvoice);
         self.isMobileInvoiceOpen = false;
+        self.isOpenedModal = false;
+        console.log('@@@@@ modal close3 ', self.isMobileInvoiceOpen);
       }
     });
   }
@@ -196,6 +198,15 @@ export class MenuComponent implements OnInit {
       console.log('show invoice ', this.isMobileInvoiceOpen);
 
     }
+  }
+
+  closeInvoiceMobile() {
+    var allInvoice = $('.ordering');
+    var boxInvoiceTb = $('.invoice');
+    boxInvoiceTb.append(allInvoice);
+    this.isMobileInvoiceOpen = false;
+    this.isOpenedModal = false;
+    $('#invoiceMobile').modal('hide');
   }
 
   connectAdmin(): void {
