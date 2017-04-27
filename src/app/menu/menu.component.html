@@ -1,19 +1,19 @@
 <section class="menu">
     <div class="container">
         <div class="row">
-            <div class="col-xs-8">
+            <div class="col-sm-8 col-xs-12">
                 <div class="menu__bg">
                     <form class="search">
                         <div class="search__group">
                             <input [componentFood]="food" id="textSearch" type="text" class="search__box" placeholder="Search" name="textSearch" [(ngModel)]="textSearch" (keyup)="onKey($event)">
-                            <button type="submit" class="btn btn-default search__btn icon-search"></button>
+                            <button (click)="searchTags()" type="button" class="btn btn-default search__btn icon-search"></button>
                         </div>
                     </form>
 
                     <div class="food overfollow">
                         <div class="col-xs-2">
                           <div class="row">
-                              <a class="type-up icon-circle-up"></a>
+                              <button class="btn btn-default type-up icon-circle-up"></button>
                               <div class="btn-type-group">
                                   <div class="row btn-type">
                                       <a (click)="getFood(type.id)" class="btn-menu" *ngFor="let type of typeOfFoods">
@@ -23,7 +23,7 @@
                                       </a>
                                   </div>
                               </div>
-                              <a href="#" class="type-down icon-circle-down"></a>
+                              <button href="#" class="btn btn-default type-down icon-circle-down"></button>
                           </div>
                         </div>
 
@@ -40,7 +40,7 @@
                                                 </div>
                                             </a>
                                         </div>
-                                        <button (click)="hotOrder(afood)" type="button" class="btn btn-default food__btn-hot-order"></button>
+                                        <button (click)="hotOrder(afood)" type="button" class="btn btn-default food__btn-hot-order">+</button>
                                     </div>
                                 </div>
 
@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-            <div class="col-xs-4">
+            <div class="col-sm-4 invoice">
                 <div class="ordering">
                     <div class="ordering__box">
                         <div class="ordering__box--inner">
@@ -102,6 +102,11 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="hide-invoice">
+      <button type="button" class="btn btn-default btn-hide-invoice"
+        data-toggle="modal" data-target="#invoiceMobile"
+        (click) = "showInvoiceMobile()">Invoice</button>
     </div>
 </section>
 
@@ -162,36 +167,21 @@
     </div>
 </div>
 
-<!--modal order food suggest
-<div class="modal fade" id="foodSuggested" tabindex="-1" role="dialog" aria-labelledby="detailFoodLabel">
+<!--modal show invoice on mobile-->
+<div class="modal fade" id="invoiceMobile" tabindex="-1" role="dialog" aria-labelledby="ratingLabel">
     <div class="modal-dialog" role="document">
-        <div class="modal-content modal-detail">
-            <div class="modal-body show-detail overfollow" *ngIf="afood">
-                <div class="show-detail__img">
-                    <img class="show-detail__img--food" src="../../assets/slice/food.png" alt="">
-                </div>
-                <div class="show-detail__info">
-                    <div class="show-detail__content">
-                        <h2>{{afood.name}}</h2>
-                        <p class="show-detail__disc">{{afood.detail}}</p>
-                        <div class="show-detail__quanity flex-box">
-                            <p class="show-detail__price">{{afood.price}} d</p>
-                            <div class="show-detail__choosing flex-box">
-                                <button (click)="quantityUp()" id="btn-up" type="button" class="show-detail__btn-arrow icon-arrow-up"></button>
-                                <input id="quantity" type="text" [(ngModel)]="quantity" class="show-detail__number" name="inputQuantity" (keyup)="changePrice($event)">
-                                <button (click)="quantityDown()" id="btn-down" type="button" class="show-detail__btn-arrow icon-arrow-down"></button>
-                            </div>
-                        </div>
-                        <div class="show-detail__btn ">
-                            <a (click)="ordering(afood)" class="btn--suggest">Ok</a>
-                            <a (click)="closeFoodDetail(afood)" class="btn--normal">Cancel</a>
-                        </div>
-                    </div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="show-invoice-mobile">
+
                 </div>
             </div>
         </div>
     </div>
-</div>-->
+</div>
 
 <!--modal paymentform-->
 <div class="modal fade" id="paymentForm" tabindex="-1" role="dialog" aria-labelledby="ratingLabel">
@@ -204,10 +194,14 @@
             <div class="modal-body">
                 <div class="payment-form">
                     <label class="radio-inline">
-                      <input type="radio" [(ngModel)]="paymentForm"  name="paymentForm" value="CASH">CASH
+                      <input type="radio" [(ngModel)]="paymentForm"  name="paymentForm" value="cash">
+                        <img class="cash-img" src="../../assets/slice/vnd.png">
+                        <p>CASH</p>
                     </label>
                     <label class="radio-inline">
-                      <input type="radio" [(ngModel)]="paymentForm"  name="paymentForm" value="BANK_CARD">BANK_CARD
+                      <input type="radio" [(ngModel)]="paymentForm"  name="paymentForm" value="bank_cash">
+                        <img class="post-img" src="../../assets/slice/pos.jpg">
+                        <p>BANK_CARD</p>
                     </label>
                 </div>
             </div>

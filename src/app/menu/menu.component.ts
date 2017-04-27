@@ -3,7 +3,7 @@ import { Component, OnInit, Directive, ElementRef, ComponentFactoryResolver,
 import { MenuService } from './menu.services';
 import { FoodAndDrink } from '../models/food-and-drink';
 import { ViewEncapsulation } from '@angular/core';
-
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Observable }        from 'rxjs/Observable';
 import { Http }       from '@angular/http';
 import 'rxjs/add/operator/map';
@@ -60,6 +60,9 @@ export class MenuComponent implements OnInit {
   distance: number;
   resLon: number;
   resLat: number;
+  widthDevice: number;
+  isMobileInvoiceOpen: boolean;
+  isOpenedModal: boolean = false;
   options = {
     timeout: 10000
   };
@@ -67,6 +70,7 @@ export class MenuComponent implements OnInit {
   constructor(private menuService: MenuService,
               private componentFactoryResolver: ComponentFactoryResolver,
               private elementRef: ElementRef,
+              private router: Router,
               private userProfileService: UserProfileService) {
                 this.foodLocalStorages = [];
   }
@@ -130,6 +134,7 @@ export class MenuComponent implements OnInit {
 
     // TODO: Fix table id
     this.tableId = 4;
+    this.isOpenedModal = false;
     localStorage.setItem("tableId", 4 + "");
     console.log('tableId ', this.tableId);
     this.getTypeOfFood();
@@ -152,6 +157,45 @@ export class MenuComponent implements OnInit {
     this.totalMoney();
     this.textSearch = "";
     this.typeUpDown();
+    this.getDistance();
+    this.isMobileInvoiceOpen = false;
+    this.isOpenedModal = false;
+    console.log('init modal ', this.isMobileInvoiceOpen);
+    var self = this;
+    // this.checkInvoiceMobileOpen();
+    $('body').on('click', function(e){
+      console.log('@@@@@ modal close1 ', self.isMobileInvoiceOpen);
+      var isOpen = $('#invoiceMobile').hasClass('in');
+      console.log('body isOpenedModal ', self.isOpenedModal);
+      if(self.isMobileInvoiceOpen && self.isOpenedModal) {
+        console.log('@@@@@ modal close2 ', self.isMobileInvoiceOpen);
+        var allInvoice = $('.ordering');
+        var boxInvoiceTb = $('.invoice');
+        boxInvoiceTb.append(allInvoice);
+        self.isMobileInvoiceOpen = false;
+      }
+    });
+  }
+
+  showInvoiceMobile() {
+    var widthDevice = $(window).width();
+    console.log('widthDevice ', widthDevice);
+    if(widthDevice <= 768) {
+      var allInvoice = $('.ordering');
+      var boxInvoiceMb = $('.show-invoice-mobile');
+      boxInvoiceMb.append(allInvoice);
+      this.isMobileInvoiceOpen = true;
+      // this.isOpenedModal = true;
+      //   console.log('isOpenedModal ', this.isOpenedModal);
+      var that = this;
+      setTimeout(function() {
+        console.log('isOpenedModal1 ', that.isOpenedModal);
+        that.isOpenedModal = true;
+        console.log('isOpenedModal2 ', that.isOpenedModal);
+      }, 500);
+      console.log('show invoice ', this.isMobileInvoiceOpen);
+
+    }
   }
 
   connectAdmin(): void {
@@ -249,17 +293,22 @@ export class MenuComponent implements OnInit {
   }
 
   orderingFoodAndCombind(foodChoosed: FoodAndDrink) {
-    var foodCombinQuanity = document.getElementsByClassName('show-detail__number');
-    var numOfCombind_1 = parseInt(foodCombinQuanity[1].innerHTML);
-    var numOfCombind_2 = parseInt(foodCombinQuanity[2].innerHTML);
-    console.log('numOfCombind_1 ', numOfCombind_1, ' numOfCombind_2', numOfCombind_2);
-    this.ordering(foodChoosed, 0);
-    if(numOfCombind_1 > 0) {
-      this.ordering(this.orderingCombinations[0].food, numOfCombind_1);
-    }
-    if(numOfCombind_2 > 0) {
-      this.ordering(this.orderingCombinations[1].food, numOfCombind_2);
-    }
+    // if(this.distance > 1) {
+    //   alert("You cannot order food or drink outside the restaurant");
+    // }
+    // else {
+      var foodCombinQuanity = document.getElementsByClassName('show-detail__number');
+      var numOfCombind_1 = parseInt(foodCombinQuanity[1].innerHTML);
+      var numOfCombind_2 = parseInt(foodCombinQuanity[2].innerHTML);
+      console.log('numOfCombind_1 ', numOfCombind_1, ' numOfCombind_2', numOfCombind_2);
+      this.ordering(foodChoosed, 0);
+      if(numOfCombind_1 > 0) {
+        this.ordering(this.orderingCombinations[0].food, numOfCombind_1);
+      }
+      if(numOfCombind_2 > 0) {
+        this.ordering(this.orderingCombinations[1].food, numOfCombind_2);
+      }
+    // }
   }
 
   changePrice(event) {
@@ -268,7 +317,7 @@ export class MenuComponent implements OnInit {
       var priceNum = this.priceNumFirst * this.quantity;
       this.afood.price = priceNum;
     }
-    else if(this.quantity < 0){
+    else if(this.quantity <= 0){
       this.quantity = 1;
     }
   }
@@ -741,7 +790,8 @@ export class MenuComponent implements OnInit {
     this.foodLocalStoragesOrdered = [];
     this.foodLocalStoragesOrdering = [];
     this.totalMoney();
-    this.stompClient.send("/app/admin", {}, "Table: " + localStorage.getItem("tableId") 
+    this.router.navigate(["/"]);
+    this.stompClient.send("/app/admin", {}, "Table: " + localStorage.getItem("tableId")
       + " - InvoiceId: " + payment.invoiceId + " is requesting payment with type: " + payment.paymentType);
     $('#paymentForm').modal('hide');
 
@@ -822,9 +872,7 @@ export class MenuComponent implements OnInit {
     }
 
     var BACKSPACE_KEY= 8;
-    var ALT_KEY = 18;
-    var CTRL_KEY = 17;
-    var SHIFT_KEY = 16;
+    var ENTER_KEY = 13;
     var keySearch = String.fromCharCode(event.keyCode);
     var indexArr = [];
 
@@ -847,6 +895,17 @@ export class MenuComponent implements OnInit {
 
     console.log("all food size "+ this.food.length);
     console.log("current food size "+ this.currentFood.length);
+
+    if(event.keyCode === ENTER_KEY) {
+      this.searchTags(this.textSearch);
+    }
+  }
+
+  searchTags(text: string) {
+    this.menuService.searchTags(text)
+      .subscribe(res => {this.food = res;
+        console.log('search tag ', this.food);
+        });
   }
 
   getTypeOfFood() {
@@ -860,7 +919,9 @@ export class MenuComponent implements OnInit {
     var top = parseInt($('.btn-type').css('top').split('px')[0]);
     if(top === 0) {
       $('.type-down').css({'color': '#EA6D24'});
+      $('.type-down').prop('disabled', false);
       $('.type-up').css({'color': '#ccc'});
+      $('.type-up').prop('disabled', true);
     }
     $('.menu').on('click', '.type-down', function(event) {
       event.preventDefault();
@@ -868,15 +929,19 @@ export class MenuComponent implements OnInit {
       if(top > -300) {
         $('.btn-type').css({'top': top-150+'px'});
         $('.type-down').css({'color': '#EA6D24'});
+        $('.type-down').prop('disabled', false);
       }
       else {
         $('.type-down').css({'color': '#ccc'});
+        $('.type-down').prop('disabled', true);
       }
       if(top > -200 && top <= 0) {
         $('.type-up').css({'color': '#EA6D24'});
+        $('.type-up').prop('disabled', false);
       }
       if(top > -300 && top < -100) {
          $('.type-down').css({'color': '#ccc'});
+         $('.type-down').prop('disabled', true);
       }
       console.log('top down', top);
     });
@@ -887,17 +952,22 @@ export class MenuComponent implements OnInit {
       if(top < 0) {
         $('.btn-type').css({'top': top+150+'px'});
         $('.type-up').css({'color': '#EA6D24'});
+        $('.type-up').prop('disabled', false);
       }
       else {
         $('.type-up').css({'color': '#ccc'});
+        $('.type-up').prop('disabled', true);
       }
       if(top > -100) {
         $('.type-down').css({'color': '#EA6D24'});
         $('.type-up').css({'color': '#ccc'});
+        $('.type-up').prop('disabled', true);
       }
       if(top > -200 && top < 0) {
         $('.type-down').css({'color': '#EA6D24'});
         $('.type-up').css({'color': '#ccc'});
+        $('.type-up').prop('disabled', true);
+        $('.type-down').prop('disabled', false);
       }
       console.log('top down', top);
     });
@@ -907,4 +977,20 @@ export class MenuComponent implements OnInit {
     let tableId = localStorage.getItem("tableId");
     this.stompClient.send("/app/admin", {}, "Table " + tableId + " is ordering");
   };
+
+
+  checkInvoiceMobileOpen() {
+    // var isOpen = $('#invoiceMobile').hasClass('in');
+
+    if(this.isMobileInvoiceOpen) {
+      console.log('@@@@@ modal open');
+      $('body').on('click', function(e){
+        console.log('@@@@@ modal close');
+        var allInvoice = $('.ordering');
+        var boxInvoiceTb = $('.invoice');
+        boxInvoiceTb.append(allInvoice);
+        this.isMobileInvoiceOpen = false;
+      });
+    };
+  }
 }

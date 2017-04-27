@@ -20,6 +20,8 @@ export class AdStatisticMoneyComponent implements OnInit{
     private route: ActivatedRoute
   ) {}
   ngOnInit() {
+    console.log('income ');
+
     this.adminService.getTotalMonthly()
       .subscribe(res => {this.totalMoney = res;
         this.years = this.filterYear(this.totalMoney);

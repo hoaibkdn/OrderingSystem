@@ -36,9 +36,6 @@ export class AdStatisticMonthlyComponent implements OnInit {
             title: {
                 text: 'Monthly Average Total'
             },
-            subtitle: {
-                text: 'Source: WorldClimate.com'
-            },
             xAxis: {
                 categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
             },
@@ -56,6 +53,7 @@ export class AdStatisticMonthlyComponent implements OnInit {
                 }
             },
             series: [{
+                name: '2017',
                 data: income
             }]
           });
