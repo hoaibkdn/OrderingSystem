@@ -43,7 +43,7 @@
                     <tbody>
                         <tr *ngFor="let wt of workingTimes| paginate: { itemsPerPage: 6, currentPage: p }; let i = index">
                             <td>{{i + 1}}</td>
-                            <td>{{wt.date | date:'medium'}}</td>
+                            <td>{{wt.date | date:'mediumDate'}}</td>
                             <td>{{wt.shift.detail}}</td>
                             <td>
 			                    <button class="btn btn-danger" data-toggle="modal" (click)="deleteWT(wt)" data-target="#deleteWorkingTime">X</button>
