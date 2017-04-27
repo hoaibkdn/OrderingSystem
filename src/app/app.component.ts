@@ -50,7 +50,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    localStorage.setItem('isCustomer', true + "");
+    // localStorage.setItem('isCustomer', true + "");
     this.getOrdering = false;
     var isCustomer = localStorage.getItem('isCustomer');
     if(isCustomer) {
@@ -59,6 +59,7 @@ export class AppComponent implements OnInit {
     }
     else {
       this.isCustomer = true;
+      localStorage.setItem('isCustomer', true + "");
     }
     var isAdmin = localStorage.getItem('isAdmin');
     if(isAdmin) {

@@ -29,7 +29,9 @@ export class AdStatisticDrinkComponent implements OnInit{
     ngOnInit() {
       this.getDetailRating();
       this.adStatisticDrinkService.getRatingDrink()
-          .subscribe(ratingArr => {this.ratingArr = ratingArr; console.log(this.ratingArr);
+          .subscribe(ratingArr => {
+            this.ratingArr = ratingArr; 
+            console.log(this.ratingArr);
           this.chart = new Chart( {
           chart: {
             plotBackgroundColor: null,
