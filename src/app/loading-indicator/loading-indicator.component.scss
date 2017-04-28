@@ -45,8 +45,8 @@ $time: 0.5s;
   background: #000;
   overflow: hidden;
   margin: 0;
-
   .pacman:before, .pacman:after{
+    z-index: 10;
     content: '';
     position: absolute;
     background: $amber;
@@ -76,7 +76,7 @@ $time: 0.5s;
     margin-left: 30px;
     border-radius: 50%;
     background: $grey;
-    // z-index: -1;
+    z-index: 5;
     box-shadow: 30px 0 0 $grey,
                 60px 0 0 $grey,
                 90px 0 0 $grey,
