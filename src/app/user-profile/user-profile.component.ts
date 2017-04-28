@@ -44,8 +44,8 @@ export class UserProfileComponent implements OnInit {
     this.userProfileService.getInfo()
       .subscribe(res => {this.userProfile = res;
         console.log("user profile ", this.userProfile);
-        if(this.userProfile.gender === 1) this.gender = "Male";
-        else if(this.userProfile.gender === 0) this.gender = "Female";
+        if(this.userProfile.gender === 0) this.gender = "Male";
+        else if(this.userProfile.gender === 1) this.gender = "Female";
         else if(this.userProfile.gender !== 0 && this.userProfile.gender !== 1) this.gender = "Other";
         });
   }

@@ -11,7 +11,7 @@ export class UserAuthenticationService {
         this.loggedIn = !!localStorage.getItem('token');
     }
 
-	  logIn(email: String, password: String, urlPath: String) {
+	  logIn(email: String, password: String, urlPath: String): Observable<any> {
 	  	let postUrl = "https://backend-os-v2.herokuapp.com/api/auth/login";
 	  	let headers = new Headers({'Content-Type': 'application/json'});
 	        return this.http

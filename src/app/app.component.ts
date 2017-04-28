@@ -124,15 +124,17 @@ export class AppComponent extends LoadingPage implements OnInit {
 
   signIn() {
     this.standby();
-    $('#login').modal('hide');
     this.userAuthenticationService.logIn(this.inputEmail, this.inputPassword, "https://orderingsys.herokuapp.com").subscribe(
       res => {
+        console.log(res);
+        $('#login').modal('hide');
         this.token = res.json().token;
         localStorage.setItem('token', this.token);
         this.doAfterLogin();
         this.ready();
         console.log('isLoading2 ', this.isLoading);
       }, err => {
+        alert("Oops! You might have used wrong email/password. Please check it again.")
         console.log("Error: ", err);
       })
   }

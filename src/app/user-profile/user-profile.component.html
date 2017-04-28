@@ -3,7 +3,7 @@
     <div class="row">
       <div class="profile-wrap overfollow">
         <div class="col-xs-12 profile-group">
-          <img class="profile-qrcode" src="./../../assets/slice/qr-code.jpg" alt="">
+          <img class="profile-qrcode" src="{{userProfile.avatar}}" alt="{{userProfile.name}}" *ngIf="userProfile">
           <div class="profile-info" *ngIf="userProfile">
             <form action="#" method="PUT">
               <div class="form-group profile-line">
@@ -22,13 +22,13 @@
               </div>
               <div class="form-group profile-line">
                 <label class="radio-inline">
-                  <input type="radio" [(ngModel)]="gender"  name="gender" value="Female" checked>Female
+                  <input type="radio" [(ngModel)]="gender"  name="gender" [checked]="gender == 'Female' ? true : false" value="Female">Female
                 </label>
                 <label class="radio-inline">
-                  <input type="radio" [(ngModel)]="gender"  name="gender" value="Male">Male
+                  <input type="radio" [(ngModel)]="gender"  name="gender" value="Male" [checked]="gender == 'Male' ? true : false">Male
                 </label>
                 <label class="radio-inline">
-                  <input type="radio" [(ngModel)]="gender"  name="gender" value="Other">Other
+                  <input type="radio" [(ngModel)]="gender"  name="gender" value="Other" [checked]="gender == 'Other' ? true : false">Other
                 </label>
               </div>
               <div class="form-group profile-line">
