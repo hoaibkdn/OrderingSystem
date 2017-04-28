@@ -1,65 +1,126 @@
 <section class="chat-box-staff">
-  <div class="container">
-    <div class="row">
-      <div class="col-xs-10 col-xs-offset-1">
-        <div class="chat-box">
-          <div class="calling">
-            <img src="../../assets/slice/retro-telephone-ringing.gif" alt="A customer is needing for help"  *ngIf="hasMessage">
-            <ul class="message">
-            </ul>
-            <div class="chat-btn">
-              <button (click)="sendMessageAdmin()" type="button" class="btn-warning btn btn-default">OK</button>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1">
+                <div class="chat-box">
+                    <div class="calling">
+                        <img src="../../assets/slice/retro-telephone-ringing.gif" alt="A customer is needing for help" *ngIf="hasMessage">
+                        <ul class="message">
+                        </ul>
+                        <div class="chat-btn">
+                            <button (click)="sendMessageAdmin()" type="button" class="btn-warning btn btn-default">OK</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="comfirm-box">
+                    <div class="confirm-payment">
+                        <button (click)="getAllTableUnpay()" type="button" class="chat-btn-confirm btn-warning btn btn-default" data-toggle="modal" data-target="#tableUnpay">
+                            <p>Confirm
+                                <br> Payment</p>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-primary" (click)="checkAttendance()" *ngIf="!isChecked">Check attendance</button>
+                </div>
             </div>
-          </div>
         </div>
-        <div class="comfirm-box">
-          <div class="confirm-payment">
-            <button (click)="getAllTableUnpay()" type="button" class="chat-btn-confirm btn-warning btn btn-default" data-toggle="modal" data-target="#tableUnpay">
-              <p>Confirm <br> Payment</p>
-            </button>
-          </div>
-        </div>
-        <div>
-          <button class="btn btn-primary" (click)="checkAttendance()" *ngIf="!isChecked">Check attendance</button>
-        </div>
+    </div>
+</section>
+<!-- <table class="table table-hover">
+    <thead>
+        <th>No.</th>
+        <th>Day working</th>
+        <th>Shift detail</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let wt of allWorkingTime| paginate: { itemsPerPage: 6, currentPage: p }; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{wt.date | date:'mediumDate'}}</td>
+            <td>{{wt.shift.detail}}</td>
+        </tr>
+    </tbody>
+</table>
+<pagination-controls (pageChange)="p = $event" style="text-align: center;"></pagination-controls> -->
+
+<!-- Data table   -->
+<div class="container">
+  <div class="panel panel-default">
+    <div class="panel panel-heading">All working time</div>
+    <div class="row">
+      <div class="col-xs-3"><label class="label-control">Search by date</label></div>
+      <div class="col-xs-7">
+        <input class="form-control" type="date" value="{{searchDate| date: 'yyyy-MM-dd'}}" [(ngModel)]="searchDate" (change)="changeData()">
       </div>
     </div>
+    <table class="table table-striped" [mfData]="allWorkingTime | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="5" [(mfSortBy)]="sortBy">
+    <thead>
+    <tr>
+        <th style="width: 10%">
+            <mfDefaultSorter by="no">No</mfDefaultSorter>
+        </th>
+        <th style="width: 40%">
+            <mfDefaultSorter by="date">Day working</mfDefaultSorter>
+        </th>
+        <th style="width: 50%">
+            <mfDefaultSorter by="shift.detail">Shift detail</mfDefaultSorter>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of mf.data; let i = index">
+        <td>{{i + 1}}</td>
+        <td>{{item.date | date:'mediumDate'}}</td>
+        <td>{{item.shift.detail}}</td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="10">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+        </td>
+    </tr>
+    </tfoot>
+</table>
   </div>
-</section>
+</div>
 
 <!--modal select table need confirm-->
 <div class="modal fade" id="tableUnpay" tabindex="-1" role="dialog" aria-labelledby="tableUnpayLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content login">
-      <div class="modal-header login__header flex-box">
-        <h2 class="login__title">Unpaid tables</h2>
-        <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
-      <div class="modal-body login__body">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th>Number of table</th>
-              <th>Size</th>
-              <th>CreatedDate</th>
-              <th>Total</th>
-              <th>Payment</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr  *ngFor = 'let invoice of invoices'>
-              <td>{{invoice.table.id}}</td>
-              <td>{{invoice.table.size}}</td>
-              <td>{{invoice.createdDate | date: format}}</td>
-              <td>{{invoice.totalAmount}}</td>
-              <td><button (click)="confirmPayment(invoice, 'CASH')" type="button" class="btn btn-default btn-warning">CASH</button>&nbsp;&nbsp;/&nbsp;&nbsp;<button (click)="confirmPayment(invoice, 'BANK_CARD')" type="button" class="btn btn-default btn-warning">BANK_CARD</button></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Unpaid tables</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body login__body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Number of table</th>
+                            <th>Size</th>
+                            <th>CreatedDate</th>
+                            <th>Total</th>
+                            <th>Payment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let invoice of invoices'>
+                            <td>{{invoice.table.id}}</td>
+                            <td>{{invoice.table.size}}</td>
+                            <td>{{invoice.createdDate | date: format}}</td>
+                            <td>{{invoice.totalAmount}}</td>
+                            <td>
+                                <button (click)="confirmPayment(invoice, 'CASH')" type="button" class="btn btn-default btn-warning">CASH</button>&nbsp;&nbsp;/&nbsp;&nbsp;
+                                <button (click)="confirmPayment(invoice, 'BANK_CARD')" type="button" class="btn btn-default btn-warning">BANK_CARD</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

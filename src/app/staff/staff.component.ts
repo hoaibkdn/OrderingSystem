@@ -35,6 +35,9 @@ export class StaffComponent implements OnInit {
   isChecked: boolean;
   lastWorkingTime: WorkingTime;
   allWorkingTime: WorkingTime[];
+  workingTimes: WorkingTime[];
+  sortBy = "date";
+  searchDate: Date;
   constructor(
     private userProfileService: UserProfileService,
     private adminService: AdminService,
@@ -45,6 +48,15 @@ export class StaffComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.searchDate = new Date();
+    this.userProfileService.getAllWorkingTimeForStaff().subscribe(res => {
+      console.log(JSON.parse(res._body));
+      this.allWorkingTime = JSON.parse(res._body);
+      this.workingTimes = JSON.parse(res._body);
+      // console.log(res._body);
+    }, err => {
+      console.log(err);
+    })
     this.isChecked = true;
     if(this.isLogInInShift() > 0){
       this.adminService.getLastWorkingTime().subscribe(res => {
@@ -226,5 +238,31 @@ export class StaffComponent implements OnInit {
       })
     }
     
+  }
+
+  changeData(){
+    console.log("Search date: ", this.searchDate);
+    if (this.searchDate.toString() === ""){
+      this.allWorkingTime = this.workingTimes;
+      return ;
+    } else if(typeof(this.searchDate) == undefined){
+      this.searchDate = new Date();
+    }
+    let date = new Date(this.searchDate);
+    let day = date.getDate();
+    let month = date.getMonth();
+    let year = date.getFullYear();
+    console.log(date);
+    let that = this;
+    this.allWorkingTime = [];
+    console.log(this.allWorkingTime);
+    for(let i = 0; i < this.workingTimes.length; i++){
+      let wd = new Date(this.workingTimes[i].date);
+      console.log("Working date: ", wd);
+      if (wd.getDate() == day && wd.getMonth() == month && wd.getFullYear() == year){
+        this.allWorkingTime.push(this.workingTimes[i]);
+        console.log(this.allWorkingTime);
+      }
+    }    
   }
 }

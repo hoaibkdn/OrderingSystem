@@ -29,6 +29,8 @@ import { GoogleSignInComponent } from './google-sign-in/google-sign-in.component
 import { StaffComponent } from './staff/staff.component';
 import { ScanQRCodeComponent } from './scan-qrcode/scan-qrcode.component';
 import { LoadingIndicatorComponent } from './loading-indicator/loading-indicator.component';
+import { DataTableModule } from "angular2-datatable";
+import { DataFilterPipe } from './data-filter.pipe';
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp( new AuthConfig({}), http, options);
@@ -50,7 +52,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     StaffComponent,
     ScanQRCodeComponent,
     LoadingIndicatorComponent,
-    TruncatePipe
+    TruncatePipe,
+    DataFilterPipe
   ],
   imports: [
     BrowserModule,
@@ -58,6 +61,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     HttpModule,
     AppRoutingModule,
     Ng2PaginationModule,
+    DataTableModule
   ],
   providers: [
     {
