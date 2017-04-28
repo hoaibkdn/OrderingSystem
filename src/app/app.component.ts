@@ -63,6 +63,7 @@ export class AppComponent extends LoadingPage implements OnInit {
     else {
       this.isCustomer = true;
       localStorage.setItem('isCustomer', true + "");
+      console.log('isCustomer ', this.isCustomer);
     }
     var isAdmin = localStorage.getItem('isAdmin');
     if(isAdmin) {

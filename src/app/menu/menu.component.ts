@@ -25,7 +25,7 @@ declare var Stomp: any;
 
 @Component({
   selector: 'app-menu',
-  pipes: [TruncatePipe],
+  pipes: [ TruncatePipe ],
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
   encapsulation: ViewEncapsulation.None
