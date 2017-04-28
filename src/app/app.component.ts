@@ -6,6 +6,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FacebookService, LoginResponse, InitParams } from 'ng2-facebook-sdk';
 import { UserAuthenticationService } from './user-authentication/user-authentication.service';
 import { UserProfileService } from './user-profile/user-profile.service';
+import { LoadingPage } from './loading-indicator/loading-page';
 import './../assets/qr/effects_saycheese.js';
 
 declare var $:any;
@@ -18,7 +19,7 @@ declare var Stomp: any;
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit {
+export class AppComponent extends LoadingPage implements OnInit {
 
   users: User[];
   errorMessage: string;
@@ -34,22 +35,25 @@ export class AppComponent implements OnInit {
   isAdmin: boolean;
 
   getOrdering: boolean;
+  isLoading: boolean;
 
   constructor(
     private router: Router,
     private facebookService: FacebookService,
     private userAuthenticationService: UserAuthenticationService,
     private userProfileService: UserProfileService) {
+      super(false);
       let fbParams: InitParams = {
                                      appId: '830527260415888',
                                      xfbml: true,
                                      version: 'v2.5'
                                      };
       this.facebookService.init(fbParams);
-
   }
 
   ngOnInit() {
+    this.isLoading = false;
+    localStorage.setItem('isCustomer', true + "");
     // localStorage.setItem('isCustomer', true + "");
     this.getOrdering = false;
     var isCustomer = localStorage.getItem('isCustomer');
@@ -119,17 +123,18 @@ export class AppComponent implements OnInit {
   }
 
   signIn() {
-    // this.router.navigate(["/admin"]);
+    this.standby();
+    $('#login').modal('hide');
     this.userAuthenticationService.logIn(this.inputEmail, this.inputPassword, "https://orderingsys.herokuapp.com").subscribe(
       res => {
         this.token = res.json().token;
         localStorage.setItem('token', this.token);
         this.doAfterLogin();
+        this.ready();
+        console.log('isLoading2 ', this.isLoading);
       }, err => {
         console.log("Error: ", err);
-      }
-
-    )
+      })
   }
 
   doAfterLogin(){

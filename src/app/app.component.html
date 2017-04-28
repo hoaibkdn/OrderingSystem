@@ -1,4 +1,7 @@
-<header class="header">
+<div *ngIf="loading === true">
+  <app-loading-indicator></app-loading-indicator>
+</div>
+<header class="header" *ngIf="loading === false">
   <div class="header__bg clearfix">
     <div class="header__bg--img">
       <div class="container">

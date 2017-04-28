@@ -1,10 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
-@import "assets/bootstrap-theme/_bootstrap.scss";
-@import "app/helper/_all.scss";
-
-$width: 100px;
+$width: 50px;
 $height: $width/2;
-$amber: #EA6D24;
+$amber:#EA6D24;
 $grey: #aaa;
 $time: 0.5s;
 
@@ -49,8 +45,8 @@ $time: 0.5s;
   background: #000;
   overflow: hidden;
   margin: 0;
-
   .pacman:before, .pacman:after{
+    z-index: 10;
     content: '';
     position: absolute;
     background: $amber;
@@ -80,7 +76,7 @@ $time: 0.5s;
     margin-left: 30px;
     border-radius: 50%;
     background: $grey;
-    z-index: -1;
+    z-index: 5;
     box-shadow: 30px 0 0 $grey,
                 60px 0 0 $grey,
                 90px 0 0 $grey,
