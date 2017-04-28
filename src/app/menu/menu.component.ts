@@ -16,7 +16,7 @@ import { OrderingCombination } from '../models/ordering-combination';
 import { FoodAndDrinkType } from '../models/food-and-drink-type';
 import { UserProfileService } from '../user-profile/user-profile.service';
 import { LoadingPage } from './../loading-indicator/loading-page';
-import { TruncatePipe } from './../truncate';
+// import { TruncatePipe } from './../truncate';
 
 import * as _ from 'lodash';
 import './../../assets/js/menu.js';
@@ -25,7 +25,7 @@ declare var Stomp: any;
 
 @Component({
   selector: 'app-menu',
-  pipes: [ TruncatePipe ],
+  // pipes: [ TruncatePipe ],
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
   encapsulation: ViewEncapsulation.None
@@ -135,6 +135,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.isfilteringFood = true;
     var isPayedLocal = localStorage.getItem('isPayed');
     if(isPayedLocal) {
+      console.log("Is pay in local storage", isPayedLocal);
       this.isPayed = (isPayedLocal === "true");
     }
     else {
@@ -150,9 +151,9 @@ export class MenuComponent extends LoadingPage implements OnInit {
     }
 
     // TODO: Fix table id
-    this.tableId = 4;
+    this.tableId = 3;
     this.isOpenedModal = false;
-    localStorage.setItem("tableId", 4 + "");
+    localStorage.setItem("tableId", 3 + "");
     console.log('tableId ', this.tableId);
     this.getTypeOfFood();
     this.orderingCombinations = [];
@@ -809,6 +810,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
 
 
      //  remove btn clear
+     var that = this;
      var updateBtn = function() {
        var btnRemove = document.getElementsByClassName("ordered__food--clear");
        var size = btnRemove.length;
@@ -817,14 +819,14 @@ export class MenuComponent extends LoadingPage implements OnInit {
          size--;
        }
        var btnPaymen = document.getElementsByClassName("ordering__btn--payment")[0];
-       this.isPayed = true;
-       localStorage.setItem("isPayed", this.isPayed.toString());
-       console.log('isPayed ', this.isPayed);
+       that.isPayed = true;
+       localStorage.setItem("isPayed", that.isPayed.toString());
+       console.log('isPayed ', that.isPayed);
 
        var btnOrder = document.getElementsByClassName("ordering__btn--order")[0];
        btnOrder.classList.add("btn--normal");
        btnOrder.classList.remove("btn--suggest");
-       this.totalMoney();
+       that.totalMoney();
      }
   }
 
@@ -917,16 +919,20 @@ export class MenuComponent extends LoadingPage implements OnInit {
     var newRate= new RatingPost();
     newRate.invoiceId = this.invoiceId;
     newRate.score = foodScore + "," + serviceScore;
-    this.menuService.updateRate(newRate);
+    this.menuService.updateRate(newRate).subscribe(res => {
+      console.log(res);
+    }, err => {
+      console.log(err);
+    });
     $('#rating').modal('hide');
     this.router.navigate(["/"]);
-    location.reload();
+    // location.reload();
   }
 
   closeRating() {
     this.router.navigate(["/"]);
     $('#rating').modal('hide');
-    location.reload();
+    // location.reload();
   }
 //   onKey(event:any) {
 //     console.log('on key @@@@ ' , this.textSearch);

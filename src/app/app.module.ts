@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Directive } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule, Http, RequestOptions } from '@angular/http';
-import { TruncatePipe } from './truncate';
+import { TruncatePipe } from './truncate.pipe';
 
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
