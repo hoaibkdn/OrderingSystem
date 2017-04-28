@@ -53,7 +53,6 @@ export class AppComponent extends LoadingPage implements OnInit {
 
   ngOnInit() {
     this.isLoading = false;
-    localStorage.setItem('isCustomer', true + "");
     // localStorage.setItem('isCustomer', true + "");
     this.getOrdering = false;
     var isCustomer = localStorage.getItem('isCustomer');
