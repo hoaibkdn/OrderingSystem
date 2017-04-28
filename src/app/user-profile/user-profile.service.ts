@@ -45,4 +45,11 @@ export class UserProfileService {
     return this.http.get(url, headers);
   }
 
+  getAllWorkingTimeForStaff(): Observable<any>{
+    let url = "https://backend-os-v2.herokuapp.com/api/working-time/all/user/0";
+    let headers = new Headers({'Content-Type': 'application/json'});
+    headers.append("Authorization", localStorage.getItem('token'));
+    return this.http.get(url, {headers: headers});
+  }
+
 }

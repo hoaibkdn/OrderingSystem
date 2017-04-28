@@ -24,6 +24,7 @@
     "@angular/router": "^3.4.0",
     "@types/lodash": "^4.14.62",
     "angular-highcharts": "^2.0.0",
+    "angular2-datatable": "^0.6.0",
     "angular2-jwt": "^0.1.28",
     "angular2-social-login": "^2.0.2",
     "auth0-lock": "^10.12.3",
