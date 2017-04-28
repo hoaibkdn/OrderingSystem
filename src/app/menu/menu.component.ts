@@ -16,6 +16,7 @@ import { OrderingCombination } from '../models/ordering-combination';
 import { FoodAndDrinkType } from '../models/food-and-drink-type';
 import { UserProfileService } from '../user-profile/user-profile.service';
 import { LoadingPage } from './../loading-indicator/loading-page';
+import { TruncatePipe } from './../truncate';
 
 import * as _ from 'lodash';
 import './../../assets/js/menu.js';
@@ -24,6 +25,7 @@ declare var Stomp: any;
 
 @Component({
   selector: 'app-menu',
+  pipes: [TruncatePipe],
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
   encapsulation: ViewEncapsulation.None
