@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
 import { UserProfileService } from '../user-profile/user-profile.service';
 import { AdminService } from './../admin/admin.service';
 import { MenuService } from './../menu/menu.services';
 import { Table } from './../models/table';
 import { Invoice } from './../models/invoice';
 import { Payment } from '../models/payment';
+import { WorkingTime } from '../models/working-time';
 declare var Stomp: any;
 declare var $:any;
 
@@ -30,17 +32,42 @@ export class StaffComponent implements OnInit {
   allTable: Table[];
   invoices: Invoice[];
   isPayed: boolean;
+  isChecked: boolean;
+  lastWorkingTime: WorkingTime;
+  allWorkingTime: WorkingTime[];
   constructor(
     private userProfileService: UserProfileService,
     private adminService: AdminService,
-    private menuService: MenuService) {
+    private menuService: MenuService,
+    private router: Router) {
     this.audio = new Audio();
     this.audio.src = "/assets/music/demonstrative.mp3";
   }
 
   ngOnInit() {
-    // this.hasMessage = false;
-    // this.callPayment = true; //Quang: if customers calls payment => callPayment = true
+    this.isChecked = true;
+    if(this.isLogInInShift() > 0){
+      this.adminService.getLastWorkingTime().subscribe(res => {
+        if (res.status == 200){
+          this.lastWorkingTime = JSON.parse(res._body);
+          console.log("Last working time: ", this.lastWorkingTime);
+          if(this.isCheckedInShift()){
+            this.isChecked = true;
+          } else {
+            this.isChecked = false;
+          }
+        } else {
+          this.lastWorkingTime = null;
+          this.isChecked = false;
+        }
+        console.log("Is checked attendance: ", this.isChecked);
+      }, err => {
+        console.log(err);
+      });
+    } else {
+      this.isChecked = true;
+      console.log("Is checked attendance: ", this.isChecked);
+    }
     this.music("off",this.audio);
     this.userInfo = JSON.parse(localStorage.getItem('userInfo'));
     let allMessage = localStorage.getItem('allMessage') == null ? "" : localStorage.getItem('allMessage');
@@ -141,6 +168,7 @@ export class StaffComponent implements OnInit {
       .subscribe(res => {
         console.log(res);
         if(res.status == 201){
+          this.stompClient.send("/app/admin", {}, "InvoiceID: " + payment.invoiceId + " has been paid. Confirmed by: " + this.userInfo.name + ".");
           $('#tableUnpay').modal('hide');
           this.isPayed = res;
           console.log("pay ", this.isPayed );
@@ -148,5 +176,55 @@ export class StaffComponent implements OnInit {
         }
       },
         err => {console.log(err)});
+  }
+
+  isCheckedInShift(){
+    let lastCheckDate = new Date(this.lastWorkingTime.date);
+    console.log("Last checked date: ", lastCheckDate);
+    let today = new Date();
+    if(today.getDate() == lastCheckDate.getDate() 
+      && today.getMonth() == lastCheckDate.getMonth()
+      && today.getFullYear() == lastCheckDate.getFullYear()
+      && today.getHours() == lastCheckDate.getHours()){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isLogInInShift(){
+    let date = new Date();
+    if (date.getMinutes() >= 30 && date.getMinutes() <= 59){
+      if (date.getHours() == 6){
+        return 1;
+      } else if (date.getHours() == 11){
+        return 2;
+      } else if (date.getHours() == 16){
+        return 3;
+      }
+    }
+    return 0;
+  }
+
+  checkAttendance(){
+    if(!this.isChecked){
+      let date = new Date();
+      let body = {userId: "0", shiftId: "" + this.isLogInInShift(), date: "" + date.getTime()};
+      console.log(body);
+      this.adminService.createWorkingTime(body).subscribe(res => {
+        console.log(res);
+        if(res.status == 201){
+          localStorage.setItem('staffCheckedAttendance', true + '');
+          alert("Checked attendance successfully!");
+          window.location.reload();
+        } else {
+          alert("You can't check attendance due to being late or not at the time to do!");
+          this.router.navigate['/staff'];
+        }
+      }, err => {
+        console.log(err);
+      })
+    }
+    
   }
 }

@@ -77,6 +77,13 @@ export class AdminService {
     return this.http.get("https://backend-os-v2.herokuapp.com/api/working-time/all/user/" + id, {headers: headers});
   }
 
+  getLastWorkingTime(): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.get("https://backend-os-v2.herokuapp.com/api/working-time/last", {headers: headers});
+  }
+
   deleteWorkingTimeById(id: any): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
@@ -127,6 +134,13 @@ export class AdminService {
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
     return this.http.put("https://backend-os-v2.herokuapp.com/api/invoice/is-made/" + invoiceId, {}, {headers: headers});
+  }
+
+  createWorkingTime(body: any): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.post("https://backend-os-v2.herokuapp.com/api/working-time", body, {headers: headers});
   }
 
   private extractData(res: Response) {

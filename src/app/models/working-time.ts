@@ -7,5 +7,5 @@ export class WorkingTime{
 	id: number;
 	user: User;
 	shift: Shift;
-	date: string;
+	date: Date;
 }

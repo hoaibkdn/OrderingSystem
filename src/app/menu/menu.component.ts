@@ -145,7 +145,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     localStorage.setItem('isPayed', this.isPayed.toString());
 
     let isCustomer = localStorage.getItem("isCustomer");
-    if(isCustomer.includes("true")){
+    if(isCustomer && isCustomer.includes("true")){
       this.connectAdmin();
     }
 

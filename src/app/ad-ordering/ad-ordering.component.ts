@@ -41,7 +41,7 @@ export class AdOrderingComponent implements OnInit {
         this.stompClient.subscribe('/request/admin', (messageOutput) => {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
-          if(messageOutput.body.includes("is ordering")){
+          if(messageOutput.body.includes("is ordering")  || messageOutput.body.includes("has been paid")){
             this.getAllInvoiceDetails();
           }
         });
