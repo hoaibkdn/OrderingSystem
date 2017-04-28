@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/catch';
 
 import { FoodAndDrink } from '../models/food-and-drink';
 import { Rating } from '../models/Rating';
@@ -63,7 +64,8 @@ export class MenuService {
     }
     console.log(order);
     // return null;
-    return this.http.post(url, order, {headers: this.headers});
+    return this.http.post(url, order, {headers: this.headers})
+        .catch(this.handleError);
   }
 
   updateOrder(order: any): Observable<any> {
@@ -73,7 +75,8 @@ export class MenuService {
       this.headers.append('Authorization', token);
     }
     console.log(order);
-    return this.http.post(url, order, {headers: this.headers});
+    return this.http.post(url, order, {headers: this.headers})
+            .catch(this.handleError);
   }
   getInvoiceId(): Observable<number> {
     const url = "";
@@ -113,11 +116,12 @@ export class MenuService {
         return body.data || {};
   }
 
-  private handleError(error: any) {
-      let errMsg = (error.message) ? error.message :
-          error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-      console.error(errMsg); // log to console instead
-      return Observable.throw(errMsg);
+  public handleError(error: Response) {
+    // console.error(error);
+    if(error.status == 406) {
+      alert("This table still doesnt pay yet ");
+    }
+    return Observable.throw(error.json().error || 'Server error');
   }
 
 }

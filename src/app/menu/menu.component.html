@@ -40,7 +40,7 @@
                                               <a (click)="getDetail(afood)" class="food__name" data-toggle="modal" data-target="#detailFood">
                                                   <img class="food__img" src="../../assets/slice/food.png" alt="">
                                                   <div class="food__board">
-                                                      <p class="food__board--name">{{afood.name}}</p>
+                                                      <p class="food__board--name">{{afood.name | truncate : 13}}</p>
                                                       <p class="food__board--price">{{afood.price}} d</p>
                                                   </div>
                                               </a>
@@ -54,7 +54,7 @@
                                               <a (click)="getDetail(afood)" class="food__name" data-toggle="modal" data-target="#detailFood">
                                                   <img class="food__img" src="../../assets/slice/food.png" alt="">
                                                   <div class="food__board">
-                                                      <p class="food__board--name">{{afood.name}}</p>
+                                                      <p class="food__board--name">{{afood.name | truncate : 13}}</p>
                                                       <p class="food__board--price">{{afood.price}} d</p>
                                                   </div>
                                               </a>
@@ -259,7 +259,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button (click)="closeRating()" type="button" class="btn btn-default">Close</button>
                 <button (click)="sendRating()" type="button" class="btn btn-warning">Send</button>
             </div>
         </div>

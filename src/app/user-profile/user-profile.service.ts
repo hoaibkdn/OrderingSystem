@@ -26,13 +26,19 @@ export class UserProfileService {
   	return this.http.get(url, {headers: headers}).map(res => res.json());
   }
 
-  updateProfile(profile: User):Observable<any> {
+  updateProfile(profile: any):Observable<any> {
     var url = "https://backend-os-v2.herokuapp.com/api/user/update";
     let headers = new Headers({'Content-Type': 'application/json'});
   	headers.append("Authorization", localStorage.getItem('token'));
-    return this.http.put(url, {headers: headers}).map(res => res.json());
+    return this.http.put(url, JSON.stringify(profile), {headers: headers});
   }
 
+  updatePassword(password: string): Observable<any> {
+    var url = "https://backend-os-v2.herokuapp.com//api/user/profile/change-password";
+    let headers = new Headers({'Content-Type': 'application/json'});
+  	headers.append("Authorization", localStorage.getItem('token'));
+    return this.http.post(url, password, {headers: headers});
+  }
   getLocation():Observable<any>{
     var url = "https://backend-os-v2.herokuapp.com/location";
     let headers = new Headers({'Content-Type': 'application/json'});

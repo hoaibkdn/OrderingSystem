@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
 import { UserProfileService } from './user-profile.service';
 import { User } from './../models/user';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-user-profile',
@@ -15,7 +16,8 @@ export class UserProfileComponent implements OnInit {
   reNewPassword: string;
   userProfile: User;
   constructor( private elr: ElementRef,
-              private userProfileService: UserProfileService) {
+              private userProfileService: UserProfileService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -49,11 +51,21 @@ export class UserProfileComponent implements OnInit {
   }
 
   saveProfile() {
-    console.log("$$$$");
-    var profileUpdated = new User();
-    profileUpdated = this.userProfile;
-    profileUpdated.password = this.reNewPassword;
+    var date = new Date();
+    this.userProfile.dateOfBirth = date.getTime();
+    var profileUpdated = {
+      dateOfBirth: this.userProfile.dateOfBirth,
+      detail: this.userProfile.detail,
+      gender: this.userProfile.gender,
+      name: this.userProfile.name
+    };
+    if(this.reNewPassword) {
+      this.userProfileService.updatePassword(this.reNewPassword)
+        .subscribe(res => console.log('new pass ', res));
+    }
     console.log("user profile ", profileUpdated);
-    this.userProfileService.updateProfile(profileUpdated);
+    this.userProfileService.updateProfile(profileUpdated)
+      .subscribe(res => console.log('user update ', res));
+    this.router.navigate(["/"]);
   }
 }
