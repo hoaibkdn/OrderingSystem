@@ -11,9 +11,6 @@ import { FoodAndDrink } from '../models/food-and-drink';
 @Injectable()
 export class AdminService {
   private foodUrl = "https://backend-os-v2.herokuapp.com/api/food-and-drink";
-  // private foodUrl = "http://localhost:8080/api/food-and-drink";
-
-  // private foodUrl = "src/app/models/"
   private rateUrl;
   constructor(private http: Http) {}
 

@@ -5,8 +5,11 @@ import '../rxjs-extensions';
 
 @Injectable()
 export class UserAuthenticationService {
-	constructor(private http: Http) {
-	  }
+	private loggedIn = false;
+    redirectUrl: string;
+    constructor(private http: Http) {
+        this.loggedIn = !!localStorage.getItem('token');
+    }
 
 	  logIn(email: String, password: String, urlPath: String) {
 	  	let postUrl = "https://backend-os-v2.herokuapp.com/api/auth/login";
@@ -37,6 +40,14 @@ export class UserAuthenticationService {
 	            JSON.stringify({ idTokenString }),
 	            { headers: headers});
 	  }
+
+	  	isLoggedIn() {
+        	return this.loggedIn;
+	    }
+
+	    setLoggedIn(logined: boolean) {
+	        this.loggedIn = logined;
+	    }
 
 
 }
