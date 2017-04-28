@@ -97,7 +97,7 @@ export class StaffComponent implements OnInit {
                       let allMessage = localStorage.getItem('allMessage') == null ? "" : localStorage.getItem('allMessage');
                       localStorage.setItem('allMessage', allMessage + "?" + messageOutput.body);
                       console.log("Received message: ", messageOutput.body);
-                      if(messageOutput.body.includes("needing some help") || messageOutput.body.includes("ready")){
+                      if(messageOutput.body.includes("needing some help") || messageOutput.body.includes("ready") || messageOutput.body.includes("requesting payment")){
                         this.hasMessage = true;
                         this.music("on", this.audio);
                       } else if(messageOutput.body.includes("accept request")){

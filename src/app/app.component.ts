@@ -180,18 +180,27 @@ export class AppComponent extends LoadingPage implements OnInit {
   }
 
   logOut() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userInfo');
-    localStorage.removeItem('allMessage');
-    localStorage.removeItem('foodOrderLocal');
-    localStorage.removeItem('isCustomer');
-    localStorage.removeItem('isAdmin');
-    this.userName = "Anonymous user";
-    this.token = null;
-    this.isCustomer = true;
-    this.isAdmin = false;
-    localStorage.setItem('isCustomer', true + "");
-    this.router.navigate(['']);
+    if(localStorage.getItem('isPayed') === true + ""){
+      alert("Oops! You haven't paid your invoice but hitting log out button.");
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userInfo');
+      localStorage.removeItem('allMessage');
+      localStorage.removeItem('foodOrderLocal');
+      localStorage.removeItem('isCustomer');
+      localStorage.removeItem('isAdmin');
+      if (localStorage.getItem('isPayed')){
+        localStorage.removeItem('isPayed');
+      }
+      console.log('Is payed: ', localStorage.getItem('isPayed'));
+      console.log('Food local order: ', localStorage.getItem('foodOrderLocal'));
+      this.userName = "Anonymous user";
+      this.token = null;
+      this.isCustomer = true;
+      this.isAdmin = false;
+      localStorage.setItem('isCustomer', true + "");
+      this.router.navigate(['']);
+    }
   }
 
 

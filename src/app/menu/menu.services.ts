@@ -47,11 +47,9 @@ export class MenuService {
         .map(response => response.json() as Rating);
   }
 
-  updateRate(rating: RatingPost): Promise<RatingPost> {
+  updateRate(rating: RatingPost): Observable<any> {
     var rateUrl = "https://backend-os-v2.herokuapp.com/api/rate";
-    return this.http.post(rateUrl, JSON.stringify(rating), {headers: this.headers})
-          .toPromise()
-          .then(() => rating);
+    return this.http.post(rateUrl, JSON.stringify(rating), {headers: this.headers});
   }
 
 
