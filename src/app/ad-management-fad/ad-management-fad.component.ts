@@ -20,6 +20,7 @@ export class AdManagementFadComponent implements OnInit {
   tags: string;
   price: number;
   foodAndDrinkTypeId: number;
+  sortBy = "name";
 
   constructor(private menuService: MenuService, private adminService: AdminService) {
   this.foodAndDrinkTypeId = 1
@@ -114,5 +115,9 @@ export class AdManagementFadComponent implements OnInit {
        console.log(err);
      })
   };
+
+  sortByTags = (fad: FoodAndDrink) => {
+     return fad.tags.length;
+  }
 
 }

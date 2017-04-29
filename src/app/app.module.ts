@@ -31,6 +31,7 @@ import { ScanQRCodeComponent } from './scan-qrcode/scan-qrcode.component';
 import { LoadingIndicatorComponent } from './loading-indicator/loading-indicator.component';
 import { DataTableModule } from "angular2-datatable";
 import { DataFilterPipe } from './data-filter.pipe';
+import { DataFilterModule } from './data-filter.module';
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp( new AuthConfig({}), http, options);
@@ -52,8 +53,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     StaffComponent,
     ScanQRCodeComponent,
     LoadingIndicatorComponent,
-    TruncatePipe,
-    DataFilterPipe
+    TruncatePipe
   ],
   imports: [
     BrowserModule,
@@ -61,7 +61,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     HttpModule,
     AppRoutingModule,
     Ng2PaginationModule,
-    DataTableModule
+    DataTableModule,
+    DataFilterModule
   ],
   providers: [
     {

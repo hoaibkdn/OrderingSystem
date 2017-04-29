@@ -17,6 +17,7 @@ import { ChartModule } from 'angular-highcharts';
 import { AdStatisticServiceComponent } from './../ad-statistic-service/ad-statistic-service.component';
 import { AdStaffsComponent } from './../ad-staffs/ad-staffs.component';
 import { DataTableModule } from "angular2-datatable";
+import { DataFilterModule } from '../data-filter.module';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { DataTableModule } from "angular2-datatable";
     AdminRoutingModule,
     ChartModule,
     Ng2PaginationModule,
-    DataTableModule
+    DataTableModule,
+    DataFilterModule
   ],
   declarations: [
     AdminComponent,
