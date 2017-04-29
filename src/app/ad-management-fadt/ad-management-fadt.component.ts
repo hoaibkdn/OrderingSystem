@@ -4,6 +4,8 @@ import { FoodAndDrink } from '../models/food-and-drink';
 import { AdminService } from '../admin/admin.service';
 import { MenuService } from '../menu/menu.services';
 
+declare var $:any;
+
 @Component({
   selector: 'app-ad-management-fadt',
   templateUrl: './ad-management-fadt.component.html',
@@ -13,27 +15,50 @@ export class AdManagementFadtComponent implements OnInit {
 
 	foodAndDrinkTypes: FoodAndDrinkType[];
 	foodAndDrinks: FoodAndDrink[];
+  foodAndDrinkTypeList: FoodAndDrinkType[];
 	fads: FoodAndDrink[];
 	fadt: FoodAndDrinkType;
 	name: string;
 	detail: string;
 	mainDish: boolean;
+  sortBy = "name";
+  searchKey = "";
 
   constructor(private adminService: AdminService, private menuService: MenuService) {
   		this.mainDish = true;
    }
 
   ngOnInit() {
-  	this.adminService.getAllFoodAndDrinkType().subscribe(res => {
-  		this.foodAndDrinkTypes = JSON.parse(res._body);
-  	}, err => {
-  		console.log(err);
-  	});
+  	this.getAllTypes();
   	this.menuService.getAllFood().subscribe(res => {
   		this.fads = res;
   	}, err => {
   		console.log(err);
   	})
+  }
+
+  getAllTypes(){
+    this.adminService.getAllFoodAndDrinkType().subscribe(res => {
+      this.foodAndDrinkTypes = JSON.parse(res._body);
+      this.foodAndDrinkTypeList = JSON.parse(res._body);
+    }, err => {
+      console.log(err);
+    });
+  }
+
+  searchByKey(){
+    if(this.searchKey == ""){
+      this.foodAndDrinkTypes = this.foodAndDrinkTypeList;
+    } else {
+      this.foodAndDrinkTypes = [];
+      for (let i = 0; i < this.foodAndDrinkTypeList.length; i++){
+        let fad = this.foodAndDrinkTypeList[i];
+        if (fad.name.toLowerCase().includes(this.searchKey.toLowerCase())
+          || fad.detail.toLowerCase().includes(this.searchKey.toLowerCase())){
+          this.foodAndDrinkTypes.push(fad);
+        }
+      }
+    }
   }
 
   getAllFoodAndDrinkOfType(fadt: FoodAndDrinkType){
@@ -51,6 +76,10 @@ export class AdManagementFadtComponent implements OnInit {
   deleteFoodAndDrinkType(){
   	this.adminService.deleteFoodAndDrinkType(this.fadt.id).subscribe(res => {
   		console.log(res);
+      if (res.status == 200){
+        this.getAllTypes();
+        $('#deleteFood').modal('hide');
+      }
   	}, err => {
   		console.log(err);
   	})
@@ -74,7 +103,8 @@ export class AdManagementFadtComponent implements OnInit {
     this.adminService.createFoodAndDrinkType(JSON.parse(body)).subscribe(res => {
     	console.log(res);
     	if (res.status == 201){
-    		window.location.reload();
+    		this.getAllTypes();
+        $('#addFood').modal('hide');
     	}
     }, err => {
     	console.log(err);
