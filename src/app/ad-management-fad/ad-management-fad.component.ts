@@ -117,6 +117,7 @@ export class AdManagementFadComponent implements OnInit {
     + ', "tags": "' + this.tags
     + '", "id": ' + 0
     + ', "foodAndDrinkType": { "id": "' + this.foodAndDrinkTypeId + '"}}';
+    console.log(JSON.parse(body));
      this.adminService.createFoodAndDrink(JSON.parse(body)).subscribe(res => {
        console.log(res);
        if(res.status == 201){
