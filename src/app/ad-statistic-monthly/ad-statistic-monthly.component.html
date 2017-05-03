@@ -1,1 +1,63 @@
 <div [chart]="chart" id="container"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-2 col-xs-offset-2">
+            <label class="label-control">Search</label>
+        </div>
+        <div class="col-xs-4">
+            <input class="form-control" type="date" value="searchKey" [(ngModel)]="fromDate" (change)="searchFromDateToDate()">
+        </div>
+        <div class="col-xs-4">
+            <input class="form-control" type="date" value="searchKey" [(ngModel)]="toDate" (change)="searchFromDateToDate()">
+        </div>
+    </div>
+    <table class="table table-hover" [mfData]="invoices | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10" [(mfSortBy)]="sortBy">
+        <thead>
+            <tr>
+                <th>
+                    No.
+                </th>
+                <th>
+                    <mfDefaultSorter by="id">Invoice Id</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="payingTime">Date</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="totalAmount">Total amount</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="table.tableNumber">Table</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="customerUser.name">Customer</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="staffUser.name">Staff</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="paymentType">Payment type</mfDefaultSorter>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor='let invoice of mf.data; let i = index' data-toggle="modal" data-target="#invoice-detail" (click)="getInvoiceDetail(rateDetail.invoice.id)">
+                <td>{{i+1}}</td>
+                <td>{{invoice.id}}</td>
+                <td>{{invoice.payingTime | date: 'mediumDate'}}</td>
+                <td>{{invoice.totalAmount}}</td>
+                <td>{{invoice.table.tableNumber}}</td>
+                <td>{{invoice.customerUser.name}}</td>
+                <td>{{invoice.staffUser.name}}</td>
+                <td>{{invoice.paymentType}}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="10">
+                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

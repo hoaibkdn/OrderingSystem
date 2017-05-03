@@ -82,7 +82,9 @@ export class AdHomeComponent implements OnInit {
         for(let k = 0; k < this.tables.length; k++){
           temp.push(this.tables[k]);
         }
-        let numOfGroup = Math.floor(this.tables.length / 3) + 1;
+        let numOfTableFloat = this.tables.length / 3;
+        let numOfTableInt = Math.floor(this.tables.length / 3);
+        let numOfGroup = (numOfTableFloat > numOfTableInt) ? numOfTableInt + 1 : numOfTableInt;
         for(let i = 0; i < numOfGroup; i++){
           var group = [];
           for (let l = 0; l < 3; l++){
@@ -100,7 +102,7 @@ export class AdHomeComponent implements OnInit {
         for (let i = 0; i < this.tables.length; i++){
           let isNull = true;
           for (let k = 0; k < this.invoices.length; k++){
-              if(this.invoices[k] != null && this.invoices[k].table.id == i + 1){
+              if(this.invoices[k] != null && this.invoices[k].table.tableNumber == i + 1){
                 console.log("Invoice ", this.invoices[k], " table: ", i + 1);
                 invoiceList.push(this.invoices[k]);
                 isNull = false;
@@ -134,7 +136,7 @@ export class AdHomeComponent implements OnInit {
         }
         this.invoices.sort(function(invoice1: Invoice, invoice2:Invoice) {
           if (invoice1 != null && invoice2 != null){
-            return (parseInt(invoice1.table.id + "") - parseInt(invoice2.table.id + ""));
+            return (parseInt(invoice1.table.tableNumber + "") - parseInt(invoice2.table.tableNumber + ""));
           } else {
             return 0;
           }
@@ -142,7 +144,7 @@ export class AdHomeComponent implements OnInit {
         let order = 1;
         for (let k = 1; k <= invoiceList.length; k++){
           if (invoiceList[k - 1] != null){
-            let data = {order: "" + order, tableId: invoiceList[k-1].table.id + ""};
+            let data = {order: "" + order, tableId: invoiceList[k-1].table.tableNumber + ""};
             this.orderOfTable.push(data);
             order++;
           } else {

@@ -1,0 +1,100 @@
+<div class="row">
+    <div class="col-xs-2 col-xs-offset-10">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addTable">Add</button>
+    </div>
+</div>
+<br>
+<!-- Data table -->
+<!-- <div class="row">
+    <div class="col-xs-3 col-xs-offset-1">
+        <label class="label-control">Search</label>
+    </div>
+    <div class="col-xs-7">
+        <input class="form-control" type="text" value="searchKey" [(ngModel)]="searchKey" (change)="searchByKey()">
+    </div>
+</div> -->
+<table class="table table-hover" [mfData]="tables | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="5" [(mfSortBy)]="sortBy">
+    <thead>
+        <tr>
+            <th>
+                No.
+            </th>
+            <th>
+                <mfDefaultSorter by="tableNumber">Table number</mfDefaultSorter>
+            </th>
+            <th>
+                <mfDefaultSorter by="size">Size</mfDefaultSorter>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let table of mf.data; let i = index">
+            <td (click)="updateTable(table)" data-toggle="modal" data-target="#tableDetail">{{i + 1}}</td>
+            <td (click)="updateTable(table)" data-toggle="modal" data-target="#tableDetail">{{table.tableNumber}}</td>
+            <td (click)="updateTable(table)" data-toggle="modal" data-target="#tableDetail">{{table.size}}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="10">
+                <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<!-- Table detail -->
+<div class="modal fade" id="tableDetail" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Table detail</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+            	<div class="col-sm-6">
+                    <label>Table number</label>
+                    <br>
+                    <input class="form-control" type="text" name="name" [value]="tableNumber" disabled="true">
+                    <br>
+                </div>
+                <div class="col-sm-6">
+                    <label>Size</label>
+                    <br>
+                    <input class="form-control" type="text" name="name" [(ngModel)]="size" placeholder="Size of table">
+                    <br>
+                </div>
+                <div class="row"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit" (click)="addTable()">Add</button>
+                <button class="btn" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add new table -->
+<div class="modal fade" id="addTable" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Add new table</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-12">
+                    <label>Size</label>
+                    <br>
+                    <input class="form-control" type="text" name="name" [(ngModel)]="size" placeholder="Size of table">
+                    <br>
+                </div>
+                <div class="row"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit" (click)="addTable()">Add</button>
+                <button class="btn" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,5 @@
 // user media
 // inspired by https://www.simpl.info/getusermedia/sources/index.html
-
 var videoSelect = $('select#videoSource');
 
 var gotSources = function(sourceInfos) {

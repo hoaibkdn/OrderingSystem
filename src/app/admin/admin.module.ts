@@ -17,7 +17,8 @@ import { ChartModule } from 'angular-highcharts';
 import { AdStatisticServiceComponent } from './../ad-statistic-service/ad-statistic-service.component';
 import { AdStaffsComponent } from './../ad-staffs/ad-staffs.component';
 import { DataTableModule } from "angular2-datatable";
-import { DataFilterModule } from '../data-filter.module';
+import { DataFilterModule } from './../data-filter/data-filter.module';
+import { AdManagementTableComponent } from './../ad-management-table/ad-management-table.component';
 
 @NgModule({
   imports: [
@@ -38,7 +39,8 @@ import { DataFilterModule } from '../data-filter.module';
     AdManagementFadtComponent,
     AdManagementStaffComponent,
     AdStatisticServiceComponent,
-    AdStaffsComponent
+    AdStaffsComponent,
+    AdManagementTableComponent
   ],
   providers: [
     AdStatisticDrinkService,
