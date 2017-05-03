@@ -13,7 +13,7 @@ declare var Stomp: any;
   styleUrls: ['./ad-ordering.component.scss']
 })
 export class AdOrderingComponent implements OnInit {
-	tableId: number;
+	tableNumber: number;
 	unpaidInvoices: Invoice[];
 	invoice: Invoice;
 	invoiceDetails: InvoiceDetail[];
@@ -54,12 +54,12 @@ export class AdOrderingComponent implements OnInit {
     this.adminService.getAllUnpaidInvoice().subscribe(res => {
       this.unpaidInvoices = JSON.parse(res._body);
       console.log("Unpaid invoice: ", this.unpaidInvoices);
-      this.route.data.subscribe((data: {tableId: number} ) => {
+      this.route.data.subscribe((data: {tableNumber: number} ) => {
         this.invoice = null;
-        this.tableId = data.tableId;
-        console.log('$$$ id table ', this.tableId);
+        this.tableNumber = data.tableNumber;
+        console.log('$$$ id table ', this.tableNumber);
         for (let i = 0; i < this.unpaidInvoices.length; i++){
-          if (this.unpaidInvoices[i].table.id == this.tableId){
+          if (this.unpaidInvoices[i].table.tableNumber == this.tableNumber){
             this.invoice = this.unpaidInvoices[i];
             console.log("Invoice: ", this.invoice);
             break;
@@ -84,16 +84,16 @@ export class AdOrderingComponent implements OnInit {
   }
 
   changeClassToBeDone(){
-    let table = document.getElementsByClassName('table-order__col ' + this.tableId)[0];
+    let table = document.getElementsByClassName('table-order__col ' + this.tableNumber)[0];
     if (!table.classList.contains('has-done')){
       this.adminService.setMadeForInvoice(this.invoice.id).subscribe(res => {
           console.log(res._body);
           table.classList.add('has-done');
           table.classList.remove('is-ordering');
           let btnDone = document.getElementsByClassName('btn-done')[0];
-          console.log(this.invoice.id, " - ", this.invoice.table.id);
+          console.log(this.invoice.id, " - ", this.invoice.table.tableNumber);
           console.log(table.classList.contains('has-done'));
-          this.stompClient.send("/app/admin", {}, "Admin notification - Food and drink for table " + this.tableId + " is ready");
+          this.stompClient.send("/app/admin", {}, "Admin notification - Food and drink for table " + this.tableNumber + " is ready");
         }, err => {
           console.log(err);
         }

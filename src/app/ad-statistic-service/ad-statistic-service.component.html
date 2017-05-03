@@ -3,7 +3,7 @@
 </div>
 <div class="col-xs-12">
   <div class="statistic__group">
-    <table class="table table-hover">
+    <!-- <table class="table table-hover">
       <thead>
         <tr>
           <th>No</th>
@@ -22,7 +22,44 @@
           <td>{{rateDetail.score}}</td>
         </tr>
       </tbody>
-    </table>
+    </table> -->
+    <table class="table table-hover" [mfData]="ratingServiceDetail | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="5" [(mfSortBy)]="sortBy">
+            <thead>
+                <tr>
+                    <th>
+                        No.
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="user.name">User name</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="rateTime">Date</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="invoice.totalAmount">Invoice (total)</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="score">Score</mfDefaultSorter>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor='let rateDetail of mf.data; let i = index' data-toggle="modal" data-target="#invoice-detail" (click)="getInvoiceDetail(rateDetail.invoice.id)">
+                    <td>{{i+1}}</td>
+                    <td>{{rateDetail.user.name}}</td>
+                    <td>{{rateDetail.rateTime | date: 'mediumDate'}}</td>
+                    <td>{{rateDetail.invoice.totalAmount}}</td>
+                    <td>{{rateDetail.score}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="10">
+                        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
   </div>
 </div>
 

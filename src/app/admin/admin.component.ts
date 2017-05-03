@@ -10,9 +10,11 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 })
 
 export class AdminComponent implements OnInit {
+	currentYear: number;
   constructor() { }
 
   ngOnInit() {
+  	this.currentYear = new Date().getFullYear();
   }
 
 }

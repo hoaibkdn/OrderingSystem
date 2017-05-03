@@ -22,6 +22,7 @@ export class AdStatisticServiceComponent implements OnInit {
   ratingServiceDetail: RatingGet[];
   ratingAll: RatingGet[];
   invoiceDetails: InvoiceDetail[];
+  sortBy = "rateTime";
   constructor(
     private adStatisticDrinkService: AdStatisticDrinkService,
     private historyInvoiceService: HistoryInvoiceService) {}
@@ -94,7 +95,7 @@ export class AdStatisticServiceComponent implements OnInit {
       this.adStatisticDrinkService.getDetailRating()
         .subscribe(res => {this.ratingAll = res;
           console.log('all rate ', this.ratingAll);
-          this.ratingDrinkDetail = this.filterRating(this.ratingAll, 1);
+          // this.ratingDrinkDetail = this.filterRating(this.ratingAll, 1);
           this.ratingServiceDetail = this.filterRating(this.ratingAll, 2);
         });
     }
@@ -111,7 +112,7 @@ export class AdStatisticServiceComponent implements OnInit {
 
     getInvoiceDetail(id: string) {
     console.log('id detail ', id);
-
+    this.invoiceDetails = [];
     this.historyInvoiceService.getInvoiceDetail(id)
       .subscribe(invoiceDetails => {this.invoiceDetails = invoiceDetails;
         console.log('invoice detail ', this.invoiceDetails);

@@ -3,4 +3,5 @@ export class Table {
   size: number;
   createdDate: string;
   visible: boolean;
+  tableNumber: number;
 }

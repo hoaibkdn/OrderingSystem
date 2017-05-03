@@ -30,8 +30,8 @@ import { StaffComponent } from './staff/staff.component';
 import { ScanQRCodeComponent } from './scan-qrcode/scan-qrcode.component';
 import { LoadingIndicatorComponent } from './loading-indicator/loading-indicator.component';
 import { DataTableModule } from "angular2-datatable";
-import { DataFilterPipe } from './data-filter.pipe';
-import { DataFilterModule } from './data-filter.module';
+import { DataFilterPipe } from './data-filter/data-filter.pipe';
+import { DataFilterModule } from './data-filter/data-filter.module';
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp( new AuthConfig({}), http, options);
