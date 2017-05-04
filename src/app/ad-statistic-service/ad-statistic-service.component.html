@@ -36,7 +36,7 @@
                         <mfDefaultSorter by="rateTime">Date</mfDefaultSorter>
                     </th>
                     <th>
-                        <mfDefaultSorter by="invoice.totalAmount">Invoice (total)</mfDefaultSorter>
+                        <mfDefaultSorter by="invoice.staffUser.name">Staff</mfDefaultSorter>
                     </th>
                     <th>
                         <mfDefaultSorter by="score">Score</mfDefaultSorter>
@@ -48,7 +48,7 @@
                     <td>{{i+1}}</td>
                     <td>{{rateDetail.user.name}}</td>
                     <td>{{rateDetail.rateTime | date: 'mediumDate'}}</td>
-                    <td>{{rateDetail.invoice.totalAmount}}</td>
+                    <td>{{rateDetail.invoice.staffUser.name}}</td>
                     <td>{{rateDetail.score}}</td>
                 </tr>
             </tbody>
