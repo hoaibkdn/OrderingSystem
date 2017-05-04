@@ -24,7 +24,7 @@
                     <mfDefaultSorter by="payingTime">Date</mfDefaultSorter>
                 </th>
                 <th>
-                    <mfDefaultSorter by="totalAmount">Total amount</mfDefaultSorter>
+                    <mfDefaultSorter by="totalAmount">Invoice amount</mfDefaultSorter>
                 </th>
                 <th>
                     <mfDefaultSorter by="table.tableNumber">Table</mfDefaultSorter>
@@ -50,6 +50,10 @@
                 <td>{{invoice.customerUser.name}}</td>
                 <td>{{invoice.staffUser.name}}</td>
                 <td>{{invoice.paymentType}}</td>
+            </tr>
+            <tr>
+            	<td colspan="3"><b>Total amount ({{timeForTotalAmount}})</b></td>
+            	<td style="color: red;"><b>{{totalAmount}} VND</b></td>
             </tr>
         </tbody>
         <tfoot>
