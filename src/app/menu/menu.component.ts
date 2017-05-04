@@ -569,6 +569,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     var buttonClear = this.elementRef.nativeElement.getElementsByClassName(newClassDiv)[1];
     buttonClear.addEventListener("click", () => {
       this.clearFood(newClassDiv);
+      this.removeFromLocalStorage(savingFoodLocal);
     }, this);
 
     this.quantity = 1;
