@@ -22,6 +22,8 @@ export class AdStatisticMonthlyComponent implements OnInit {
   fromDate = "";
   toDate = "";
   yearToShow: number;
+  totalAmount: number;
+  timeForTotalAmount: string;
 
   constructor(
     private adminService: AdminService,
@@ -73,6 +75,24 @@ export class AdStatisticMonthlyComponent implements OnInit {
       
   }
 
+  getTotalAmount(){
+    let total = 0;
+    for (let i = 0; i < this.invoices.length; i++) {
+      total += this.invoices[i].totalAmount;
+      console.log("Total: ", total);
+    }
+    if (this.fromDate == ""){
+      this.timeForTotalAmount = "in " + this.yearToShow;
+    } else {
+      if (this.toDate == ""){
+        this.timeForTotalAmount = "on " + this.fromDate;
+      } else {
+        this.timeForTotalAmount = "from " + this.fromDate + " to " + this.toDate;
+      }
+    }
+    this.totalAmount = total;
+  }
+
   getAllInvoices(){
     this.adminService.getAllInvoice().subscribe(res => {
         console.log(this.yearToShow);
@@ -86,6 +106,7 @@ export class AdStatisticMonthlyComponent implements OnInit {
           console.log(payingTime.getFullYear() == this.yearToShow);
           return payingTime.getFullYear() == this.yearToShow;
         });
+        this.getTotalAmount();
         console.log(this.invoices.length);
         this.invoiceList = JSON.parse(res._body);
         console.log(JSON.parse(res._body));
@@ -116,6 +137,11 @@ export class AdStatisticMonthlyComponent implements OnInit {
     this.invoices = [];
     if (this.fromDate == ""){
       this.invoices = this.invoiceList;
+      this.invoices = this.invoices.filter((invoice: Invoice) => {
+          let payingTime = new Date(invoice.payingTime);
+          console.log(payingTime.getFullYear() == this.yearToShow);
+          return payingTime.getFullYear() == this.yearToShow;
+        });
     } else {
         if (this.toDate == ""){
         let day = new Date(this.fromDate);
@@ -147,5 +173,6 @@ export class AdStatisticMonthlyComponent implements OnInit {
         }
       }
     }
+    this.getTotalAmount();
   }
 }
