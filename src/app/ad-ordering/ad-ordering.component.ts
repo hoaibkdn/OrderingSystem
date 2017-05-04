@@ -45,8 +45,8 @@ export class AdOrderingComponent implements OnInit {
             this.getAllInvoiceDetails();
           }
         });
-    });    
-    
+    });
+
   }
 
   getAllInvoiceDetails(){
@@ -54,9 +54,9 @@ export class AdOrderingComponent implements OnInit {
     this.adminService.getAllUnpaidInvoice().subscribe(res => {
       this.unpaidInvoices = JSON.parse(res._body);
       console.log("Unpaid invoice: ", this.unpaidInvoices);
-      this.route.data.subscribe((data: {tableNumber: number} ) => {
+      this.route.data.subscribe((data: {tableId: number} ) => {
         this.invoice = null;
-        this.tableNumber = data.tableNumber;
+        this.tableNumber = data.tableId;
         console.log('$$$ id table ', this.tableNumber);
         for (let i = 0; i < this.unpaidInvoices.length; i++){
           if (this.unpaidInvoices[i].table.tableNumber == this.tableNumber){

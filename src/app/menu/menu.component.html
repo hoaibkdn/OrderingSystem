@@ -82,7 +82,7 @@
                     <div class="ordering__box">
                         <div class="ordering__box--inner">
                             <h2 class="ordering__title">Ordering</h2>
-                            <div class="ordering__food">
+                            <div class="ordering__food" *ngIf="isPaid === true">
                                 <a class="ordering__btn-ordered" role="button" data-toggle="collapse" href="#ordered-food__wrap" aria-expanded="false" aria-controls="ordered-food__wrap">
                                   &rsaquo; Ordered
                                 </a>
@@ -111,14 +111,14 @@
                             </div>
                             <div class="ordering__total overfollow">
                                 <p class="ordering__total--text">Total
-                                    <span class="ordering__total--money">180.000 d</span>
+                                    <span class="ordering__total--money">0 d</span>
                                 </p>
                             </div>
                             <div class="ordering__btn">
                                 <a (click)="ordered()" class="ordering__btn--order btn--suggest" *ngIf="permitedOrder">Order</a>
                                 <a class="ordering__btn--order btn--normal" *ngIf="!permitedOrder">Order</a>
-                                <a *ngIf="isPayed === false" class="ordering__btn--payment btn--normal">Payment</a>
-                                <a *ngIf="isPayed === true" data-toggle="modal" data-target="#paymentForm" class="ordering__btn--payment btn--suggest">Payment</a>
+                                <a *ngIf="isPaid === false" class="ordering__btn--payment btn--normal">Payment</a>
+                                <a *ngIf="isPaid === true" data-toggle="modal" data-target="#paymentForm" class="ordering__btn--payment btn--suggest">Payment</a>
                             </div>
                         </div>
                     </div>
