@@ -37,7 +37,7 @@
     border: none;
     background: $cl-dark;
     border-radius: 3px;
-
+    display: block;
   }
   &__btn-qrCode {
     left: -155px;
@@ -66,9 +66,15 @@
       margin: 0 80px;
     }
   }
+  .header__btn-qrCode {
+    display: none;
+  }
 }
 
 @media only screen and (min-width: 768px) {
+  .header__btn-qrCode {
+    display: block;
+  }
   .header__logo--text {
     display: block;
   }
