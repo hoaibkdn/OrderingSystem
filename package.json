@@ -37,6 +37,7 @@
     "ng2-bootstrap": "^1.6.3",
     "ng2-facebook-sdk": "^2.2.0",
     "ng2-pagination": "^2.0.1",
+    "ng2-validation": "^4.2.0",
     "rxjs": "^5.1.0",
     "sass-loader": "^6.0.3",
     "tslib": "^1.6.0",

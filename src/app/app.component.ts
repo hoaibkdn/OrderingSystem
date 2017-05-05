@@ -6,6 +6,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FacebookService, LoginResponse, InitParams } from 'ng2-facebook-sdk';
 import { UserAuthenticationService } from './user-authentication/user-authentication.service';
 import { UserProfileService } from './user-profile/user-profile.service';
+import { AppService } from './app.service';
 import { LoadingPage } from './loading-indicator/loading-page';
 import './../assets/qr/effects_saycheese.js';
 
@@ -36,12 +37,15 @@ export class AppComponent extends LoadingPage implements OnInit {
 
   getOrdering: boolean;
   isLoading: boolean;
+  objSignUp: Object;
+  confirmPassword: string;
 
   constructor(
     private router: Router,
     private facebookService: FacebookService,
     private userAuthenticationService: UserAuthenticationService,
-    private userProfileService: UserProfileService) {
+    private userProfileService: UserProfileService,
+    private appService: AppService) {
       super(false);
       let fbParams: InitParams = {
                                      appId: '830527260415888',
@@ -49,6 +53,13 @@ export class AppComponent extends LoadingPage implements OnInit {
                                      version: 'v2.5'
                                      };
       this.facebookService.init(fbParams);
+      this.objSignUp = {
+        email: "",
+        name: "",
+        password: "",
+        roleId: "4"
+      },
+      this.confirmPassword = "";
   }
 
   ngOnInit() {
@@ -87,6 +98,20 @@ export class AppComponent extends LoadingPage implements OnInit {
         console.log("Error: ", err);
       });
     }
+    var self = this;
+    $('body').on('click', function() {
+      var signUpIsOpen = $('#signUp').hasClass('in');
+      if(!signUpIsOpen) {
+        self.objSignUp = {
+          email: "",
+          name: "",
+          password: "",
+          roleId: "4"
+        };
+        self.confirmPassword="";
+        console.log('close sign up ', self.objSignUp);
+      }
+    })
   }
 
   typeOfAccount(permissions: Permission[]): string{
@@ -254,5 +279,33 @@ export class AppComponent extends LoadingPage implements OnInit {
       if(self.countDown === 0) clearInterval(startCount);
     }, 1000);
 
+  }
+
+  showModalSignUp() {
+    $('#login').modal('hide');
+  }
+
+  signUp() {
+    var objUser = this.objSignUp;
+    console.log("object user ", this.objSignUp);
+    this.appService.signUp(objUser)
+      .subscribe(res => {console.log("new account ", res);
+      this.token = res;
+      localStorage.setItem('token', this.token)});
+    this.router.navigate(["/"]);
+    $('#signUp').modal('hide');
+  }
+
+  closeSignUp() {
+    this.objSignUp = {
+      email: "",
+      name: "",
+      password: "",
+      roleId: "4"
+    };
+    this.confirmPassword = "";
+    // this.objSignUp.roleId = "4";
+    this.router.navigate(["/"]);
+    $('#signUp').modal('hide');
   }
 }

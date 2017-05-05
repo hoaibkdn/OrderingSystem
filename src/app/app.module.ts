@@ -21,6 +21,7 @@ import { UserAuthenticationService } from './user-authentication/user-authentica
 import { UserProfileService } from './user-profile/user-profile.service';
 import { AdminService } from './admin/admin.service';
 import { FacebookService } from 'ng2-facebook-sdk';
+import { AppService } from './app.service';
 
 import { Ng2PaginationModule } from 'ng2-pagination';
 import { RatingFoodComponent } from './rating-food/rating-food.component';
@@ -32,6 +33,7 @@ import { LoadingIndicatorComponent } from './loading-indicator/loading-indicator
 import { DataTableModule } from "angular2-datatable";
 import { DataFilterPipe } from './data-filter/data-filter.pipe';
 import { DataFilterModule } from './data-filter/data-filter.module';
+import { CustomFormsModule } from 'ng2-validation';
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp( new AuthConfig({}), http, options);
@@ -62,7 +64,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     AppRoutingModule,
     Ng2PaginationModule,
     DataTableModule,
-    DataFilterModule
+    DataFilterModule,
+    CustomFormsModule
   ],
   providers: [
     {
@@ -77,7 +80,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     UserHistoryService,
     HistoryFavoriteService,
     UserProfileService,
-    AdminService
+    AdminService,
+    AppService
   ],
   bootstrap: [AppComponent]
 })
