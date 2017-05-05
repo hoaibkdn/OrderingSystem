@@ -4,6 +4,8 @@ import { UserProfileService } from './user-profile.service';
 import { User } from './../models/user';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
+declare var $:any;
+
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
@@ -59,13 +61,15 @@ export class UserProfileComponent implements OnInit {
       gender: this.userProfile.gender,
       name: this.userProfile.name
     };
-    if(this.reNewPassword) {
-      this.userProfileService.updatePassword(this.reNewPassword)
-        .subscribe(res => console.log('new pass ', res));
-    }
-    console.log("user profile ", profileUpdated);
     this.userProfileService.updateProfile(profileUpdated)
       .subscribe(res => console.log('user update ', res));
-    this.router.navigate(["/"]);
+    if(this.reNewPassword) {
+      console.log('update profile');
+      this.userProfileService.updatePassword(this.reNewPassword)
+        .subscribe(res => console.log('new pass ', res));
+        $('#changePass').modal('show');
+    }
+    console.log("user profile ", profileUpdated);
+    this.router.navigate(["/userprofile"]);
   }
 }

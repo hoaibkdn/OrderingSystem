@@ -24,6 +24,7 @@ import { FacebookService } from 'ng2-facebook-sdk';
 import { AppService } from './app.service';
 
 import { Ng2PaginationModule } from 'ng2-pagination';
+import { ChartModule } from 'angular-highcharts';
 import { RatingFoodComponent } from './rating-food/rating-food.component';
 import { RatingServiceComponent } from './rating-service/rating-service.component';
 import { GoogleSignInComponent } from './google-sign-in/google-sign-in.component';
@@ -65,7 +66,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     Ng2PaginationModule,
     DataTableModule,
     DataFilterModule,
-    CustomFormsModule
+    CustomFormsModule,
+    ChartModule
   ],
   providers: [
     {

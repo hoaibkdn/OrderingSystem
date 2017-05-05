@@ -18,6 +18,7 @@ import { UserProfileService } from '../user-profile/user-profile.service';
 import { LoadingPage } from './../loading-indicator/loading-page';
 import { AdminService } from './../admin/admin.service';
 import { Table } from '../models/table';
+import { Chart } from 'angular-highcharts';
 // import { TruncatePipe } from './../truncate';
 
 import * as _ from 'lodash';
@@ -71,6 +72,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   isOpenedModal: boolean = false;
   tables: Table[];
   currentTable: Table;
+  chart: Chart;
   options = {
     timeout: 10000
   };
@@ -201,6 +203,26 @@ export class MenuComponent extends LoadingPage implements OnInit {
         self.isMobileInvoiceOpen = false;
         self.isOpenedModal = false;
         console.log('@@@@@ modal close3 ', self.isMobileInvoiceOpen);
+      }
+    });
+
+    // init chart
+    this.chart = new Chart({
+      chart: {
+        type: 'column'
+      },
+
+      title: {
+        text: 'Data input'
+      },
+
+      data: {
+        rows: [
+            [null, 'Ola', 'Kari'], // series names
+            ['Apples', 1, 5], // category and values
+            ['Pears', 4, 4], // category and values
+            ['Oranges', 3, 2] // category and values
+        ]
       }
     });
   }
@@ -1093,10 +1115,15 @@ export class MenuComponent extends LoadingPage implements OnInit {
     else false;
   }
   getNumOfTable(table: Table) {
-    this.currentTable = table;
-    localStorage.setItem('currentTable', JSON.stringify(this.currentTable));
-    console.log('choose table: ', JSON.parse(localStorage.getItem('currentTable')));
-    this.ordered();
-    $("#chooseTable").modal('hide');
+    if(table.tableStatus !== 0) {
+      $('#confirmTable').modal('show');
+    }
+    else {
+      this.currentTable = table;
+      localStorage.setItem('currentTable', JSON.stringify(this.currentTable));
+      console.log('choose table: ', JSON.parse(localStorage.getItem('currentTable')));
+      this.ordered();
+      $("#chooseTable").modal('hide');
+    }
   }
 }
