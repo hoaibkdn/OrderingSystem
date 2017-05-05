@@ -11,8 +11,8 @@ export class AdOrderingResolve implements Resolve<number> {
     private adminService: AdminService) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<number> {
-    let id = route.params['id'];
-    console.log("id "+id);
-    return id;
+    let number = route.params['number'];
+    console.log("number "+number);
+    return number;
   };
 }
