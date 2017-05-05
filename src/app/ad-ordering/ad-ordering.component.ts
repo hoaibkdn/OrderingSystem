@@ -45,8 +45,8 @@ export class AdOrderingComponent implements OnInit {
             this.getAllInvoiceDetails();
           }
         });
-    });    
-    
+    });
+
   }
 
   getAllInvoiceDetails(){

@@ -94,6 +94,58 @@
           <app-google-sign-in></app-google-sign-in>
         </div>
       </div>
+      <div class="modal-footer sign-up-group">
+        <p>Don't have an account? <a (click)="showModalSignUp()" class="sign-up" data-toggle="modal" data-target="#signUp">Sign Up</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--modal sign up-->
+<div class="modal fade" id="signUp" tabindex="-1" role="dialog" aria-labelledby="signUpLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content login">
+      <div class="modal-header login__header flex-box">
+        <h2 class="login__title">Sign Up</h2>
+        <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body login__body">
+        <form action="#" class="form-horizontal" #f="ngForm">
+          <div class="form-group">
+            <label for="inputYourEmail" class="col-sm-2 control-label">Email</label>
+            <div class="col-sm-10">
+              <input type="email" class="form-control" id="inputYourEmail" placeholder="Email" [(ngModel)] = "objSignUp.email" name="email">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputYourName" class="col-sm-2 control-label">Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputYourName" placeholder="Name" [(ngModel)] = "objSignUp.name" name="name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputYourPassword" class="col-sm-2 control-label">Password</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="inputYourPassword" placeholder="Password" [(ngModel)] = "objSignUp.password" name="yourPassword" #yourPassword="ngModel" [min]="5" required/>
+              <p *ngIf="yourPassword.errors?.required">Password is required</p>
+              <p *ngIf="yourPassword.errors?.min">Min length is 5 characters</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputConfirmPassword" class="col-sm-2 control-label">Confirm Password</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="inputConfirmPassword" placeholder="Password" [(ngModel)]="confirmPassword" name="confirmPass" #confirmPass="ngModel" [equalTo]="yourPassword">
+              <p *ngIf="confirmPass.errors?.equalTo">Password is wrong</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" (click)="signUp()" id="sign-in" class="btn btn-default btn-warning">Sign Up</button>
+              <button type="submit" (click)="closeSignUp()" id="sign-in" class="btn btn-default">Close</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

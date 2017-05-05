@@ -11,11 +11,11 @@ const adHomeRoutes: Routes = [
     component: AdHomeComponent,
     children: [
       {
-        path: ':id',
+        path: ':number',
         component: AdOrderingComponent,
         canDeactivate: [CanDeactivateGuard],
         resolve: {
-          tableId: AdOrderingResolve
+          tableNumber: AdOrderingResolve
         }
       }
     ]

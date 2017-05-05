@@ -46,7 +46,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   ratingFood: Rating;
   ratingService: Rating;
   invoiceId: string;
-  isPayed: boolean;
+  isPaid: boolean;
   permitedOrder: boolean;
   paymentForm: string;
   foodCombinations: FoodCombination[];
@@ -133,17 +133,17 @@ export class MenuComponent extends LoadingPage implements OnInit {
   ngOnInit() {
     this.standby();
     this.isfilteringFood = true;
-    var isPayedLocal = localStorage.getItem('isPayed');
-    if(isPayedLocal) {
-      console.log("Is pay in local storage", isPayedLocal);
-      this.isPayed = (isPayedLocal === "true");
+    var isPaidLocal = localStorage.getItem('isPaid');
+    if(isPaidLocal) {
+      console.log("Is pay in local storage", isPaidLocal);
+      this.isPaid = (isPaidLocal === "true");
     }
     else {
-      this.isPayed = false;
+      this.isPaid = false;
     }
-    console.log('isPayed ', this.isPayed);
+    console.log('isPaid ', this.isPaid);
 
-    localStorage.setItem('isPayed', this.isPayed.toString());
+    localStorage.setItem('isPaid', this.isPaid.toString());
 
     let isCustomer = localStorage.getItem("isCustomer");
     if(isCustomer && isCustomer.includes("true")){
@@ -273,6 +273,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   getDetail(afood: FoodAndDrink) {
+    this.isPaid = true;
+    localStorage.setItem('isPaid', this.isPaid.toString());
     this.getCombination(afood);
     this.quantity = 1;
     this.afood = afood;
@@ -820,9 +822,9 @@ export class MenuComponent extends LoadingPage implements OnInit {
          size--;
        }
        var btnPaymen = document.getElementsByClassName("ordering__btn--payment")[0];
-       that.isPayed = true;
-       localStorage.setItem("isPayed", that.isPayed.toString());
-       console.log('isPayed ', that.isPayed);
+       that.isPaid = true;
+       localStorage.setItem("isPaid", that.isPaid.toString());
+       console.log('isPaid ', that.isPaid);
 
        var btnOrder = document.getElementsByClassName("ordering__btn--order")[0];
        btnOrder.classList.add("btn--normal");
@@ -863,7 +865,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     payment.invoiceId = this.invoiceId;
     payment.paymentType = this.paymentForm;
     localStorage.removeItem("foodOrderLocal");
-    localStorage.removeItem("isPayed");
+    localStorage.removeItem("isPaid");
     this.foodLocalStorages = JSON.parse(localStorage.getItem("foodOrderLocal"));
     this.foodLocalStoragesOrdered = [];
     this.foodLocalStoragesOrdering = [];
@@ -927,67 +929,24 @@ export class MenuComponent extends LoadingPage implements OnInit {
     });
     $('#rating').modal('hide');
     this.router.navigate(["/"]);
+    this.isPaid = false;
+    localStorage.setItem('isPaid', this.isPaid.toString());
+    this.showTotalIsPaid();
     // location.reload();
   }
 
   closeRating() {
     this.router.navigate(["/"]);
     $('#rating').modal('hide');
-    // location.reload();
+    this.isPaid = false;
+    localStorage.setItem('isPaid', this.isPaid.toString());
+    this.showTotalIsPaid();
   }
-//   onKey(event:any) {
-//     console.log('on key @@@@ ' , this.textSearch);
 
-//     // reverst food
-//     var sizeCurrentFood = this.currentFood.length;
-//     if(sizeCurrentFood > 0) {
-
-//       //pop all food in food
-//       var sizeAllFood = this.food.length;
-//       while(sizeAllFood > 0) {
-//         this.food.splice(0, 1);
-//         sizeAllFood--;
-//       }
-//       this.currentFood.forEach((value, index) => {
-//         this.food.push(value);
-//       }, this);
-//     }
-
-//     else {
-//       this.food.forEach(function(value, index) {
-//         this.currentFood.push(value);
-//       }, this);
-//     }
-
-//     var BACKSPACE_KEY= 8;
-//     var ENTER_KEY = 13;
-//     var keySearch = String.fromCharCode(event.keyCode);
-//     var indexArr = [];
-
-//     this.currentFood.forEach(function(value, index) {
-//       if(!value.name.includes(this.textSearch)) {
-//         indexArr.push(index);
-//       }
-//     }, this);
-//     var size = indexArr.length;
-
-// // push food out of array => filter for search
-//     for (var x = 0; x < size; x++ ) {
-//       this.food.splice(indexArr[x], 1);
-//       if(size > 0 && x < (size -1)) {
-//         for (var y = 1; y < size; y++ ) {
-//           indexArr[y] -= 1;
-//         }
-//       }
-//     }
-
-//     console.log("all food size "+ this.food.length);
-//     console.log("current food size "+ this.currentFood.length);
-
-//     if(event.keyCode === ENTER_KEY) {
-//       this.searchTags();
-//     }
-//   }
+  showTotalIsPaid() {
+    var total = document.getElementsByClassName('ordering__total--money')[0];
+    total.innerHTML = '0 d';
+  }
 
   onKey(event:any) {
     this.isfilteringFood = false;

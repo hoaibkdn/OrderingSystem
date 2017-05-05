@@ -11,7 +11,7 @@
     <tr  *ngFor = 'let invoice of invoices | paginate: { itemsPerPage: 6, currentPage: p }; let i = index' data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
       <td>{{i+1}}</td>
       <td>{{invoice.payingTime | date: fomart}}</td>
-      <td>{{invoice.totalAmount}}</td>
+      <td>{{invoice.totalAmount | currency:'vnd':true:'1.0-2'}}</td>
       <td>{{invoice.paymentType}}</td>
     </tr>
   </tbody>

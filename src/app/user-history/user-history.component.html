@@ -14,7 +14,7 @@
       <td>{{invoiceDetail.orderingTime | date: fomart}}</td>
       <td>{{invoiceDetail.foodAndDrink.name}}</td>
       <td class="history-food-quantity">{{invoiceDetail.quantity}}</td>
-      <td class="history-food-total">{{invoiceDetail.quantity * invoiceDetail.price}} d</td>
+      <td class="history-food-total">{{invoiceDetail.quantity * invoiceDetail.price | currency:'vnd':true:'1.0-2'}} </td>
     </tr>
   </tbody>
 </table>

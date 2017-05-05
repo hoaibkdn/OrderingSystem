@@ -9,6 +9,7 @@ $cl-nothing: #e2e2e2;
   border-collapse: initial;
   width: 100%;
   &__col {
+    cursor: pointer;
     text-align: right;
     padding: 10px;
     background: $cl-nothing;
