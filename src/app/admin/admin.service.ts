@@ -106,7 +106,6 @@ export class AdminService {
   getAllTable(): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     return this.http.get("https://backend-os-v2.herokuapp.com/api/table/all", {headers: headers});
-
   }
 
   getAllUnpaidInvoice(): Observable<any>{

@@ -418,3 +418,14 @@
 .menu-loading {
   margin-top: 130px;
 }
+
+$cl-table-full: #f0ad4e;
+$cl-table-empty: #fff;
+.is-full {
+  background: $cl-table-full;
+  color: $cl-white;
+}
+.is-empty {
+  background: $cl-table-empty;
+  color: black;
+}
