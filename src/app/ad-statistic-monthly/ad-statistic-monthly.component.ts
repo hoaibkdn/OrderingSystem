@@ -38,6 +38,7 @@ export class AdStatisticMonthlyComponent implements OnInit {
             var showIncomYear = data.year;
             this.yearToShow = data.year;
             this.invoices = [];
+            this.totalAmount = 0;
             this.getAllInvoices();
           var income = this.filterIncomeByYear(this.totalMoney, data.year);
           console.log('income ', income);
@@ -173,6 +174,7 @@ export class AdStatisticMonthlyComponent implements OnInit {
         }
       }
     }
+    this.totalAmount = 0;
     this.getTotalAmount();
   }
 }
