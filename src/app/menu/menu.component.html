@@ -82,12 +82,13 @@
                 </div>
             </div>
 
-            <div class="col-sm-4 invoice">
+            <div class="col-sm-4">
+              <div class="invoice">
                 <div class="ordering">
                     <div class="ordering__box">
                         <div class="ordering__box--inner">
                             <h2 class="ordering__title">Ordering</h2>
-                            <div class="ordering__food" *ngIf="showOrder === true">
+                            <div class="ordering__food" >
                                 <a class="ordering__btn-ordered" role="button" data-toggle="collapse" href="#ordered-food__wrap" aria-expanded="false" aria-controls="ordered-food__wrap">
                                   &rsaquo; Ordered
                                 </a>
@@ -128,13 +129,14 @@
                         </div>
                     </div>
                 </div>
+              </div>
 
                 <!--chart-->
-                <div class="chart">
-                  <div class="chart__box">
-                    <div [chart]="chart" style="width:100%; height:290px; margin: auto"></div>
-                  </div>
+              <div class="chart">
+                <div class="chart__box">
+                  <div [chart]="chart" style="width:100%; height:290px; margin: auto"></div>
                 </div>
+              </div>
             </div>
         </div>
     </div>
