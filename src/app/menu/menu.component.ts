@@ -16,6 +16,10 @@ import { OrderingCombination } from '../models/ordering-combination';
 import { FoodAndDrinkType } from '../models/food-and-drink-type';
 import { UserProfileService } from '../user-profile/user-profile.service';
 import { LoadingPage } from './../loading-indicator/loading-page';
+import { AdminService } from './../admin/admin.service';
+import { AdStatisticDrinkService } from './../ad-statistic-drink/ad-statistic-drink.service';
+import { Table } from '../models/table';
+import { Chart } from 'angular-highcharts';
 // import { TruncatePipe } from './../truncate';
 
 import * as _ from 'lodash';
@@ -67,6 +71,12 @@ export class MenuComponent extends LoadingPage implements OnInit {
   widthDevice: number;
   isMobileInvoiceOpen: boolean;
   isOpenedModal: boolean = false;
+  tables: Table[];
+  currentTable: Table;
+  chart: Chart;
+  ratingFoodArr: Rating[];
+  ratingServiceArr: Rating[];
+  showOrder: boolean;
   options = {
     timeout: 10000
   };
@@ -75,7 +85,9 @@ export class MenuComponent extends LoadingPage implements OnInit {
               private componentFactoryResolver: ComponentFactoryResolver,
               private elementRef: ElementRef,
               private router: Router,
-              private userProfileService: UserProfileService) {
+              private userProfileService: UserProfileService,
+              private adminService: AdminService,
+              private adStatisticDrinkService: AdStatisticDrinkService) {
                 super(false);
                 this.foodLocalStorages = [];
   }
@@ -133,6 +145,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
   ngOnInit() {
     this.standby();
     this.isfilteringFood = true;
+
+    // set isPaid from localStorage
     var isPaidLocal = localStorage.getItem('isPaid');
     if(isPaidLocal) {
       console.log("Is pay in local storage", isPaidLocal);
@@ -141,9 +155,31 @@ export class MenuComponent extends LoadingPage implements OnInit {
     else {
       this.isPaid = false;
     }
-    console.log('isPaid ', this.isPaid);
-
     localStorage.setItem('isPaid', this.isPaid.toString());
+
+    // set permitedOrder from localStorage
+    var permitedOrderLocal = localStorage.getItem('permitedOrder');
+    if(permitedOrderLocal) {
+      console.log("Is pay in local storage", permitedOrderLocal);
+      this.permitedOrder = (permitedOrderLocal === "true");
+    }
+    else {
+      this.permitedOrder = false;
+    }
+    localStorage.setItem('permitedOrder', this.permitedOrder.toString());
+
+    // set showOrder from localStorage
+    var showOrderLocal = localStorage.getItem('showOrder');
+    if(showOrderLocal) {
+      this.showOrder = (showOrderLocal === "true");
+      if(this.showOrder) {
+        $('.chart').hide();
+      }
+    }
+    else {
+      this.showOrder = false;
+    }
+    localStorage.setItem('permitedOrder', this.permitedOrder.toString());
 
     let isCustomer = localStorage.getItem("isCustomer");
     if(isCustomer && isCustomer.includes("true")){
@@ -151,21 +187,29 @@ export class MenuComponent extends LoadingPage implements OnInit {
     }
 
     // TODO: Fix table id
-    this.tableId = 3;
+    var existedTable = localStorage.getItem('currentTable');
+    if(existedTable) {
+      this.currentTable = JSON.parse(localStorage.getItem('currentTable'));
+      this.tableId = this.currentTable.id;
+      localStorage.setItem("tableId", this.tableId + "");
+      console.log('tableId ', this.tableId);
+    }
     this.isOpenedModal = false;
-    localStorage.setItem("tableId", 3 + "");
-    console.log('tableId ', this.tableId);
     this.getTypeOfFood();
     this.orderingCombinations = [];
     this.foodLocalStoragesOrdering = [];
     this.foodLocalStoragesOrdered = [];
     this.quantity = 1;
     this.permitedOrder = false;
+    localStorage.setItem('permitedOrder', this.permitedOrder.toString());
     if(localStorage.getItem('foodOrderLocal')) {
         this.foodLocalStorages = JSON.parse(localStorage.getItem('foodOrderLocal'));
         console.log("123", this.foodLocalStorages);
         this.showFoodFromLocalStorage(this.foodLocalStorages);
-        if(this.foodLocalStoragesOrdering.length > 0) this.permitedOrder = true;
+        if(this.foodLocalStoragesOrdering.length > 0) {
+          this.permitedOrder = true;
+          localStorage.setItem('permitedOrder', this.permitedOrder.toString());
+        }
     }
     this.menuService.getAllFood()
         .subscribe(allFood => {this.allFood = allFood;
@@ -195,6 +239,61 @@ export class MenuComponent extends LoadingPage implements OnInit {
         console.log('@@@@@ modal close3 ', self.isMobileInvoiceOpen);
       }
     });
+
+    // init chart
+    this.adStatisticDrinkService.getRatingDrink()
+      .subscribe(rateFood => {this.ratingFoodArr = rateFood;
+      this.adStatisticDrinkService.getRatingService()
+        .subscribe(rateService => {this.ratingServiceArr = rateService;
+          var dataFood = [parseInt(this.ratingFoodArr[0].numOfPeople), parseInt(this.ratingFoodArr[1].numOfPeople),
+          parseInt(this.ratingFoodArr[2].numOfPeople), parseInt(this.ratingFoodArr[3].numOfPeople), parseInt(this.ratingFoodArr[4].numOfPeople)]
+          var dataService = [parseInt(this.ratingServiceArr[0].numOfPeople), parseInt(this.ratingServiceArr[1].numOfPeople),
+          parseInt(this.ratingServiceArr[2].numOfPeople), parseInt(this.ratingServiceArr[3].numOfPeople), parseInt(this.ratingServiceArr[4].numOfPeople)]
+          self.chart = new Chart({
+            chart: {
+              type: 'column'
+            },
+
+            title: {
+                text: 'Rating of food and service',
+                'style': {
+                  'font-size': '12px'
+                }
+            },
+            xAxis: {
+                categories: [
+                    '1*',
+                    '2*',
+                    '3*',
+                    '4*',
+                    '5*'
+                ]
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: "Num of people rating",
+                    'style': {
+                      'font-size': '10px'
+                    }
+                }
+            },
+            plotOptions: {
+              column: {
+                  pointPadding: 0.2,
+                  borderWidth: 0,
+                  shadow: false
+              }
+            },
+            series: [{
+              name: "food",
+              data: dataFood,
+            }, {
+              name: "service",
+              data: dataService,
+            }]
+          });
+    })})
   }
 
   showInvoiceMobile() {
@@ -273,8 +372,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   getDetail(afood: FoodAndDrink) {
-    this.isPaid = true;
-    localStorage.setItem('isPaid', this.isPaid.toString());
+    this.showOrder = true;
+    localStorage.setItem('showOrder', this.showOrder.toString());
     this.getCombination(afood);
     this.quantity = 1;
     this.afood = afood;
@@ -325,6 +424,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   orderingFoodAndCombind(foodChoosed: FoodAndDrink) {
+    $('.chart').hide();
     // if(this.distance > 1) {
     //   alert("You cannot order food or drink outside the restaurant");
     // }
@@ -364,8 +464,15 @@ export class MenuComponent extends LoadingPage implements OnInit {
     parent.removeChild(foodClear);
     if(listChild.length > 2) {
       this.permitedOrder = true;
+      localStorage.setItem('permitedOrder', this.permitedOrder.toString());
       console.log("children ", listChild);
-    } else this.permitedOrder = false;
+    } else {
+      this.permitedOrder = false;
+      localStorage.setItem('permitedOrder', this.permitedOrder.toString());
+      this.isPaid = false;
+      localStorage.setItem('isPaid', this.isPaid+'');
+      $('.chart').show();
+    }
     var currentPrice = this.totalMoney();
     this.totalMoney();
   }
@@ -449,6 +556,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
       if(foodLocals[j].ordering) {
         this.foodLocalStoragesOrdering.push(foodLocals[j]);
         this.permitedOrder = true;
+        localStorage.setItem('permitedOrder', this.permitedOrder.toString());
       }
       if(foodLocals[j].ordered) {
         this.foodLocalStoragesOrdered.push(foodLocals[j]);
@@ -568,6 +676,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     console.log('@@@saved ', savingFoodLocal);
 
     this.permitedOrder = true;
+    localStorage.setItem('permitedOrder', this.permitedOrder.toString());
     var buttonClear = this.elementRef.nativeElement.getElementsByClassName(newClassDiv)[1];
     buttonClear.addEventListener("click", () => {
       this.clearFood(newClassDiv);
@@ -585,12 +694,24 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   hotOrder(afood: FoodAndDrink) {
+    $('.chart').hide();
+    console.log('chart ', $('.chart'));
+    this.showOrder = true;
+    localStorage.setItem('showOrder', this.showOrder.toString());
     this.thisPrice = afood.price;
     this.quantity = 1;
     this.ordering(afood, 0);
   }
 
+  actOrder() {
+    if(!this.currentTable) {
+      this.chooseTable();
+    }
+    else this.ordered();
+  }
+
   ordered() {
+    // if(this.currentTable) {
     let invoiceId = localStorage.getItem("invoiceId");
     var orderedWrap = document.getElementsByClassName("ordering__food")[0];
     var orderedFood = document.getElementById("ordered-food__wrap");
@@ -629,7 +750,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
       console.log("quantityId "+ quantityId);
 
       let orderBoard = {
-        "tableId": this.tableId + "",
+        "tableId": this.currentTable.id + "",
         "foodAndDrinkId": idArr,
         "quantity": quantityId
       };
@@ -751,20 +872,6 @@ export class MenuComponent extends LoadingPage implements OnInit {
           orderingFoodLst[0].remove();
         }
       };
-
-      // this.invoiceId = localStorage.getItem("invoiceId");
-      // let orderNew = {
-      //   "invoiceId": this.invoiceId,
-      //   "foodAndDrinkId": arrNewId,
-      //   "quantity": arrNewQuantity
-      // }
-
-      // console.log(orderNew);
-      // this.menuService.updateOrder(orderNew)
-      //       .subscribe(res => {
-      //         console.log(res);
-      //         this.sendMessageAdmin();
-      //       });
     }
 
     // update localStorage
@@ -831,6 +938,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
        btnOrder.classList.remove("btn--suggest");
        that.totalMoney();
      }
+    // }
   }
 
   filterFoodFromCombination(food: FoodAndDrink, foodCombinations: FoodCombination[]) {
@@ -866,6 +974,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     payment.paymentType = this.paymentForm;
     localStorage.removeItem("foodOrderLocal");
     localStorage.removeItem("isPaid");
+    localStorage.removeItem("currentTable");
     this.foodLocalStorages = JSON.parse(localStorage.getItem("foodOrderLocal"));
     this.foodLocalStoragesOrdered = [];
     this.foodLocalStoragesOrdering = [];
@@ -931,7 +1040,11 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.router.navigate(["/"]);
     this.isPaid = false;
     localStorage.setItem('isPaid', this.isPaid.toString());
+    this.showOrder = false;
+    localStorage.setItem('showOrder', this.showOrder.toString());
     this.showTotalIsPaid();
+    localStorage.removeItem("tableId");
+    localStorage.removeItem('currentTable');
     // location.reload();
   }
 
@@ -940,12 +1053,17 @@ export class MenuComponent extends LoadingPage implements OnInit {
     $('#rating').modal('hide');
     this.isPaid = false;
     localStorage.setItem('isPaid', this.isPaid.toString());
+    this.showOrder = false;
+    localStorage.setItem('showOrder', this.showOrder.toString());
     this.showTotalIsPaid();
+    localStorage.removeItem("tableId");
+    localStorage.removeItem('currentTable');
   }
 
   showTotalIsPaid() {
     var total = document.getElementsByClassName('ordering__total--money')[0];
     total.innerHTML = '0 d';
+    $('.chart').show();
   }
 
   onKey(event:any) {
@@ -1080,19 +1198,24 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.stompClient.send("/app/admin", {}, "Table " + tableId + " is ordering");
   };
 
-
-  checkInvoiceMobileOpen() {
-    // var isOpen = $('#invoiceMobile').hasClass('in');
-
-    if(this.isMobileInvoiceOpen) {
-      console.log('@@@@@ modal open');
-      $('body').on('click', function(e){
-        console.log('@@@@@ modal close');
-        var allInvoice = $('.ordering');
-        var boxInvoiceTb = $('.invoice');
-        boxInvoiceTb.append(allInvoice);
-        this.isMobileInvoiceOpen = false;
-      });
-    };
+  chooseTable():boolean {
+    $("#chooseTable").modal('show');
+    var allTable = this.adminService.getAllTable()
+      .subscribe(res => {this.tables = JSON.parse(res._body);;
+        console.log('tables ', this.tables);});
+    if(this.currentTable) return true;
+    else false;
+  }
+  getNumOfTable(table: Table) {
+    if(table.tableStatus !== 0) {
+      $('#confirmTable').modal('show');
+    }
+    else {
+      this.currentTable = table;
+      localStorage.setItem('currentTable', JSON.stringify(this.currentTable));
+      console.log('choose table: ', JSON.parse(localStorage.getItem('currentTable')));
+      this.ordered();
+      $("#chooseTable").modal('hide');
+    }
   }
 }

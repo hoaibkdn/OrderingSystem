@@ -82,7 +82,7 @@
                     <div class="ordering__box">
                         <div class="ordering__box--inner">
                             <h2 class="ordering__title">Ordering</h2>
-                            <div class="ordering__food" *ngIf="isPaid === true">
+                            <div class="ordering__food" *ngIf="showOrder === true">
                                 <a class="ordering__btn-ordered" role="button" data-toggle="collapse" href="#ordered-food__wrap" aria-expanded="false" aria-controls="ordered-food__wrap">
                                   &rsaquo; Ordered
                                 </a>
@@ -115,13 +115,20 @@
                                 </p>
                             </div>
                             <div class="ordering__btn">
-                                <a (click)="ordered()" class="ordering__btn--order btn--suggest" *ngIf="permitedOrder">Order</a>
+                                <a (click)="actOrder()" class="ordering__btn--order btn--suggest" *ngIf="permitedOrder">Order</a>
                                 <a class="ordering__btn--order btn--normal" *ngIf="!permitedOrder">Order</a>
                                 <a *ngIf="isPaid === false" class="ordering__btn--payment btn--normal">Payment</a>
                                 <a *ngIf="isPaid === true" data-toggle="modal" data-target="#paymentForm" class="ordering__btn--payment btn--suggest">Payment</a>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!--chart-->
+                <div class="chart">
+                  <div class="chart__box">
+                    <div [chart]="chart" style="width:100%; height:290px; margin: auto"></div>
+                  </div>
                 </div>
             </div>
         </div>
@@ -267,4 +274,64 @@
 </div>
 
 <!--modal choose number of table-->
+<div class="modal fade" id="chooseTable" tabindex="-1" role="dialog" aria-labelledby="chooseTableLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title" id="myModalLabel">Please choose number of table</h5>
+            </div>
+            <div class="modal-body overfollow">
+              <div class="col-xs-12">
+                <div class="col-xs-4 btn btn-default" *ngFor="let table of tables"
+                  [class.is-free]="table.tableStatus === 0" [class.is-ordering]="table.tableStatus === 1"
+                  [class.is-food-made]="table.tableStatus === 2" [class.is-cleaning]="table.tableStatus === 3"
+                  [class.is-reserved]="table.tableStatus === 4">
+                  <div class="show-table" (click)="getNumOfTable(table)">
+                    <p>{{table.tableNumber}}</p>
+                    <p>Max: {{table.size}} people</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button (click)="requestPayment()" type="button" class="btn btn-warning" data-toggle="modal" data-target="#rating">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmTable" tabindex="-1" role="dialog" aria-labelledby="confirmTableLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="changed-pass">
+                    <p>You are permited on empty table!</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-warning" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="changePass" tabindex="-1" role="dialog" aria-labelledby="changePassLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="changed-pass">
+                    <p>Your password has changed!</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-warning" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
 

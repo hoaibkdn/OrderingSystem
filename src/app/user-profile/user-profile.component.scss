@@ -32,6 +32,9 @@
   &-password {
     margin-bottom: 20px;
     padding-left: 30px;
+    &-group {
+      text-align: left;
+    }
   }
   &-icon {
     @extend %position-vertical-center;
@@ -62,4 +65,9 @@
   &-btn {
     border: none;
   }
+}
+
+.confirm-new-pass {
+  text-align: left;
+  color: red;
 }

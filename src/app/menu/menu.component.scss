@@ -394,6 +394,9 @@
   .hide-invoice {
     display: none;
   }
+  .chart {
+    display: block;
+  }
 }
 
 @media only screen and (min-width: 320px) and (max-width: 768px) {
@@ -413,8 +416,51 @@
     border: 5px solid #FFEB3B;
     color: $cl-white;
   }
+  .chart {
+    display: none;
+  }
 }
 
 .menu-loading {
   margin-top: 130px;
+}
+
+$cl-table-ordering: #f0ad4e;
+$cl-food-made: #4CAF50;
+$cl-table-empty: #fff;
+$cl-cleaning: #cacbcc;
+$cl-reserved: #8e4713;
+
+.is-ordering {
+  background: $cl-table-ordering;
+  color: $cl-white;
+}
+
+.is-free {
+  background: $cl-table-empty;
+  color: black;
+}
+
+.is-food-made {
+  background: $cl-food-made;
+  color: $cl-white;
+}
+
+.is-cleaning {
+  background: $cl-cleaning;
+  color: $cl-white;
+}
+
+.is-reserved {
+  background: $cl-food-made;
+  color: $cl-reserved;
+}
+
+.chart {
+  margin-top: 15px;
+  padding: 10px 10px 10px 0;
+  background: $cl-white;
+  &__box {
+
+  }
 }

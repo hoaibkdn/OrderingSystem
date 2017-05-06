@@ -4,4 +4,5 @@ export class Table {
   createdDate: string;
   visible: boolean;
   tableNumber: number;
+  tableStatus: number;
 }

@@ -43,13 +43,14 @@
                   <i class="icon-key profile-icon"></i>
                 </div>
                 <div class="form-group profile-line">
-                  <input type="password" class="form-control profile-password" placeholder="New password" name="newPassword" [(ngModel)]="newPassword">
+                  <input type="password" class="form-control profile-password" placeholder="New password" name="newPassword" [(ngModel)]="newPass" #newPassword="ngModel">
                   <i class="icon-key profile-icon"></i>
                 </div>
                 <div class="form-group profile-line">
-                  <input type="password" class="form-control profile-password" placeholder="Re-type new password" name="reNewPassword" [(ngModel)]="reNewPassword">
+                  <input type="password" class="form-control profile-password" placeholder="Re-type new password" name="reNewPass" [(ngModel)]="reNewPassword" #reNewPass="ngModel"  [equalTo]="newPassword">
                   <i class="icon-key profile-icon"></i>
                 </div>
+                <p class="confirm-new-pass" *ngIf="reNewPass.errors?.equalTo">New password is wrong</p>
               </div>
               <button type="submit" (click)="saveProfile()" class="btn btn-default btn--suggest profile-btn">Save</button>
             </form>
