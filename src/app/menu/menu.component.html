@@ -16,6 +16,11 @@
                               <button class="btn btn-default type-up icon-circle-up"></button>
                               <div class="btn-type-group">
                                   <div class="row btn-type">
+                                      <a (click)="getFood(0)" class="btn-menu">
+                                          <div class="btn-menu__img">
+                                              <p class="btn-menu__text">All</p>
+                                          </div>
+                                      </a>
                                       <a (click)="getFood(type.id)" class="btn-menu" *ngFor="let type of typeOfFoods">
                                           <div class="btn-menu__img">
                                               <p class="btn-menu__text">{{type.name}}</p>
@@ -40,7 +45,7 @@
                                               <a (click)="getDetail(afood)" class="food__name" data-toggle="modal" data-target="#detailFood">
                                                   <img class="food__img" src="../../assets/slice/food.png" alt="">
                                                   <div class="food__board">
-                                                      <p class="food__board--name">{{afood.name | truncate : 13}}</p>
+                                                      <p class="food__board--name">{{afood.name | truncate : 10}}</p>
                                                       <p class="food__board--price">{{afood.price}} d</p>
                                                   </div>
                                               </a>
@@ -207,6 +212,7 @@
             <div class="modal-body">
                 <div class="show-invoice-mobile">
 
+                <!--append here-->
                 </div>
             </div>
         </div>

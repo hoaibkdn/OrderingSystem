@@ -213,7 +213,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     }
     this.menuService.getAllFood()
         .subscribe(allFood => {this.allFood = allFood;
-        this.food = this.getFood(1);
+        this.food = this.getFood(0);
         this.ready();
     });
     this.totalMoney();
@@ -347,6 +347,10 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   getFood(id: number) {
+    if(id === 0) {
+      this.food = this.allFood;
+      return this.food;
+    }
     this.isfilteringFood = true;
     var foodByType = [];
     this.allFood.forEach( (foodDrink, index) => {
