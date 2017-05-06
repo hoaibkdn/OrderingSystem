@@ -185,7 +185,10 @@ export class StaffComponent implements OnInit {
           this.isPayed = res;
           console.log("pay ", this.isPayed );
           localStorage.removeItem("invoiceId");
-        }
+        };
+        invoice.table.tableStatus = 0;
+        localStorage.removeItem("tableId");
+        localStorage.removeItem('currentTable');
       },
         err => {console.log(err)});
   }
@@ -194,7 +197,7 @@ export class StaffComponent implements OnInit {
     let lastCheckDate = new Date(this.lastWorkingTime.date);
     console.log("Last checked date: ", lastCheckDate);
     let today = new Date();
-    if(today.getDate() == lastCheckDate.getDate() 
+    if(today.getDate() == lastCheckDate.getDate()
       && today.getMonth() == lastCheckDate.getMonth()
       && today.getFullYear() == lastCheckDate.getFullYear()
       && today.getHours() == lastCheckDate.getHours()){
@@ -237,7 +240,7 @@ export class StaffComponent implements OnInit {
         console.log(err);
       })
     }
-    
+
   }
 
   changeData(){
@@ -263,6 +266,6 @@ export class StaffComponent implements OnInit {
         this.allWorkingTime.push(this.workingTimes[i]);
         console.log(this.allWorkingTime);
       }
-    }    
+    }
   }
 }

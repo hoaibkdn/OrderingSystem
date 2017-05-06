@@ -1047,8 +1047,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.showOrder = false;
     localStorage.setItem('showOrder', this.showOrder.toString());
     this.showTotalIsPaid();
-    localStorage.removeItem("tableId");
-    localStorage.removeItem('currentTable');
+    // localStorage.removeItem("tableId");
+    // localStorage.removeItem('currentTable');
     // location.reload();
   }
 
@@ -1060,8 +1060,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.showOrder = false;
     localStorage.setItem('showOrder', this.showOrder.toString());
     this.showTotalIsPaid();
-    localStorage.removeItem("tableId");
-    localStorage.removeItem('currentTable');
+    // localStorage.removeItem("tableId");
+    // localStorage.removeItem('currentTable');
   }
 
   showTotalIsPaid() {
