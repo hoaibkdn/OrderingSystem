@@ -1,16 +1,24 @@
 <div [chart]="chart" id="container"></div>
+<hr>
 <div class="container">
     <div class="row">
-        <div class="col-xs-2 col-xs-offset-2">
-            <label class="label-control">Search</label>
+        <div class="col-xs-2 col-xs-offset-1">
+            <label class="label-control"><b style="color: red; font-size: 12pt;">Filter by date</b></label>
         </div>
-        <div class="col-xs-4">
+        <div class="col-xs-1">
+        	<label class="label-control">From</label>
+        </div>
+        <div class="col-xs-3">
             <input class="form-control" type="date" value="searchKey" [(ngModel)]="fromDate" (change)="searchFromDateToDate()">
         </div>
-        <div class="col-xs-4">
+        <div class="col-xs-1">
+        	<label class="label-control">To</label>
+        </div>
+        <div class="col-xs-3">
             <input class="form-control" type="date" value="searchKey" [(ngModel)]="toDate" (change)="searchFromDateToDate()">
         </div>
     </div>
+    <hr>
     <table class="table table-hover" [mfData]="invoices | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="10" [(mfSortBy)]="sortBy">
         <thead>
             <tr>
