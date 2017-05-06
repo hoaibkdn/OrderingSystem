@@ -82,7 +82,7 @@
                     <div class="ordering__box">
                         <div class="ordering__box--inner">
                             <h2 class="ordering__title">Ordering</h2>
-                            <div class="ordering__food" *ngIf="isPaid === true">
+                            <div class="ordering__food" *ngIf="showOrder === true">
                                 <a class="ordering__btn-ordered" role="button" data-toggle="collapse" href="#ordered-food__wrap" aria-expanded="false" aria-controls="ordered-food__wrap">
                                   &rsaquo; Ordered
                                 </a>
@@ -334,3 +334,4 @@
         </div>
     </div>
 </div>
+

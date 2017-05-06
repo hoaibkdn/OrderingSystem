@@ -22,6 +22,7 @@ import { UserProfileService } from './user-profile/user-profile.service';
 import { AdminService } from './admin/admin.service';
 import { FacebookService } from 'ng2-facebook-sdk';
 import { AppService } from './app.service';
+import { AdStatisticDrinkService } from './ad-statistic-drink/ad-statistic-drink.service';
 
 import { Ng2PaginationModule } from 'ng2-pagination';
 import { ChartModule } from 'angular-highcharts';
@@ -83,7 +84,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     HistoryFavoriteService,
     UserProfileService,
     AdminService,
-    AppService
+    AppService,
+    AdStatisticDrinkService
   ],
   bootstrap: [AppComponent]
 })

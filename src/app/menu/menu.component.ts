@@ -17,6 +17,7 @@ import { FoodAndDrinkType } from '../models/food-and-drink-type';
 import { UserProfileService } from '../user-profile/user-profile.service';
 import { LoadingPage } from './../loading-indicator/loading-page';
 import { AdminService } from './../admin/admin.service';
+import { AdStatisticDrinkService } from './../ad-statistic-drink/ad-statistic-drink.service';
 import { Table } from '../models/table';
 import { Chart } from 'angular-highcharts';
 // import { TruncatePipe } from './../truncate';
@@ -73,6 +74,9 @@ export class MenuComponent extends LoadingPage implements OnInit {
   tables: Table[];
   currentTable: Table;
   chart: Chart;
+  ratingFoodArr: Rating[];
+  ratingServiceArr: Rating[];
+  showOrder: boolean;
   options = {
     timeout: 10000
   };
@@ -82,7 +86,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
               private elementRef: ElementRef,
               private router: Router,
               private userProfileService: UserProfileService,
-              private adminService: AdminService) {
+              private adminService: AdminService,
+              private adStatisticDrinkService: AdStatisticDrinkService) {
                 super(false);
                 this.foodLocalStorages = [];
   }
@@ -140,6 +145,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
   ngOnInit() {
     this.standby();
     this.isfilteringFood = true;
+
+    // set isPaid from localStorage
     var isPaidLocal = localStorage.getItem('isPaid');
     if(isPaidLocal) {
       console.log("Is pay in local storage", isPaidLocal);
@@ -148,8 +155,31 @@ export class MenuComponent extends LoadingPage implements OnInit {
     else {
       this.isPaid = false;
     }
-    console.log('isPaid ', this.isPaid);
     localStorage.setItem('isPaid', this.isPaid.toString());
+
+    // set permitedOrder from localStorage
+    var permitedOrderLocal = localStorage.getItem('permitedOrder');
+    if(permitedOrderLocal) {
+      console.log("Is pay in local storage", permitedOrderLocal);
+      this.permitedOrder = (permitedOrderLocal === "true");
+    }
+    else {
+      this.permitedOrder = false;
+    }
+    localStorage.setItem('permitedOrder', this.permitedOrder.toString());
+
+    // set showOrder from localStorage
+    var showOrderLocal = localStorage.getItem('showOrder');
+    if(showOrderLocal) {
+      this.showOrder = (showOrderLocal === "true");
+      if(this.showOrder) {
+        $('.chart').hide();
+      }
+    }
+    else {
+      this.showOrder = false;
+    }
+    localStorage.setItem('permitedOrder', this.permitedOrder.toString());
 
     let isCustomer = localStorage.getItem("isCustomer");
     if(isCustomer && isCustomer.includes("true")){
@@ -171,11 +201,15 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.foodLocalStoragesOrdered = [];
     this.quantity = 1;
     this.permitedOrder = false;
+    localStorage.setItem('permitedOrder', this.permitedOrder.toString());
     if(localStorage.getItem('foodOrderLocal')) {
         this.foodLocalStorages = JSON.parse(localStorage.getItem('foodOrderLocal'));
         console.log("123", this.foodLocalStorages);
         this.showFoodFromLocalStorage(this.foodLocalStorages);
-        if(this.foodLocalStoragesOrdering.length > 0) this.permitedOrder = true;
+        if(this.foodLocalStoragesOrdering.length > 0) {
+          this.permitedOrder = true;
+          localStorage.setItem('permitedOrder', this.permitedOrder.toString());
+        }
     }
     this.menuService.getAllFood()
         .subscribe(allFood => {this.allFood = allFood;
@@ -207,24 +241,59 @@ export class MenuComponent extends LoadingPage implements OnInit {
     });
 
     // init chart
-    this.chart = new Chart({
-      chart: {
-        type: 'column'
-      },
+    this.adStatisticDrinkService.getRatingDrink()
+      .subscribe(rateFood => {this.ratingFoodArr = rateFood;
+      this.adStatisticDrinkService.getRatingService()
+        .subscribe(rateService => {this.ratingServiceArr = rateService;
+          var dataFood = [parseInt(this.ratingFoodArr[0].numOfPeople), parseInt(this.ratingFoodArr[1].numOfPeople),
+          parseInt(this.ratingFoodArr[2].numOfPeople), parseInt(this.ratingFoodArr[3].numOfPeople), parseInt(this.ratingFoodArr[4].numOfPeople)]
+          var dataService = [parseInt(this.ratingServiceArr[0].numOfPeople), parseInt(this.ratingServiceArr[1].numOfPeople),
+          parseInt(this.ratingServiceArr[2].numOfPeople), parseInt(this.ratingServiceArr[3].numOfPeople), parseInt(this.ratingServiceArr[4].numOfPeople)]
+          self.chart = new Chart({
+            chart: {
+              type: 'column'
+            },
 
-      title: {
-        text: 'Data input'
-      },
-
-      data: {
-        rows: [
-            [null, 'Ola', 'Kari'], // series names
-            ['Apples', 1, 5], // category and values
-            ['Pears', 4, 4], // category and values
-            ['Oranges', 3, 2] // category and values
-        ]
-      }
-    });
+            title: {
+                text: 'Rating of food and service',
+                'style': {
+                  'font-size': '12px'
+                }
+            },
+            xAxis: {
+                categories: [
+                    '1*',
+                    '2*',
+                    '3*',
+                    '4*',
+                    '5*'
+                ]
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: "Num of people rating",
+                    'style': {
+                      'font-size': '10px'
+                    }
+                }
+            },
+            plotOptions: {
+              column: {
+                  pointPadding: 0.2,
+                  borderWidth: 0,
+                  shadow: false
+              }
+            },
+            series: [{
+              name: "food",
+              data: dataFood,
+            }, {
+              name: "service",
+              data: dataService,
+            }]
+          });
+    })})
   }
 
   showInvoiceMobile() {
@@ -303,8 +372,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   getDetail(afood: FoodAndDrink) {
-    this.isPaid = true;
-    localStorage.setItem('isPaid', this.isPaid.toString());
+    this.showOrder = true;
+    localStorage.setItem('showOrder', this.showOrder.toString());
     this.getCombination(afood);
     this.quantity = 1;
     this.afood = afood;
@@ -355,6 +424,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   orderingFoodAndCombind(foodChoosed: FoodAndDrink) {
+    $('.chart').hide();
     // if(this.distance > 1) {
     //   alert("You cannot order food or drink outside the restaurant");
     // }
@@ -394,8 +464,15 @@ export class MenuComponent extends LoadingPage implements OnInit {
     parent.removeChild(foodClear);
     if(listChild.length > 2) {
       this.permitedOrder = true;
+      localStorage.setItem('permitedOrder', this.permitedOrder.toString());
       console.log("children ", listChild);
-    } else this.permitedOrder = false;
+    } else {
+      this.permitedOrder = false;
+      localStorage.setItem('permitedOrder', this.permitedOrder.toString());
+      this.isPaid = false;
+      localStorage.setItem('isPaid', this.isPaid+'');
+      $('.chart').show();
+    }
     var currentPrice = this.totalMoney();
     this.totalMoney();
   }
@@ -479,6 +556,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
       if(foodLocals[j].ordering) {
         this.foodLocalStoragesOrdering.push(foodLocals[j]);
         this.permitedOrder = true;
+        localStorage.setItem('permitedOrder', this.permitedOrder.toString());
       }
       if(foodLocals[j].ordered) {
         this.foodLocalStoragesOrdered.push(foodLocals[j]);
@@ -598,6 +676,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     console.log('@@@saved ', savingFoodLocal);
 
     this.permitedOrder = true;
+    localStorage.setItem('permitedOrder', this.permitedOrder.toString());
     var buttonClear = this.elementRef.nativeElement.getElementsByClassName(newClassDiv)[1];
     buttonClear.addEventListener("click", () => {
       this.clearFood(newClassDiv);
@@ -615,6 +694,10 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   hotOrder(afood: FoodAndDrink) {
+    $('.chart').hide();
+    console.log('chart ', $('.chart'));
+    this.showOrder = true;
+    localStorage.setItem('showOrder', this.showOrder.toString());
     this.thisPrice = afood.price;
     this.quantity = 1;
     this.ordering(afood, 0);
@@ -957,7 +1040,11 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.router.navigate(["/"]);
     this.isPaid = false;
     localStorage.setItem('isPaid', this.isPaid.toString());
+    this.showOrder = false;
+    localStorage.setItem('showOrder', this.showOrder.toString());
     this.showTotalIsPaid();
+    localStorage.removeItem("tableId");
+    localStorage.removeItem('currentTable');
     // location.reload();
   }
 
@@ -966,12 +1053,17 @@ export class MenuComponent extends LoadingPage implements OnInit {
     $('#rating').modal('hide');
     this.isPaid = false;
     localStorage.setItem('isPaid', this.isPaid.toString());
+    this.showOrder = false;
+    localStorage.setItem('showOrder', this.showOrder.toString());
     this.showTotalIsPaid();
+    localStorage.removeItem("tableId");
+    localStorage.removeItem('currentTable');
   }
 
   showTotalIsPaid() {
     var total = document.getElementsByClassName('ordering__total--money')[0];
     total.innerHTML = '0 d';
+    $('.chart').show();
   }
 
   onKey(event:any) {
