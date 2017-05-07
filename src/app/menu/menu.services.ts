@@ -109,6 +109,10 @@ export class MenuService {
     return this.http.get(url, {search: params}).map(res => res.json());
   }
 
+  updateTableStatus() {
+
+  }
+
   private extractData(res: Response) {
         let body = res.json();
         return body.data || {};

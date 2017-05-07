@@ -158,6 +158,7 @@ export class StaffComponent implements OnInit {
       this.hasMessage = false;
       this.music("off", this.audio);
       console.log(this.hasMessage);
+      $('.phone-ring').hide();
     }
 	};
 

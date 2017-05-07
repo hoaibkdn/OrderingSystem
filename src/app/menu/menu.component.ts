@@ -257,7 +257,9 @@ export class MenuComponent extends LoadingPage implements OnInit {
           parseInt(this.ratingServiceArr[2].numOfPeople), parseInt(this.ratingServiceArr[3].numOfPeople), parseInt(this.ratingServiceArr[4].numOfPeople)]
           self.chart = new Chart({
             chart: {
-              type: 'column'
+              type: 'column',
+              width: 280,
+              height: 290
             },
 
             title: {
