@@ -191,6 +191,8 @@ export class StaffComponent implements OnInit {
       .map(res => res.json())
       .subscribe(res => {
         this.invoices = res;
+        console.log('all invoice unpay ', this.invoices);
+
       });
   }
 
@@ -213,21 +215,37 @@ export class StaffComponent implements OnInit {
         invoice.table.tableStatus = 3;
         this.getCleaningTable();
         // this.busyTable = invoice.table;
-        $('#cleanTable').show();
-        $('#tableUnpay').hide();
+        $('#cleanTable').modal('show');
+        $('#tableUnpay').modal('hide');
       },
         err => {console.log(err)});
 
   }
 
-  cleanedTable(table: Table) {
-    table.tableStatus = 0;
-    localStorage.removeItem("tableId");
-    localStorage.removeItem('currentTable');
-    $('#cleanTable').hide();
+  choosingTable(table: Table) {
+    if(table.tableStatus == 3) {
+      this.busyTable = table;
+    }
+    else {
+      $('#warning').modal('show');
+    }
   }
 
-  isCheckedInShift(){
+  cleanedTable() {
+    // table.tableStatus = 0;
+      var updateTable = {
+        "tableId": this.busyTable.id+"",
+        "statusNumber":"0"
+      }
+      this.menuService.updateTableStatus(updateTable)
+        .subscribe(res => console.log('updated table ', res));
+      localStorage.removeItem("tableId");
+      localStorage.removeItem('currentTable');
+    // $('#cleanTable').modal('hide');
+    // this.router.navigate(["/"]);
+  }
+
+  isCheckedInShift() {
     let lastCheckDate = new Date(this.lastWorkingTime.date);
     console.log("Last checked date: ", lastCheckDate);
     let today = new Date();

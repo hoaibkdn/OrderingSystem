@@ -73,6 +73,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   isOpenedModal: boolean = false;
   tables: Table[];
   currentTable: Table;
+  temporaryTable: Table;
   chart: Chart;
   ratingFoodArr: Rating[];
   ratingServiceArr: Rating[];
@@ -1238,11 +1239,17 @@ export class MenuComponent extends LoadingPage implements OnInit {
       $('#confirmTable').modal('show');
     }
     else {
-      this.currentTable = table;
-      localStorage.setItem('currentTable', JSON.stringify(this.currentTable));
-      console.log('choose table: ', JSON.parse(localStorage.getItem('currentTable')));
-      this.ordered();
-      $("#chooseTable").modal('hide');
+      this.temporaryTable = table;
     }
+  }
+
+  selectTable() {
+    this.currentTable = this.temporaryTable;
+    localStorage.setItem('currentTable', JSON.stringify(this.currentTable));
+    console.log('choose table: ', JSON.parse(localStorage.getItem('currentTable')));
+    this.ordered();
+    $(this.elementRef.nativeElement.find('.choose-table')).addClass('is-choosing');
+    console.log('add class this', $(this.elementRef.nativeElement.find('.choose-table')));
+    $("#chooseTable").modal('hide');
   }
 }
