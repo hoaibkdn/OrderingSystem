@@ -435,6 +435,9 @@ export class MenuComponent extends LoadingPage implements OnInit {
 
   orderingFoodAndCombind(foodChoosed: FoodAndDrink) {
     $('.chart').hide();
+    $('.ordering__food').show();
+    this.showOrder = true;
+    localStorage.setItem('showOrder', this.showOrder.toString());
     // if(this.distance > 1) {
     //   alert("You cannot order food or drink outside the restaurant");
     // }

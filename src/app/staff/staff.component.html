@@ -14,7 +14,7 @@
                 </div>
                 <div class="comfirm-box">
                     <div class="confirm-payment">
-                        <button (click)="getAllTableUnpay()" type="button" class="chat-btn-confirm btn-warning btn btn-default" data-toggle="modal" data-target="#tableUnpay">
+                        <button (click)="getCleaningTable()" type="button" class="chat-btn-confirm btn-warning btn btn-default" data-toggle="modal" data-target="#cleanTable">
                             <p>Confirm
                                 <br> Payment</p>
                         </button>
@@ -120,6 +120,33 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--modal show done clean-->
+<div class="modal fade" id="cleanTable" tabindex="-1" role="dialog" aria-labelledby="cleanTableLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="login__title">All tables</h2>
+            </div>
+            <div class="modal-body overfollow">
+              <div class="col-xs-12">
+                <div class="col-xs-4 btn btn-default" *ngFor="let table of cleaningTables"
+                  [class.is-free]="table.tableStatus === 0" [class.is-ordering]="table.tableStatus === 1"
+                  [class.is-food-made]="table.tableStatus === 2" [class.is-cleaning]="table.tableStatus === 3"
+                  [class.is-reserved]="table.tableStatus === 4">
+                  <div class="show-table" (click)="cleanedTable(table)">
+                    <p>{{table.tableNumber}}</p>
+                    <p>Max: {{table.size}} people</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-warning" data-dismiss="modal">OK</button>
             </div>
         </div>
     </div>

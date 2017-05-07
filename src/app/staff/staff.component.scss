@@ -33,3 +33,34 @@
   bottom: 50px;
   right: 20px;
 }
+
+$cl-table-ordering: #f0ad4e;
+$cl-food-made: #4CAF50;
+$cl-table-empty: #fff;
+$cl-cleaning: #cacbcc;
+$cl-reserved: #8e4713;
+
+.is-ordering {
+  background: $cl-table-ordering;
+  color: $cl-white;
+}
+
+.is-free {
+  background: $cl-table-empty;
+  color: black;
+}
+
+.is-food-made {
+  background: $cl-food-made;
+  color: $cl-white;
+}
+
+.is-cleaning {
+  background: $cl-cleaning;
+  color: $cl-white;
+}
+
+.is-reserved {
+  background: $cl-food-made;
+  color: $cl-reserved;
+}

@@ -38,6 +38,8 @@ export class StaffComponent implements OnInit {
   workingTimes: WorkingTime[];
   sortBy = "date";
   searchDate: Date;
+  busyTable: Table;
+  cleaningTables: Table[];
   constructor(
     private userProfileService: UserProfileService,
     private adminService: AdminService,
@@ -127,7 +129,28 @@ export class StaffComponent implements OnInit {
         this.stompClient.send("/app/admin", {}, this.userInfo.name + " is available.");
         }
       }, 5000);
+
+
 	};
+
+  // get all table have cleaning status
+  getCleaningTable() {
+    this.cleaningTables = [];
+    var self = this;
+    this.adminService.getAllTable()
+      .map(res => res.json() )
+      .subscribe(res => {
+         this.cleaningTables = res;
+        // console.log('all table ', typeof res);
+        // var sizeTable = res.length;
+        // res.forEach(element => {
+        //   if(element.tableStatus == 3) {
+        //     self.cleaningTables.push(element);
+        //   }
+        // });
+        console.log('cleaning table ', this.cleaningTables);
+      })
+  }
 
 	sendMessageAdmin(): void {
 		if (this.message != null && (this.message.includes("is needing some help") || this.message.includes("ready") || this.message.includes("payment"))){
@@ -186,11 +209,21 @@ export class StaffComponent implements OnInit {
           console.log("pay ", this.isPayed );
           localStorage.removeItem("invoiceId");
         };
-        invoice.table.tableStatus = 0;
-        localStorage.removeItem("tableId");
-        localStorage.removeItem('currentTable');
+        invoice.table.tableStatus = 3;
+        this.getCleaningTable();
+        // this.busyTable = invoice.table;
+        $('#cleanTable').show();
+        $('#tableUnpay').hide();
       },
         err => {console.log(err)});
+
+  }
+
+  cleanedTable(table: Table) {
+    table.tableStatus = 0;
+    localStorage.removeItem("tableId");
+    localStorage.removeItem('currentTable');
+    $('#cleanTable').hide();
   }
 
   isCheckedInShift(){
