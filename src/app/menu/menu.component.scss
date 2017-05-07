@@ -164,6 +164,9 @@
   }
   &__food {
     padding: 5px;
+    &--text {
+      color: black;
+    }
   }
   &__total {
     padding-right: 10px;
@@ -397,6 +400,12 @@
   .chart {
     display: block;
   }
+  .medium {
+    display: none;
+  }
+  .window {
+    display: block;
+  }
 }
 
 @media only screen and (min-width: 320px) and (max-width: 768px) {
@@ -418,6 +427,21 @@
   }
   .chart {
     display: none;
+  }
+  .medium {
+    display: none;
+  }
+  .window {
+    display: block;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+  .window {
+    display: none;
+  }
+  .medium {
+    display: block;
   }
 }
 
