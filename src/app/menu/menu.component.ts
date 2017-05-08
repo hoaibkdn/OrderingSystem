@@ -259,8 +259,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
           self.chart = new Chart({
             chart: {
               type: 'column',
-              width: 280,
-              height: 290
+              width: 220,
+              height: 290,
             },
 
             title: {
