@@ -24,12 +24,6 @@
   text-align: center;
 }
 
-.confirm-payment {
-  position: fixed;
-  bottom: 50px;
-  right: 20px;
-}
-
 .chat-btn-confirm {
   width: 100px;
   height: 100px;
@@ -124,4 +118,22 @@ $cl-transparent: rgba(255,255,255,0);
   color: black;
   box-sizing: border-box;
   background: #f7c8ff;
+}
+
+.btn-table {
+  position: fixed;
+  bottom: 50px;
+  right: 20px;
+  &__all {
+    position: fixed;
+    right: 35px;
+    bottom: 150px;
+    @include circle(70px);
+  }
+  &__unpay {
+    position: fixed;
+    right: 45px;
+    bottom: 230px;
+    @include circle(50px);
+  }
 }
