@@ -8,7 +8,6 @@ export class User {
   detail: string;
   membershipPoint: number;
   accountCode: string;
-  avatarContent: string;
   createdDate: number;
   deleted: boolean;
   password: string;

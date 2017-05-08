@@ -4,7 +4,7 @@
       <tr class="table-order__row" *ngFor="let group of groupThreeTables">
         <td (click) = "detailTable(table.tableNumber)" class="table-order__col {{table.tableNumber}}" *ngFor="let table of group"
         [class.is-ordering]="invoices[table.tableNumber - 1] != null && !invoices[table.tableNumber - 1].made" [class.has-done]="invoices[table.tableNumber - 1] != null && invoices[table.tableNumber - 1].made">
-        <p *ngIf="invoices[table.tableNumber - 1] != null">{{invoices[table.tableNumber - 1].table.tableNumber}}</p>
+        <!-- <p *ngIf="invoices[table.tableNumber - 1] != null">{{invoices[table.tableNumber - 1].table.tableNumber}}</p> -->
           <p class="table-order__number">Table {{table.tableNumber}}</p>
           <p class="table-order__size">{{table.size}} people</p>
           <p class="table-order__order-time" *ngIf="orderOfTable[table.tableNumber-1] != null">Order <span >{{orderOfTable[table.tableNumber-1]["order"]}}</span></p>
