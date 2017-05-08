@@ -206,7 +206,7 @@ export class StaffComponent implements OnInit {
       .subscribe(res => {
         console.log(res);
         if(res.status == 201){
-          this.stompClient.send("/app/admin", {}, "InvoiceID: " + payment.invoiceId + " has been paid. Confirmed by: " + this.userInfo.name + ".");
+          this.stompClient.send("/app/admin", {}, "InvoiceID: " + payment.invoiceId + " at table: " + invoice.table.tableNumber + " has been paid. Confirmed by: " + this.userInfo.name + ".");
           $('#tableUnpay').modal('hide');
           this.isPayed = res;
           console.log("pay ", this.isPayed );
