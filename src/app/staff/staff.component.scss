@@ -33,3 +33,92 @@
   bottom: 50px;
   right: 20px;
 }
+
+$cl-table-ordering: #f0ad4e;
+$cl-food-made: #4CAF50;
+$cl-table-empty: #e6e6e6;
+$cl-cleaning: #cacbcc;
+$cl-reserved: #8e4713;
+$cl-choosing: #a838af;
+$cl-transparent: rgba(255,255,255,0);
+
+.show-table {
+  width: 95%;
+  margin: 5px;
+  &__quote {
+    text-align: left;
+    &--free,
+    &--ordering,
+    &--made,
+    &--cleaning,
+    &--reserved {
+      padding: 5px 0;
+      padding-left: 20px;
+      flex: 1;
+      position: relative;
+      &:before {
+        content: "";
+        position: absolute;
+        top: 7px;
+        left: 0;
+        @include retangle(15px, 15px);
+        background: $cl-table-empty;
+        border: 1px solid #ccc;
+      }
+    }
+    &--ordering:before {
+      background: $cl-table-ordering;
+    }
+    &--made:before {
+      background: $cl-food-made;
+    }
+    &--cleaning:before {
+      background: $cl-cleaning;
+    }
+    &--reserved:before {
+      background: $cl-reserved;
+    }
+  }
+}
+
+.is-ordering {
+  background: $cl-table-ordering;
+  color: $cl-white;
+  box-sizing: border-box;
+  border: 3px solid $cl-transparent;
+}
+
+.is-free {
+  background: $cl-table-empty;
+  color: black;
+  box-sizing: border-box;
+  border: 3px solid $cl-transparent;
+}
+
+.is-food-made {
+  background: $cl-food-made;
+  color: $cl-white;
+  box-sizing: border-box;
+  border: 3px solid $cl-transparent;
+}
+
+.is-cleaning {
+  background: $cl-cleaning;
+  color: $cl-white;
+  box-sizing: border-box;
+  border: 3px solid $cl-transparent;
+}
+
+.is-reserved {
+  background: $cl-reserved;
+  color: $cl-white;
+  box-sizing: border-box;
+  border: 3px solid $cl-transparent;
+}
+
+.is-choosing {
+  border: 3px solid $cl-choosing;
+  color: black;
+  box-sizing: border-box;
+  background: #f7c8ff;
+}

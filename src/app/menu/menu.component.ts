@@ -73,6 +73,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   isOpenedModal: boolean = false;
   tables: Table[];
   currentTable: Table;
+  temporaryTable: Table;
   chart: Chart;
   ratingFoodArr: Rating[];
   ratingServiceArr: Rating[];
@@ -169,17 +170,23 @@ export class MenuComponent extends LoadingPage implements OnInit {
     localStorage.setItem('permitedOrder', this.permitedOrder.toString());
 
     // set showOrder from localStorage
+    // localStorage.removeItem('showOrder');
     var showOrderLocal = localStorage.getItem('showOrder');
+    console.log('showOrderLocal ', showOrderLocal);
+
     if(showOrderLocal) {
       this.showOrder = (showOrderLocal === "true");
       if(this.showOrder) {
         $('.chart').hide();
+        $('.ordering__food').show();
       }
     }
     else {
       this.showOrder = false;
+      $('.ordering__food').hide();
     }
     localStorage.setItem('permitedOrder', this.permitedOrder.toString());
+    localStorage.setItem('showOrder', this.showOrder.toString());
 
     let isCustomer = localStorage.getItem("isCustomer");
     if(isCustomer && isCustomer.includes("true")){
@@ -251,7 +258,9 @@ export class MenuComponent extends LoadingPage implements OnInit {
           parseInt(this.ratingServiceArr[2].numOfPeople), parseInt(this.ratingServiceArr[3].numOfPeople), parseInt(this.ratingServiceArr[4].numOfPeople)]
           self.chart = new Chart({
             chart: {
-              type: 'column'
+              type: 'column',
+              width: 280,
+              height: 290
             },
 
             title: {
@@ -429,6 +438,9 @@ export class MenuComponent extends LoadingPage implements OnInit {
 
   orderingFoodAndCombind(foodChoosed: FoodAndDrink) {
     $('.chart').hide();
+    $('.ordering__food').show();
+    this.showOrder = true;
+    localStorage.setItem('showOrder', this.showOrder.toString());
     // if(this.distance > 1) {
     //   alert("You cannot order food or drink outside the restaurant");
     // }
@@ -475,7 +487,18 @@ export class MenuComponent extends LoadingPage implements OnInit {
       localStorage.setItem('permitedOrder', this.permitedOrder.toString());
       this.isPaid = false;
       localStorage.setItem('isPaid', this.isPaid+'');
-      $('.chart').show();
+      var colapseFood = document.getElementById('#ordered-food__wrap');
+      console.log('colapseFood ', colapseFood);
+
+      if(!colapseFood) {
+        console.log('show chart');
+        var widthSize = $(window).width();
+        if(widthSize > 768) {
+          $('.chart').show();
+        }
+        this.showOrder = false;
+        localStorage.setItem('showOrder', this.showOrder+'');
+      }
     }
     var currentPrice = this.totalMoney();
     this.totalMoney();
@@ -698,13 +721,13 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   hotOrder(afood: FoodAndDrink) {
-    $('.chart').hide();
-    console.log('chart ', $('.chart'));
+    $('.ordering__food').show();
     this.showOrder = true;
     localStorage.setItem('showOrder', this.showOrder.toString());
     this.thisPrice = afood.price;
     this.quantity = 1;
     this.ordering(afood, 0);
+    $('.chart').hide();
   }
 
   actOrder() {
@@ -1057,6 +1080,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     $('#rating').modal('hide');
     this.isPaid = false;
     localStorage.setItem('isPaid', this.isPaid.toString());
+    $('.ordering__food').hide();
     this.showOrder = false;
     localStorage.setItem('showOrder', this.showOrder.toString());
     this.showTotalIsPaid();
@@ -1215,11 +1239,17 @@ export class MenuComponent extends LoadingPage implements OnInit {
       $('#confirmTable').modal('show');
     }
     else {
-      this.currentTable = table;
-      localStorage.setItem('currentTable', JSON.stringify(this.currentTable));
-      console.log('choose table: ', JSON.parse(localStorage.getItem('currentTable')));
-      this.ordered();
-      $("#chooseTable").modal('hide');
+      this.temporaryTable = table;
     }
+  }
+
+  selectTable() {
+    this.currentTable = this.temporaryTable;
+    localStorage.setItem('currentTable', JSON.stringify(this.currentTable));
+    console.log('choose table: ', JSON.parse(localStorage.getItem('currentTable')));
+    this.ordered();
+    $(this.elementRef.nativeElement.find('.choose-table')).addClass('is-choosing');
+    console.log('add class this', $(this.elementRef.nativeElement.find('.choose-table')));
+    $("#chooseTable").modal('hide');
   }
 }

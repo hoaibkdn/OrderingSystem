@@ -38,6 +38,8 @@ export class StaffComponent implements OnInit {
   workingTimes: WorkingTime[];
   sortBy = "date";
   searchDate: Date;
+  busyTable: Table;
+  cleaningTables: Table[];
   constructor(
     private userProfileService: UserProfileService,
     private adminService: AdminService,
@@ -127,7 +129,28 @@ export class StaffComponent implements OnInit {
         this.stompClient.send("/app/admin", {}, this.userInfo.name + " is available.");
         }
       }, 5000);
+
+
 	};
+
+  // get all table have cleaning status
+  getCleaningTable() {
+    this.cleaningTables = [];
+    var self = this;
+    this.adminService.getAllTable()
+      .map(res => res.json() )
+      .subscribe(res => {
+         this.cleaningTables = res;
+        // console.log('all table ', typeof res);
+        // var sizeTable = res.length;
+        // res.forEach(element => {
+        //   if(element.tableStatus == 3) {
+        //     self.cleaningTables.push(element);
+        //   }
+        // });
+        console.log('cleaning table ', this.cleaningTables);
+      })
+  }
 
 	sendMessageAdmin(): void {
 		if (this.message != null && (this.message.includes("is needing some help") || this.message.includes("ready") || this.message.includes("payment"))){
@@ -135,6 +158,7 @@ export class StaffComponent implements OnInit {
       this.hasMessage = false;
       this.music("off", this.audio);
       console.log(this.hasMessage);
+      $('.phone-ring').hide();
     }
 	};
 
@@ -167,6 +191,8 @@ export class StaffComponent implements OnInit {
       .map(res => res.json())
       .subscribe(res => {
         this.invoices = res;
+        console.log('all invoice unpay ', this.invoices);
+
       });
   }
 
@@ -186,14 +212,41 @@ export class StaffComponent implements OnInit {
           console.log("pay ", this.isPayed );
           localStorage.removeItem("invoiceId");
         };
-        invoice.table.tableStatus = 0;
-        localStorage.removeItem("tableId");
-        localStorage.removeItem('currentTable');
+        invoice.table.tableStatus = 3;
+        this.getCleaningTable();
+        // this.busyTable = invoice.table;
+        $('#cleanTable').modal('show');
+        $('#tableUnpay').modal('hide');
       },
         err => {console.log(err)});
+
   }
 
-  isCheckedInShift(){
+  choosingTable(table: Table) {
+    if(table.tableStatus == 3) {
+      this.busyTable = table;
+    }
+    else {
+      $('#warning').modal('show');
+    }
+  }
+
+  cleanedTable() {
+    // table.tableStatus = 0;
+    var updateTable = {
+      "tableId": this.busyTable.id+"",
+      "statusNumber":"0"
+    }
+    this.menuService.updateTableStatus(updateTable)
+      .subscribe(res => console.log('updated table ', res));
+    localStorage.removeItem("tableId");
+    localStorage.removeItem('currentTable');
+    $('#cleanTable').modal('hide');
+    $('#emptyTable').modal('hide');
+    // this.router.navigate(["/"]);
+  }
+
+  isCheckedInShift() {
     let lastCheckDate = new Date(this.lastWorkingTime.date);
     console.log("Last checked date: ", lastCheckDate);
     let today = new Date();

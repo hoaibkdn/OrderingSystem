@@ -269,9 +269,9 @@ export class AppComponent extends LoadingPage implements OnInit {
   }
 
   startCountDown() {
-    this.countDown = 10;
+    this.countDown = 30;
     var self = this;
-    var count = 10;
+    // var count = 10;
     console.log('count down ', this.countDown);
     var startCount = setInterval(function() {
       self.countDown--;

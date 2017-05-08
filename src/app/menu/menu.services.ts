@@ -109,6 +109,14 @@ export class MenuService {
     return this.http.get(url, {search: params}).map(res => res.json());
   }
 
+  updateTableStatus(tableUpdate: any): Observable<any> {
+    const url="https://backend-os-v2.herokuapp.com/api/table/update-status";
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.put(url, JSON.stringify(tableUpdate), {headers: headers});
+  }
+
   private extractData(res: Response) {
         let body = res.json();
         return body.data || {};
