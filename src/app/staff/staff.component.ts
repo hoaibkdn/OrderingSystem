@@ -8,6 +8,8 @@ import { Table } from './../models/table';
 import { Invoice } from './../models/invoice';
 import { Payment } from '../models/payment';
 import { WorkingTime } from '../models/working-time';
+import './../../assets/js/menu.js';
+
 declare var Stomp: any;
 declare var $:any;
 
@@ -94,6 +96,9 @@ export class StaffComponent implements OnInit {
       }
     }
 
+    // show button table
+    $('.btn-table__all').hide();
+    $('.btn-table__unpay').hide();
     this.stompClient = Stomp.client("wss://backend-os-v2.herokuapp.com/admin");
     this.stompClient.connect({}, (frame) => {
                     console.log('Connected: ' + frame);

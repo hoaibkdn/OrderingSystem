@@ -47,6 +47,22 @@
   }
 }
 
+.btn-menu__choosing {
+  background: $cl-btn-menu-active;
+  box-shadow: -1px 4px 5px $cl-btn-menu-shadow;
+  .btn-menu {
+    &__img {
+      @include retangle(52px, 40px);
+      background: url("../../assets/slice/btn-menu-active.png") no-repeat;
+    }
+    &__text {
+      top: 10%;
+      left: 0%;
+      transform: rotate(-30deg);
+    }
+  }
+}
+
 .food {
   padding-top: 10px;
   text-align: center;
