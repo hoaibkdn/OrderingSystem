@@ -1225,8 +1225,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   sendMessageAdmin(): void {
-    let tableId = localStorage.getItem("tableId");
-    this.stompClient.send("/app/admin", {}, "Table " + tableId + " is ordering");
+    let table = JSON.parse(localStorage.getItem("currentTable"));
+    this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " is ordering");
   };
 
   chooseTable():boolean {
