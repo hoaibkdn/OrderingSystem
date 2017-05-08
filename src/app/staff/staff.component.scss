@@ -24,14 +24,17 @@
   text-align: center;
 }
 
+.confirm-payment {
+  position: fixed;
+  bottom: 50px;
+  right: 20px;
+}
+
 .chat-btn-confirm {
   width: 100px;
   height: 100px;
   padding: 30px 10px;
   border-radius: 100%;
-  position: fixed;
-  bottom: 50px;
-  right: 20px;
 }
 
 $cl-table-ordering: #f0ad4e;
