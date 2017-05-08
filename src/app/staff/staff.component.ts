@@ -233,15 +233,16 @@ export class StaffComponent implements OnInit {
 
   cleanedTable() {
     // table.tableStatus = 0;
-      var updateTable = {
-        "tableId": this.busyTable.id+"",
-        "statusNumber":"0"
-      }
-      this.menuService.updateTableStatus(updateTable)
-        .subscribe(res => console.log('updated table ', res));
-      localStorage.removeItem("tableId");
-      localStorage.removeItem('currentTable');
-    // $('#cleanTable').modal('hide');
+    var updateTable = {
+      "tableId": this.busyTable.id+"",
+      "statusNumber":"0"
+    }
+    this.menuService.updateTableStatus(updateTable)
+      .subscribe(res => console.log('updated table ', res));
+    localStorage.removeItem("tableId");
+    localStorage.removeItem('currentTable');
+    $('#cleanTable').modal('hide');
+    $('#emptyTable').modal('hide');
     // this.router.navigate(["/"]);
   }
 

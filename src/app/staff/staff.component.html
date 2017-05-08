@@ -141,7 +141,7 @@
                     [class.is-free]="table.tableStatus === 0" [class.is-ordering]="table.tableStatus === 1"
                     [class.is-food-made]="table.tableStatus === 2" [class.is-cleaning]="table.tableStatus === 3"
                     [class.is-reserved]="table.tableStatus === 4"
-                    [class.is-choosing]="table == temporaryTable" >
+                    [class.is-choosing]="table == busyTable" >
                       <p>{{table.tableNumber}}</p>
                       <p>Max: {{table.size}} people</p>
                     </div>
@@ -172,7 +172,7 @@
             </div>
             <div class="modal-body">
               <div class="col-xs-12">
-                This table is cleaned?
+                Is this table cleaned?
               </div>
             </div>
             <div class="modal-footer">
