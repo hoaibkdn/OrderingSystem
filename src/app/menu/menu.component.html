@@ -16,12 +16,14 @@
                               <button class="btn btn-default type-up icon-circle-up"></button>
                               <div class="btn-type-group">
                                   <div class="row btn-type">
-                                      <a (click)="getFood(0)" class="btn-menu">
+                                      <a (click)="getFood(0)" class="btn-menu"
+                                      [class.btn-menu__choosing]="typeChoosing === 0">
                                           <div class="btn-menu__img">
                                               <p class="btn-menu__text">All</p>
                                           </div>
                                       </a>
-                                      <a (click)="getFood(type.id)" class="btn-menu" *ngFor="let type of typeOfFoods">
+                                      <a (click)="getFood(type.id)" class="btn-menu" *ngFor="let type of typeOfFoods"
+                                      [class.btn-menu__choosing]="typeChoosing === type.id">
                                           <div class="btn-menu__img">
                                               <p class="btn-menu__text">{{type.name}}</p>
                                           </div>

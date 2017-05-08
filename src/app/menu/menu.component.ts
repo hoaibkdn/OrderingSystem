@@ -23,7 +23,6 @@ import { Chart } from 'angular-highcharts';
 // import { TruncatePipe } from './../truncate';
 
 import * as _ from 'lodash';
-import './../../assets/js/menu.js';
 declare var $:any;
 declare var Stomp: any;
 
@@ -78,6 +77,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   ratingFoodArr: Rating[];
   ratingServiceArr: Rating[];
   showOrder: boolean;
+  typeChoosing: number;
   options = {
     timeout: 10000
   };
@@ -222,6 +222,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
         .subscribe(allFood => {this.allFood = allFood;
         this.food = this.getFood(0);
         this.ready();
+        this.typeChoosing = 0;
     });
     this.totalMoney();
     this.textSearch = "";
@@ -358,6 +359,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   getFood(id: number) {
     if(id === 0) {
       this.food = this.allFood;
+      this.typeChoosing = 0;
       return this.food;
     }
     this.isfilteringFood = true;
@@ -366,6 +368,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
       if(foodDrink.foodAndDrinkType.id === id) foodByType.push(foodDrink);
     });
     this.food = foodByType;
+    this.typeChoosing = id;
     return foodByType;
   }
 

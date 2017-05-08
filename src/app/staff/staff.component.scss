@@ -24,16 +24,24 @@
   text-align: center;
 }
 
+#show-btn {
+  @include circle(50px);
+  transition:0.5s;
+  outline: none;
+  font-size: 30px;
+  font-weight: 900;
+  padding: initial;
+}
+
 .chat-btn-confirm {
-  width: 100px;
-  height: 100px;
-  padding: 30px 10px;
-  border-radius: 100%;
+  transition-timing-function: linear;
+  transform: rotate(360deg);
+  background: #8e4713;
 }
 
 $cl-table-ordering: #f0ad4e;
 $cl-food-made: #4CAF50;
-$cl-table-empty: #e6e6e6;
+$cl-table-empty: #efefef;
 $cl-cleaning: #cacbcc;
 $cl-reserved: #8e4713;
 $cl-choosing: #a838af;
@@ -124,16 +132,39 @@ $cl-transparent: rgba(255,255,255,0);
   position: fixed;
   bottom: 50px;
   right: 20px;
+  font-weight: bold;
   &__all {
     position: fixed;
-    right: 35px;
-    bottom: 150px;
-    @include circle(70px);
+    right: 30px;
+    bottom: 120px;
+    @include circle(26px);
+    padding: initial;
+    &:before {
+      content: "All table";
+      position: absolute;
+      right: 30px;
+      color: #616161;
+      top: 0px;
+      background: #fff;
+      padding: 5px 10px;
+      box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.32);
+    }
   }
   &__unpay {
     position: fixed;
-    right: 45px;
-    bottom: 230px;
-    @include circle(50px);
+    right: 34px;
+    bottom: 160px;
+    @include circle(17px);
+    padding: initial;
+    &:before {
+      content: "Unpay table";
+      position: absolute;
+      right: 30px;
+      color: #616161;
+      top: -8px;
+      background: #fff;
+      padding: 5px 10px;
+      box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.32);
+    }
   }
 }

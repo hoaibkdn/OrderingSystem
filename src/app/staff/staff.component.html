@@ -14,12 +14,10 @@
                 </div>
                 <div class="comfirm-box">
                     <div class="btn-table">
-                        <button class="btn-table__all btn-warning btn btn-default">All table</button>
-                        <button class="btn-table__unpay btn-warning btn btn-default">Unpay table</button>
-                        <button (click)="getAllTableUnpay()" type="button" class="chat-btn-confirm btn-warning btn btn-default" data-toggle="modal" data-target="#tableUnpay">
-                            <p>Confirm
-                                <br> Payment</p>
+                        <button (click)="getCleaningTable()" class="btn-table__all btn-warning btn" data-toggle="modal" data-target="#cleanTable"></button>
+                        <button (click)="getAllTableUnpay()" class="btn-table__unpay btn-warning btn" data-toggle="modal" data-target="#tableUnpay">
                         </button>
+                        <button id="show-btn" class=" btn-warning btn btn-default">+</button>
                     </div>
                 </div>
                 <div>
@@ -131,7 +129,8 @@
 <div class="modal fade" id="cleanTable" tabindex="-1" role="dialog" aria-labelledby="cleanTableLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header flex-box">
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h2 class="login__title">All tables</h2>
             </div>
             <div class="modal-body overfollow">
@@ -160,6 +159,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default btn-warning" data-toggle="modal" data-target="#emptyTable">OK</button>
+                <button type="button" class="close btn btn-default" data-dismiss="modal" aria-label="Close">Close</button>
             </div>
         </div>
     </div>
