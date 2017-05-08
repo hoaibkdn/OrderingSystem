@@ -1123,8 +1123,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     var indexArr = [];
 
     this.currentFood.forEach(function(value, index) {
-      if(!value.name.toLowerCase().includes(this.textSearch) ||
-          !value.detail.toLowerCase().includes(this.textSearch)) {
+      if(!value.name.toLowerCase().includes(this.textSearch) && !value.detail.toLowerCase().includes(this.textSearch)) {
         indexArr.push(index);
       }
     }, this);
