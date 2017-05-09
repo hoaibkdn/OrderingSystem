@@ -8,7 +8,10 @@ import { UserAuthenticationService } from './user-authentication/user-authentica
 import { UserProfileService } from './user-profile/user-profile.service';
 import { AppService } from './app.service';
 import { LoadingPage } from './loading-indicator/loading-page';
+import { Table } from './models/table';
+import { AdminService } from './admin/admin.service';
 import './../assets/qr/effects_saycheese.js';
+
 
 declare var $:any;
 declare var go:any;
@@ -40,12 +43,17 @@ export class AppComponent extends LoadingPage implements OnInit {
   objSignUp: Object;
   confirmPassword: string;
 
+  currentTable: Table;
+  tables: Table[];
+  temporaryTable:Table;
+
   constructor(
     private router: Router,
     private facebookService: FacebookService,
     private userAuthenticationService: UserAuthenticationService,
     private userProfileService: UserProfileService,
-    private appService: AppService) {
+    private appService: AppService,
+    private adminService: AdminService) {
       super(false);
       let fbParams: InitParams = {
                                      appId: '830527260415888',
@@ -111,7 +119,13 @@ export class AppComponent extends LoadingPage implements OnInit {
         self.confirmPassword="";
         console.log('close sign up ', self.objSignUp);
       }
-    })
+    });
+
+    var existedTable = localStorage.getItem('currentTable');
+    if(existedTable) {
+      this.currentTable = JSON.parse(localStorage.getItem('currentTable'));
+      console.log('table init ', this.currentTable);
+    }
   }
 
   typeOfAccount(permissions: Permission[]): string{
@@ -255,10 +269,32 @@ export class AppComponent extends LoadingPage implements OnInit {
   }
 
   sendMessageAdmin(): void {
-    let message = (this.userName? this.userName : "Anonymous") + " is needing some help.";
-    console.log("Message to send: ", message);
+    let table = JSON.parse(localStorage.getItem('currentTable'));
+    console.log("Current table", table);
+    let message = "";
+    if(table){
+        message = "Table " + table.tableNumber + " is needing some help.";
+    } else {
+        console.log("Temp table: ", this.temporaryTable);
+        if(this.temporaryTable) {
+        this.currentTable = this.temporaryTable;
+        localStorage.setItem('currentTable', JSON.stringify(this.currentTable));
+        message = "Table " + this.currentTable.tableNumber + " is needing some help.";
+        console.log("Message to send: ", message);
+        $('#chooseTables').modal('hide');
+      }
+    }
     this.stompClient.send("/app/admin", {}, message);
     this.startCountDown();
+    // if(this.temporaryTable) {
+    //   this.currentTable = this.temporaryTable;
+    //   localStorage.setItem('currentTable', this.currentTable+'');
+    //   let message = "Table " + this.currentTable.tableNumber + " is needing some help.";
+    //   console.log("Message to send: ", message);
+    //   this.stompClient.send("/app/admin", {}, message);
+    //   this.startCountDown();
+    //   $('#chooseTables').modal('hide');
+    // }
   };
 
   goScan() {
@@ -272,10 +308,10 @@ export class AppComponent extends LoadingPage implements OnInit {
     this.countDown = 30;
     var self = this;
     // var count = 10;
-    console.log('count down ', this.countDown);
+    // console.log('count down ', this.countDown);
     var startCount = setInterval(function() {
       self.countDown--;
-      console.log('count down ', self.countDown);
+      // console.log('count down ', self.countDown);
       if(self.countDown === 0) clearInterval(startCount);
     }, 1000);
 
@@ -307,5 +343,29 @@ export class AppComponent extends LoadingPage implements OnInit {
     // this.objSignUp.roleId = "4";
     this.router.navigate(["/"]);
     $('#signUp').modal('hide');
+  }
+
+  chooseTable():any {
+    var allTable = this.adminService.getAllTable()
+      .subscribe(res => {this.tables = JSON.parse(res._body);;
+        console.log('tables ', this.tables);});
+    // if(this.currentTable) return true;
+    // else false;
+  }
+
+  getNumOfTable(table: Table) {
+    if(table.tableStatus !== 0) {
+      $('#toConfirmTable').modal('show');
+    }
+    else {
+      this.temporaryTable = table;
+    }
+  }
+
+  selectTable() {
+    this.currentTable = this.temporaryTable;
+    localStorage.setItem('currentTable', JSON.stringify(this.currentTable));
+    console.log('choose table: ', JSON.parse(localStorage.getItem('currentTable')));
+    $("#chooseTable").modal('hide');
   }
 }

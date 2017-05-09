@@ -97,6 +97,18 @@ export class StaffComponent implements OnInit {
     }
 
     // show button table
+    $('#show-btn').click(function() {
+      $('#show-btn').toggleClass('chat-btn-confirm');
+      setTimeout(function() {
+        $('.btn-table__all').toggle();
+        $('.btn-table__unpay').toggle();
+      }, 200);
+      console.log('show button ',$('.btn-table__all').toggle());
+      console.log('show button ',$('.btn-table__unpay').toggle());
+      console.log('show button ', $('#show-btn').toggleClass('chat-btn-confirm'));
+    });
+
+    // show button table
     $('.btn-table__all').hide();
     $('.btn-table__unpay').hide();
     this.stompClient = Stomp.client("wss://backend-os-v2.herokuapp.com/admin");
