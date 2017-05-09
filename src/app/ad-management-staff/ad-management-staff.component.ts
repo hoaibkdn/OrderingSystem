@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from '../admin/admin.service';
 import { User } from '../models/user';
+import { Shift } from '../models/shift';
 import { WorkingTime } from '../models/working-time';
 
 declare var $:any;
@@ -16,10 +17,14 @@ export class AdManagementStaffComponent implements OnInit {
   staffList: User[];
 	workingTimes: WorkingTime[];
 	staff: User;
+  shiftId = "";
+  staffId = "";
 	workingTime: WorkingTime;
 	name: string;
 	password: string;
 	email: string;
+  shifts: Shift[];
+  workingDate = "";
 	confirmPassword: string;
   sortBy = "name";
   searchKey = "";
@@ -28,6 +33,7 @@ export class AdManagementStaffComponent implements OnInit {
 
   ngOnInit() {
   	this.getAllStaff();
+    this.getAllShifts();
   }
 
   getAllStaff(){
@@ -37,6 +43,14 @@ export class AdManagementStaffComponent implements OnInit {
     }, err => {
       console.log(err);
     });
+  }
+
+  getAllShifts(){
+    this.adminService.getAllShifts().subscribe(res => {
+      this.shifts = JSON.parse(res._body);
+    }, err => {
+      console.log(err);
+    })
   }
 
   searchByKey(){
@@ -82,6 +96,30 @@ export class AdManagementStaffComponent implements OnInit {
   	}, err => {
   		console.log(err);
   	})
+  }
+
+  addWorkingTime(){
+    let date = new Date(this.workingDate);
+    if (this.shiftId == "" || this.staffId == "" || this.workingDate == ""){
+      alert("Please input all fields to add working time!");
+    } else if (date > new Date()){
+      alert("You can't add working time for staff for this date: " + this.workingDate);
+    } else {
+      console.log("Shift ", this.shiftId, " staff ", this.staffId, " workingDate ", date.getTime());
+      let body = {"userId": this.staffId, "shiftId": this.shiftId, "date": date.getTime()};
+      console.log(body);
+      this.adminService.createWorkingTime(body).subscribe(res => {
+        console.log(res);
+        if (res.status == 201){
+          $('#addWorkingTime').modal('hide');
+          this.staffId = "";
+          this.workingDate = "";
+          this.shiftId = "";
+        }
+      }, err => {
+        console.log(err);
+      })
+    }
   }
 
   addStaff(){

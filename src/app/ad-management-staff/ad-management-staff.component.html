@@ -1,6 +1,9 @@
 <div class="row">
-    <div class="col-xs-2 col-xs-offset-10">
-        <button class="btn btn-primary" data-toggle="modal" data-target="#addStaff">Add</button>
+    <div class="col-xs-2 col-xs-offset-7">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addStaff">Add staff</button>
+    </div>
+    <div class="col-xs-3">
+        <button class="btn btn-success" data-toggle="modal" data-target="#addWorkingTime">Add working time</button>
     </div>
 </div>
 <br>
@@ -219,3 +222,46 @@
         </div>
     </div>
 </div>
+
+<!-- Modal add new working time -->
+<div class="modal fade" id="addWorkingTime" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Add new working time for staff</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-6">
+                    <label>Shift</label>
+                    <br>
+                    <select name="shift" [(ngModel)]="shiftId" class="form-control">
+                        <option value="{{shift.id}}" *ngFor="let shift of shifts">{{shift.detail}}</option>
+                    </select>
+                    <br>
+                    <label>Staff</label>
+                    <br>
+                    <select name="userStaff" [(ngModel)]="staffId" class="form-control">
+                        <option value="{{staff.id}}" *ngFor="let staff of staffList">{{staff.name}}</option>
+                    </select>
+                    <br>
+                </div>
+                <div class="col-sm-6">
+                    <label>Date</label>
+                    <br>
+                    <input class="form-control" type="date" name="workingDate" [(ngModel)]="workingDate">
+                    <br>
+                </div>
+                <div class="row"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit" (click)="addWorkingTime()">Add</button>
+                <button class="btn" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
