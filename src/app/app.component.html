@@ -19,7 +19,13 @@
           <button (click)="logOut()" class="header__btn-login" *ngIf="token && isCustomer === true">Log Out</button>
           <!-- For staff -->
           <button (click)="logOut()" class="header__btn-login position-logout" *ngIf="token && isCustomer === false">Log Out</button>
-          <a (click)="sendMessageAdmin()" *ngIf="countDown === 0 && (isCustomer === true || isAdmin === true)" class="btn btn-default header__btn-waiter" value="Waiter">
+          <a (click)="sendMessageAdmin()" *ngIf="countDown === 0 && (isCustomer === true || isAdmin === true) && currentTable" class="btn btn-default header__btn-waiter" value="Waiter">
+            <p class="icon-phone header__btn-waiter--icon"></p>
+            Waiter
+          </a>
+          <a (click)="chooseTable()" *ngIf="countDown === 0 && (isCustomer === true || isAdmin === true) && !currentTable"
+            class="btn btn-default header__btn-waiter" value="Waiter"
+            data-toggle="modal" data-target="#chooseTables">
             <p class="icon-phone header__btn-waiter--icon"></p>
             Waiter
           </a>
@@ -71,15 +77,6 @@
             <label for="inputPassword" class="col-sm-2 control-label">Password</label>
             <div class="col-sm-10">
               <input type="password" class="form-control" id="inputPassword" placeholder="Password" [(ngModel)] = "inputPassword" name="password">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox"> Remember me
-                </label>
-              </div>
             </div>
           </div>
           <div class="form-group">
@@ -186,4 +183,63 @@
       </div>
     </div>
   </div>
+</div>
+
+<!--modal choose number of table-->
+<div class="modal fade" id="chooseTables" tabindex="-1" role="dialog" aria-labelledby="chooseTablesLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header flex-box">
+                <button type="button" class="btn btn-default close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title title-padding" id="chooseTableLabel">Please choose number of table</h5>
+            </div>
+            <div class="modal-body overfollow">
+              <div class="col-xs-12">
+                <div class="col-xs-4" *ngFor="let table of tables"
+                  (click)="getNumOfTable(table)">
+                  <div class="row">
+                    <div class="show-table btn btn-default choose-table"
+                    [class.is-free]="table.tableStatus === 0" [class.is-ordering]="table.tableStatus === 1"
+                    [class.is-food-made]="table.tableStatus === 2" [class.is-cleaning]="table.tableStatus === 3"
+                    [class.is-reserved]="table.tableStatus === 4"
+                    [class.is-choosing]="table == temporaryTable" >
+                      <p>{{table.tableNumber}}</p>
+                      <p>Max: {{table.size}} people</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer show-table__quote flex-box">
+              <p class="show-table__quote--free">Free</p>
+              <p class="show-table__quote--ordering">Ordering</p>
+              <p class="show-table__quote--made">Food Made</p>
+              <p class="show-table__quote--cleaning">Cleaning</p>
+              <p class="show-table__quote--reserved">Reserved</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button (click)="sendMessageAdmin()" type="button" class="btn btn-warning">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--confirm the empty table that clicked-->
+<div class="modal fade" id="toConfirmTable" tabindex="-1" role="dialog" aria-labelledby="confirmTableLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close btn btn-default" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+              <div class="deny-table">
+                  <p>You are permited order on empty table!</p>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default btn-warning" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+    </div>
 </div>
