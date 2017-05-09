@@ -3,7 +3,9 @@
     <tbody>
       <tr class="table-order__row" *ngFor="let group of groupThreeTables">
         <td (click) = "detailTable(table.tableNumber)" class="table-order__col {{table.tableNumber}}" *ngFor="let table of group"
-        [class.is-ordering]="invoices[table.tableNumber - 1] != null && !invoices[table.tableNumber - 1].made" [class.has-done]="invoices[table.tableNumber - 1] != null && invoices[table.tableNumber - 1].made">
+        [class.is-ordering]="invoices[table.tableNumber - 1] != null && !invoices[table.tableNumber - 1].made" [class.is-food-made]="invoices[table.tableNumber - 1] != null && invoices[table.tableNumber - 1].made"
+        [class.is-cleaning]="invoices[table.tableNumber - 1] && invoices[table.tableNumber - 1].table.tableStatus === 3"
+        [class.is-free]="invoices[table.tableNumber - 1] && invoices[table.tableNumber - 1].table.tableStatus === 0">
         <!-- <p *ngIf="invoices[table.tableNumber - 1] != null">{{invoices[table.tableNumber - 1].table.tableNumber}}</p> -->
           <p class="table-order__number">Table {{table.tableNumber}}</p>
           <p class="table-order__size">{{table.size}} people</p>
@@ -12,6 +14,13 @@
       </tr>
     </tbody>
   </table>
+  <div class="show-table__quote flex-box">
+    <p class="show-table__quote--free">Free</p>
+    <p class="show-table__quote--ordering">Ordering</p>
+    <p class="show-table__quote--made">Food Made</p>
+    <p class="show-table__quote--cleaning">Cleaning</p>
+    <p class="show-table__quote--reserved">Reserved</p>
+  </div>
 </div>
 <div class="col-xs-4">
   <router-outlet></router-outlet>
