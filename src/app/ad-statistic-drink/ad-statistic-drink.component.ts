@@ -48,7 +48,7 @@ export class AdStatisticDrinkComponent implements OnInit{
                 }
           },
           title: {
-              text: 'Statistic by food and drink'
+              text: 'Statistical data of food quality rating'
           },
           tooltip: {
               pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'

@@ -38,7 +38,7 @@ export class AdStatisticServiceComponent implements OnInit {
             type: 'pie'
           },
           title: {
-              text: 'Statistic by Service'
+              text: 'Statistical data of service quality rating'
           },
           tooltip: {
               pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
