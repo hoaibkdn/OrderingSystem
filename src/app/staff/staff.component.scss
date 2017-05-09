@@ -1,5 +1,10 @@
 @import "../helper/all";
 
+html,
+body {
+  background: $cl-white;
+}
+
 .chat-btn {
   margin: 10px;
   &_confirm {
