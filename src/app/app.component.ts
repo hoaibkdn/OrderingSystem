@@ -207,7 +207,7 @@ export class AppComponent extends LoadingPage implements OnInit {
   }
 
   logOut() {
-    if(localStorage.getItem('isPayed') === true + ""){
+    if(localStorage.getItem('isPaid') === true + ""){
       alert("Oops! You haven't paid your invoice but hitting log out button.");
     } else {
       localStorage.removeItem('token');
@@ -216,10 +216,10 @@ export class AppComponent extends LoadingPage implements OnInit {
       localStorage.removeItem('foodOrderLocal');
       localStorage.removeItem('isCustomer');
       localStorage.removeItem('isAdmin');
-      if (localStorage.getItem('isPayed')){
-        localStorage.removeItem('isPayed');
+      if (localStorage.getItem('isPaid')){
+        localStorage.removeItem('isPaid');
       }
-      console.log('Is payed: ', localStorage.getItem('isPayed'));
+      console.log('Is payed: ', localStorage.getItem('isPaid'));
       console.log('Food local order: ', localStorage.getItem('foodOrderLocal'));
       this.userName = "Anonymous user";
       this.token = null;
