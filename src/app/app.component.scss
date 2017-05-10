@@ -138,9 +138,14 @@
   height: 100%;
 }
 
-.sign-up {
+.sign-up,
+.forgot-pass {
   display: inline-block;
   color: #EA6D24;
+}
+
+.forgot-pass {
+  text-decoration: underline;
 }
 
 .sign-up-group {

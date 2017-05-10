@@ -46,6 +46,8 @@ export class AppComponent extends LoadingPage implements OnInit {
   currentTable: Table;
   tables: Table[];
   temporaryTable:Table;
+  emailForgetPass: Object;
+  // inputEmailForgetPass: string;
 
   constructor(
     private router: Router,
@@ -68,6 +70,10 @@ export class AppComponent extends LoadingPage implements OnInit {
         roleId: "4"
       },
       this.confirmPassword = "";
+      this.emailForgetPass = {
+        "email": "",
+        "urlPath": "http://localhost:4200/#/"
+      }
   }
 
   ngOnInit() {
@@ -367,5 +373,10 @@ export class AppComponent extends LoadingPage implements OnInit {
     localStorage.setItem('currentTable', JSON.stringify(this.currentTable));
     console.log('choose table: ', JSON.parse(localStorage.getItem('currentTable')));
     $("#chooseTable").modal('hide');
+  }
+
+  sendEmail() {
+    this.appService.sendEmail(this.emailForgetPass)
+      .subscribe( res => console.log("receive ", res) );
   }
 }
