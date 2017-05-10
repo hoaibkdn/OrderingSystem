@@ -376,7 +376,10 @@ export class AppComponent extends LoadingPage implements OnInit {
   }
 
   sendEmail() {
-    this.appService.sendEmail(this.emailForgetPass)
-      .subscribe( res => console.log("receive ", res) );
+    console.log("send email: ", this.emailForgetPass);
+
+    // this.appService.sendEmail(this.emailForgetPass)
+    //   .subscribe( res => console.log("receive ", res) );
+    this.router.navigate(["/reset-password"]);
   }
 }
