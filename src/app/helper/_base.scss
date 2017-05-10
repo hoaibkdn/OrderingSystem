@@ -1,3 +1,4 @@
+$cl-bg-base: #fff;
 * {
   // box-sizing: border-box;
   margin: 0;
@@ -10,11 +11,13 @@
 html {
   font-family: 'Oleo Script', cursive;
   font-size: $font-base;
+  background: $cl-bg-base;
 }
 
 body {
   font-family: 'Marmelad', sans-serif;
   margin: 0 auto;
+  background: $cl-bg-base;
 }
 .flex-box {
   display: -webkit-box;

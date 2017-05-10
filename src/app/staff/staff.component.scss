@@ -1,5 +1,10 @@
 @import "../helper/all";
 
+html,
+body {
+  background: $cl-white;
+}
+
 .chat-btn {
   margin: 10px;
   &_confirm {
@@ -26,16 +31,19 @@
 
 #show-btn {
   @include circle(50px);
-  transition:0.5s;
+  transition:0.3s;
   outline: none;
   font-size: 30px;
   font-weight: 900;
   padding: initial;
+  &:hover {
+    background: #8e4713;
+  }
 }
 
 .chat-btn-confirm {
   transition-timing-function: linear;
-  transform: rotate(360deg);
+  transform: rotate(180deg);
   background: #8e4713;
 }
 
