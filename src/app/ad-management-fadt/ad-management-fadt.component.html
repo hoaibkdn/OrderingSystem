@@ -35,7 +35,7 @@
         <label class="label-control">Search</label>
     </div>
     <div class="col-xs-7">
-        <input class="form-control" type="text" value="searchKey" [(ngModel)]="searchKey" (change)="searchByKey()">
+        <input class="form-control" type="text" value="searchKey" [(ngModel)]="searchKey" (keyup)="searchByKey()">
     </div>
 </div>
 <table class="table table-hover" [mfData]="foodAndDrinkTypes | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="5" [(mfSortBy)]="sortBy">
