@@ -1,0 +1,72 @@
+<div class="row">
+    <div class="col-xs-3 col-xs-offset-1">
+        <label class="label-control">Search</label>
+    </div>
+    <div class="col-xs-7">
+        <input class="form-control" type="text" value="searchKey" [(ngModel)]="searchKey" (keyup)="searchByKey()">
+    </div>
+</div>
+<table class="table table-hover" [mfData]="customers | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="5" [(mfSortBy)]="sortBy">
+    <thead>
+        <tr>
+            <th>
+                No.
+            </th>
+            <th>
+                <mfDefaultSorter by="name">Name</mfDefaultSorter>
+            </th>
+            <th>
+                <mfDefaultSorter by="gender">Email</mfDefaultSorter>
+            </th>
+            <th>
+                <mfDefaultSorter by="membershipPoint">Membership Point</mfDefaultSorter>
+            </th>
+            <th>
+                <!-- <mfDefaultSorter by="membershipPoint">Membership Point</mfDefaultSorter> -->
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let customer of mf.data; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{customer.name}}</td>
+            <td>{{customer.email}}</td>
+            <td>{{customer.membershipPoint}}</td>
+            <td>
+                <button class="btn btn-danger" data-toggle="modal" (click)="deleteCustomer(customer)" data-target="#deleteCustomer">X</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="10">
+                <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+<!-- Delete Customer -->
+<div class="modal fade" id="deleteCustomer" tabindex="-1" role="dialog" aria-labelledby="loginLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content login">
+            <div class="modal-header login__header flex-box">
+                <h2 class="login__title">Confirm delete</h2>
+                <button type="button" class="close login__close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" *ngIf="customer">
+                <p>Do you want to delete this item?</p>
+                <b>
+                    Name: {{customer.name}}
+                </b>
+                <br>
+                <b>
+                    Email: {{customer.email}}
+                </b>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="submit" (click)="deleteCustomers(customer)">Yes</button>
+                <button class="btn" type="button" data-dismiss="modal" aria-label="Close">No</button>
+            </div>
+        </div>
+    </div>
+</div>
