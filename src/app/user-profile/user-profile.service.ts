@@ -33,11 +33,11 @@ export class UserProfileService {
     return this.http.put(url, JSON.stringify(profile), {headers: headers});
   }
 
-  updatePassword(password: string): Observable<any> {
+  updatePassword(body: any): Observable<any> {
     var url = "https://backend-os-v2.herokuapp.com/api/user/profile/change-password";
     let headers = new Headers({'Content-Type': 'application/json'});
   	headers.append("Authorization", localStorage.getItem('token'));
-    return this.http.post(url, password, {headers: headers});
+    return this.http.post(url, body, {headers: headers});
   }
   getLocation():Observable<any>{
     var url = "https://backend-os-v2.herokuapp.com/location";

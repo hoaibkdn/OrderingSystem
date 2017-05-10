@@ -39,18 +39,18 @@
               <div class="profile-password-group">
                 <label>Change password</label>
                 <div class="form-group profile-line">
-                  <input type="password" class="form-control profile-password" placeholder="Type your password" name="password" [(ngModel)]="userProfile.password">
+                  <input type="password" class="form-control profile-password" placeholder="Type your password" name="password" [(ngModel)]="currentPassword">
                   <i class="icon-key profile-icon"></i>
                 </div>
                 <div class="form-group profile-line">
-                  <input type="password" class="form-control profile-password" placeholder="New password" name="newPassword" [(ngModel)]="newPass" #newPassword="ngModel">
+                  <input type="password" class="form-control profile-password" placeholder="New password" name="newPassword" [(ngModel)]="newPassword" #newPass="ngModel">
                   <i class="icon-key profile-icon"></i>
                 </div>
                 <div class="form-group profile-line">
-                  <input type="password" class="form-control profile-password" placeholder="Re-type new password" name="reNewPass" [(ngModel)]="reNewPassword" #reNewPass="ngModel"  [equalTo]="newPassword">
+                  <input type="password" class="form-control profile-password" placeholder="Re-type new password" name="reNewPass" [(ngModel)]="reNewPassword" #reNewPass="ngModel"  [equalTo]="newPass">
                   <i class="icon-key profile-icon"></i>
                 </div>
-                <p class="confirm-new-pass" *ngIf="reNewPass.errors?.equalTo">New password is wrong</p>
+                <p class="confirm-new-pass" *ngIf="reNewPass.errors?.equalTo">Please enter matching passwords</p>
               </div>
               <button type="submit" (click)="saveProfile()" class="btn btn-default btn--suggest profile-btn">Save</button>
             </form>

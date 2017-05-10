@@ -14,6 +14,7 @@ declare var $:any;
 })
 export class UserProfileComponent implements OnInit {
   gender: string;
+  currentPassword: string;
   newPassword: string;
   reNewPassword: string;
   userProfile: User;
@@ -65,8 +66,20 @@ export class UserProfileComponent implements OnInit {
       .subscribe(res => console.log('user update ', res));
     if(this.reNewPassword) {
       console.log('update profile');
-      this.userProfileService.updatePassword(this.reNewPassword)
-        .subscribe(res => console.log('new pass ', res));
+      let body = {"currentPassword": this.currentPassword, "newPassword": this.newPassword};
+      console.log(body);
+      this.userProfileService.updatePassword(body)
+        .subscribe(res => {
+          console.log('new pass ', res);
+          if (res.status == 200){
+            alert("Update password successfully");
+            this.newPassword = "";
+            this.reNewPassword = "";
+            this.currentPassword = "";
+          }
+        }, err => {
+          console.log(err);
+        });
         $('#changePass').modal('show');
     }
     console.log("user profile ", profileUpdated);

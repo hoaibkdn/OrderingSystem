@@ -156,6 +156,13 @@ export class AdminService {
     return this.http.get("https://backend-os-v2.herokuapp.com/api/invoice/all-invoices", {headers: headers});
   }
 
+  getAllShifts(): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.get("https://backend-os-v2.herokuapp.com/api/shift/all", {headers: headers});
+  }
+
   private extractData(res: Response) {
         let body = res.json();
         return body.data || {};
