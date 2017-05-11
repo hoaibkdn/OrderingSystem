@@ -22,6 +22,9 @@
                 <mfDefaultSorter by="membershipPoint">Membership Point</mfDefaultSorter>
             </th>
             <th>
+                <mfDefaultSorter by="lastAccess">Membership Point</mfDefaultSorter>
+            </th>
+            <th>
                 <!-- <mfDefaultSorter by="membershipPoint">Membership Point</mfDefaultSorter> -->
             </th>
         </tr>
@@ -32,6 +35,7 @@
             <td>{{customer.name}}</td>
             <td>{{customer.email}}</td>
             <td>{{customer.membershipPoint}}</td>
+            <td>{{customer.lastAccess == null ? 'No data' : customer.lastAccess}}</td>
             <td>
                 <button class="btn btn-danger" data-toggle="modal" (click)="deleteCustomer(customer)" data-target="#deleteCustomer">X</button>
             </td>
