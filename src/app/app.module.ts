@@ -36,6 +36,7 @@ import { DataTableModule } from "angular2-datatable";
 import { DataFilterPipe } from './data-filter/data-filter.pipe';
 import { DataFilterModule } from './data-filter/data-filter.module';
 import { CustomFormsModule } from 'ng2-validation';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp( new AuthConfig({}), http, options);
@@ -57,7 +58,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     StaffComponent,
     ScanQRCodeComponent,
     LoadingIndicatorComponent,
-    TruncatePipe
+    TruncatePipe,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,

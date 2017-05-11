@@ -15,4 +15,10 @@ export class AppService {
     var headers = new Headers({'Content-Type': 'application/json'});
     return this.http.post(url, JSON.stringify(newAccount), {headers: headers});
   }
+
+  sendEmail(forgotPass: any): Observable<any> {
+    const url = "https://backend-os-v2.herokuapp.com/api/auth/forgot-password";
+    var headers = new Headers({'Content-Type': 'application/json'});
+    return this.http.post(url, JSON.stringify(forgotPass), {headers: headers});
+  }
 }

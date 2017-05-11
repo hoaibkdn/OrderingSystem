@@ -9,6 +9,7 @@ import { StaffComponent } from './staff/staff.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { CanDeactivateGuard } from './can-deactivate-guard.service'
 import { ScanQRCodeComponent } from './scan-qrcode/scan-qrcode.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 const routes: Routes = [
   {
@@ -35,6 +36,10 @@ const routes: Routes = [
   {
     path: 'scanQRcode',
     component: ScanQRCodeComponent
+  },
+  {
+    path: 'reset-password',
+    component: ResetPasswordComponent
   }
 
 ];
