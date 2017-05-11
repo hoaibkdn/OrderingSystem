@@ -169,7 +169,7 @@ export class AppComponent extends LoadingPage implements OnInit {
 
   signIn() {
     this.standby();
-    this.userAuthenticationService.logIn(this.inputEmail, this.inputPassword, "https://orderingsys.herokuapp.com").subscribe(
+    this.userAuthenticationService.logIn(this.inputEmail, this.inputPassword, "https://orderingsys.herokuapp.com/#/").subscribe(
       res => {
         console.log(res);
         $('#login').modal('hide');
@@ -375,11 +375,22 @@ export class AppComponent extends LoadingPage implements OnInit {
     $("#chooseTable").modal('hide');
   }
 
+  hideLogin(){
+    console.log("Hide login");
+    $("#login").modal('hide');
+  }
+
   sendEmail() {
     console.log("send email: ", this.emailForgetPass);
-
-    // this.appService.sendEmail(this.emailForgetPass)
-    //   .subscribe( res => console.log("receive ", res) );
-    this.router.navigate(["/reset-password"]);
+    this.appService.sendEmail(this.emailForgetPass).subscribe(res => {
+      console.log(res);
+      if (res.status == 200){
+        alert("We have just sent an email with a link to reset your password. Please check your inbox (including spam) for the email. Thanks for using our service!");
+        $("#forgotPass").modal('hide');
+      }
+    }, err => {
+      console.log(err);
+      alert("We can't find your email in our system. Please check it again.");
+    })
   }
 }

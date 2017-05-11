@@ -52,4 +52,12 @@ export class UserProfileService {
     return this.http.get(url, {headers: headers});
   }
 
+  resetPassword(body: any){
+    var url = "https://backend-os-v2.herokuapp.com/api/auth/reset-password";
+    // var url = "http://localhost:8080/api/auth/reset-password";
+    let headers = new Headers({'Content-Type': 'application/json'});
+    headers.append("Authorization", localStorage.getItem('token'));
+    return this.http.post(url, body, {headers: headers});
+  }
+
 }
