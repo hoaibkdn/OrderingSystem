@@ -19,6 +19,7 @@ import { AdStaffsComponent } from './../ad-staffs/ad-staffs.component';
 import { DataTableModule } from "angular2-datatable";
 import { DataFilterModule } from './../data-filter/data-filter.module';
 import { AdManagementTableComponent } from './../ad-management-table/ad-management-table.component';
+import { AdManagementUserComponent } from './../ad-management-user/ad-management-user.component';
 
 @NgModule({
   imports: [
@@ -40,7 +41,8 @@ import { AdManagementTableComponent } from './../ad-management-table/ad-manageme
     AdManagementStaffComponent,
     AdStatisticServiceComponent,
     AdStaffsComponent,
-    AdManagementTableComponent
+    AdManagementTableComponent,
+    AdManagementUserComponent
   ],
   providers: [
     AdStatisticDrinkService,

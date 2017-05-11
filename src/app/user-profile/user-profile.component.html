@@ -17,7 +17,7 @@
                 <button (click)="edit('name')" class="btn btn-default icon-pencil profile-edit"></button>
               </div>
               <div class="form-group profile-line">
-                <input type="date" class="form-control profile-password" [ngModel]="userProfile.dateOfBirth|date:'yyyy-MM-dd'" name="birthDay">
+                <input type="date" class="form-control profile-password" [ngModel]="userProfile.dateOfBirth|date:'yyyy-MM-dd'" value="" name="birthDay" #birthDay>
                 <i class="icon-key profile-icon"></i>
               </div>
               <div class="form-group profile-line">
@@ -52,7 +52,7 @@
                 </div>
                 <p class="confirm-new-pass" *ngIf="reNewPass.errors?.equalTo">Please enter matching passwords</p>
               </div>
-              <button type="submit" (click)="saveProfile()" class="btn btn-default btn--suggest profile-btn">Save</button>
+              <button type="submit" (click)="saveProfile(birthDay.value)" class="btn btn-default btn--suggest profile-btn">Save</button>
             </form>
           </div>
         </div>

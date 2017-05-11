@@ -12,6 +12,8 @@ import { AdHomeComponent } from './../ad-home/ad-home.component';
 import { AdManagementTableComponent } from './../ad-management-table/ad-management-table.component';
 import { AdStatisticServiceComponent } from './../ad-statistic-service/ad-statistic-service.component';
 import { AdStaffsComponent } from './../ad-staffs/ad-staffs.component';
+import { AdManagementUserComponent } from './../ad-management-user/ad-management-user.component';
+
 
 const adminRoutes: Routes = [
   {
@@ -45,6 +47,11 @@ const adminRoutes: Routes = [
       {
         path: 'management/staff',
         component: AdManagementStaffComponent,
+        canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'management/user',
+        component: AdManagementUserComponent,
         canDeactivate: [CanDeactivateGuard]
       },
       {
