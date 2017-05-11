@@ -53,17 +53,25 @@ export class UserProfileComponent implements OnInit {
         });
   }
 
-  saveProfile() {
-    var date = new Date();
-    this.userProfile.dateOfBirth = date.getTime();
+  saveProfile(birthDay: any) {
+    // var date = new Date(this);
+    // this.userProfile.dateOfBirth = date.getTime();
+    console.log(this.userProfile.dateOfBirth, birthDay);
     var profileUpdated = {
-      dateOfBirth: this.userProfile.dateOfBirth,
+      dateOfBirth: new Date(birthDay).getTime(),
       detail: this.userProfile.detail,
       gender: this.userProfile.gender,
       name: this.userProfile.name
     };
     this.userProfileService.updateProfile(profileUpdated)
-      .subscribe(res => console.log('user update ', res));
+      .subscribe(res => {
+        console.log('user update ', res);
+        if (res.status == 201){
+          alert("Update profile successfully!");
+        }
+      }, err => {
+        console.log(err);
+      });
     if(this.reNewPassword) {
       console.log('update profile');
       let body = {"currentPassword": this.currentPassword, "newPassword": this.newPassword};

@@ -11,4 +11,5 @@ export class User {
   createdDate: number;
   deleted: boolean;
   password: string;
+  lastAccess: number;
 }
