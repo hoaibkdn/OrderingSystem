@@ -54,9 +54,10 @@ export class UserProfileComponent implements OnInit {
   }
 
   saveProfile(birthDay: any) {
-    // var date = new Date(this);
-    // this.userProfile.dateOfBirth = date.getTime();
     console.log(this.userProfile.dateOfBirth, birthDay);
+    if (this.userProfile.detail == null){
+      this.userProfile.detail = "";
+    }
     var profileUpdated = {
       dateOfBirth: new Date(birthDay).getTime(),
       detail: this.userProfile.detail,
