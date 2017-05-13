@@ -7,10 +7,11 @@ import 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 import { TotalMoney } from './../models/total-money';
 import { FoodAndDrink } from '../models/food-and-drink';
+import { serverUrl } from '../server-url.config';
 
 @Injectable()
 export class AdminService {
-  private foodUrl = "https://backend-os-v2.herokuapp.com/api/food-and-drink";
+  private foodUrl = serverUrl + "food-and-drink";
   private rateUrl;
   constructor(private http: Http) {}
 
@@ -32,7 +33,7 @@ export class AdminService {
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.get("https://backend-os-v2.herokuapp.com/api/food-and-drink-type/all", {headers: headers});
+    return this.http.get(serverUrl + "food-and-drink-type/all", {headers: headers});
   }
 
   createFoodAndDrink(body: any): any{
@@ -53,77 +54,77 @@ export class AdminService {
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.delete("https://backend-os-v2.herokuapp.com/api/food-and-drink-type/delete/" + id, {headers: headers});
+    return this.http.delete(serverUrl + "food-and-drink-type/delete/" + id, {headers: headers});
   }
 
   createFoodAndDrinkType(body: any): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.post("https://backend-os-v2.herokuapp.com/api/food-and-drink-type", body, {headers: headers});
+    return this.http.post(serverUrl + "food-and-drink-type", body, {headers: headers});
   }
 
   getAllStaff(): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.get("https://backend-os-v2.herokuapp.com/api/user/all/staff", {headers: headers});
+    return this.http.get(serverUrl + "user/all/staff", {headers: headers});
   }
 
   getAllWorkingTime(id: any): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.get("https://backend-os-v2.herokuapp.com/api/working-time/all/user/" + id, {headers: headers});
+    return this.http.get( serverUrl + "working-time/all/user/" + id, {headers: headers});
   }
 
   getLastWorkingTime(): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.get("https://backend-os-v2.herokuapp.com/api/working-time/last", {headers: headers});
+    return this.http.get(serverUrl + "working-time/last", {headers: headers});
   }
 
   deleteWorkingTimeById(id: any): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.delete("https://backend-os-v2.herokuapp.com/api/working-time/delete/" + id, {headers: headers});
+    return this.http.delete(serverUrl + "working-time/delete/" + id, {headers: headers});
   }
 
   createStaff(body: any): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
-    return this.http.post("https://backend-os-v2.herokuapp.com/api/user", body, {headers: headers});
+    return this.http.post(serverUrl + "user", body, {headers: headers});
   }
 
   deleteStaff(id: any): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.delete("https://backend-os-v2.herokuapp.com/api/user/delete/" + id, {headers: headers});
+    return this.http.delete(serverUrl + "user/delete/" + id, {headers: headers});
   }
 
   getAllTable(): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
-    return this.http.get("https://backend-os-v2.herokuapp.com/api/table/all", {headers: headers});
+    return this.http.get(serverUrl + "table/all", {headers: headers});
   }
 
   getAllUnpaidInvoice(): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.get("https://backend-os-v2.herokuapp.com/api/invoice/unpaid-invoice/", {headers: headers});
+    return this.http.get(serverUrl + "invoice/unpaid-invoice/", {headers: headers});
   }
 
   getInvoiceDetailForInvoice(invoiceID: any): Observable<any> {
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.get("https://backend-os-v2.herokuapp.com/api/invoice-detail/" + invoiceID, {headers: headers});
+    return this.http.get(serverUrl + "invoice-detail/" + invoiceID, {headers: headers});
   }
 
   getTotalMonthly(): Observable<TotalMoney[]> {
-    var url = "https://backend-os-v2.herokuapp.com/api/invoice/total-monthly";
+    var url = serverUrl + "invoice/total-monthly";
     return this.http.get(url)
       .map(res => res.json() );
   }
@@ -132,42 +133,42 @@ export class AdminService {
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.put("https://backend-os-v2.herokuapp.com/api/invoice/is-made/" + invoiceId, {}, {headers: headers});
+    return this.http.put(serverUrl + "invoice/is-made/" + invoiceId, {}, {headers: headers});
   }
 
   createWorkingTime(body: any): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.post("https://backend-os-v2.herokuapp.com/api/working-time", body, {headers: headers});
+    return this.http.post(serverUrl + "working-time", body, {headers: headers});
   }
 
   createTable(sizeTable: any): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.post("https://backend-os-v2.herokuapp.com/api/table", {size: sizeTable}, {headers: headers});
+    return this.http.post(serverUrl + "table", {size: sizeTable}, {headers: headers});
   }
 
   getAllInvoice(): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.get("https://backend-os-v2.herokuapp.com/api/invoice/all-invoices", {headers: headers});
+    return this.http.get(serverUrl + "invoice/all-invoices", {headers: headers});
   }
 
   getAllShifts(): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.get("https://backend-os-v2.herokuapp.com/api/shift/all", {headers: headers});
+    return this.http.get(serverUrl + "shift/all", {headers: headers});
   }
 
   getAllCustomer(): Observable<any>{
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
-    return this.http.get("https://backend-os-v2.herokuapp.com/api/user/all/customer", {headers: headers});
+    return this.http.get(serverUrl + "user/all/customer", {headers: headers});
   }
 
   private extractData(res: Response) {

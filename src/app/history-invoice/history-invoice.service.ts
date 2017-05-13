@@ -9,6 +9,7 @@ import 'rxjs/add/operator/toPromise';
 import { User } from '../models/user';
 import { Invoice } from '../models/invoice';
 import { InvoiceDetail } from '../models/invoice-detail';
+import { serverUrl } from '../server-url.config';
 
 
 @Injectable()
@@ -17,7 +18,7 @@ export class HistoryInvoiceService {
   constructor( private http: Http) {}
 
   getAllInvoice(): Observable<any> {
-    const url = 'https://backend-os-v2.herokuapp.com/api/invoice/all';
+    const url = serverUrl + 'invoice/all';
     if(!this.headers.get('Authorization')) {
       let token = localStorage.getItem('token');
       this.headers.append('Authorization', token);
@@ -27,7 +28,7 @@ export class HistoryInvoiceService {
   }
 
   getInvoiceDetail(id:string): Observable<InvoiceDetail[]> {
-    const url = 'https://backend-os-v2.herokuapp.com/api/invoice-detail/'+id;
+    const url = serverUrl + 'invoice-detail/'+id;
     if(!this.headers.get('Authorization')) {
       let token = localStorage.getItem('token');
       this.headers.append('Authorization', token);

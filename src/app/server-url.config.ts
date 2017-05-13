@@ -1,0 +1,1 @@
+export const serverUrl = "https://backend-os-v2.herokuapp.com/api/";

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, RequestOptions, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import '../rxjs-extensions';
+import { serverUrl } from '../server-url.config';
 
 @Injectable()
 export class UserAuthenticationService {
@@ -12,7 +13,7 @@ export class UserAuthenticationService {
     }
 
 	  logIn(email: String, password: String, urlPath: String): Observable<any> {
-	  	let postUrl = "https://backend-os-v2.herokuapp.com/api/auth/login";
+	  	let postUrl = serverUrl + "auth/login";
 	  	let headers = new Headers({'Content-Type': 'application/json'});
 	        return this.http
 	            .post(
@@ -22,7 +23,7 @@ export class UserAuthenticationService {
 	    }
 
 	  loginByFacebook(accessToken: String): Observable<any> {
-	    let url = "https://backend-os-v2.herokuapp.com/api/auth/social/facebook";
+	    let url = serverUrl + "auth/social/facebook";
 	    let headers = new Headers({'Content-Type': 'application/json'});
 	    return this.http
 	            .post(
@@ -32,7 +33,7 @@ export class UserAuthenticationService {
 	  }
 
 	  loginByGoogle(idTokenString: String): Observable<any> {
-	    let url = "https://backend-os-v2.herokuapp.com/api/auth/social/google";
+	    let url = serverUrl + "auth/social/google";
 	    let headers = new Headers({'Content-Type': 'application/json'});
 	    return this.http
 	            .post(

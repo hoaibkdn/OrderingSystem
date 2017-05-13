@@ -7,7 +7,7 @@ import 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 
 import { Favorite } from '../models/favorite';
-
+import { serverUrl } from '../server-url.config';
 
 @Injectable()
 export class HistoryFavoriteService {
@@ -18,7 +18,7 @@ export class HistoryFavoriteService {
   ){}
 
   getAllFavorite(): Observable<Favorite[]>{
-    const url = 'https://backend-os-v2.herokuapp.com/api/invoice-detail/favorite';
+    const url = serverUrl + 'invoice-detail/favorite';
     if(!this.headers.get('Authorization')) {
       let token = localStorage.getItem('token');
       this.headers.append('Authorization', token);

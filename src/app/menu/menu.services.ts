@@ -13,12 +13,13 @@ import { RatingPost } from '../models/rating-post';
 import { Payment } from '../models/payment';
 import { FoodCombination } from '../models/FoodCombination';
 import { FoodAndDrinkType } from '../models/food-and-drink-type';
+import { serverUrl } from '../server-url.config';
 
 @Injectable()
 export class MenuService {
 
   private headers = new Headers({'Content-Type': 'application/json'});
-  private foodUrl = "https://backend-os-v2.herokuapp.com/api/food-and-drink/all";
+  private foodUrl = serverUrl + "/food-and-drink/all";
   // private foodUrl = "src/app/models/"
   private rateUrl;
   constructor(private http: Http) {}
@@ -40,7 +41,7 @@ export class MenuService {
 
   //get from JSON rating, check exist, post into JSON
   getRate(type: number): Observable<Rating> {
-    this.rateUrl = "https://backend-os-v2.herokuapp.com/api/rate/"+type+"/num-of-people";
+    this.rateUrl = serverUrl + "rate/"+type+"/num-of-people";
     console.log("url "+ this.rateUrl);
 
     return this.http.get(this.rateUrl)
@@ -48,13 +49,13 @@ export class MenuService {
   }
 
   updateRate(rating: RatingPost): Observable<any> {
-    var rateUrl = "https://backend-os-v2.herokuapp.com/api/rate";
+    var rateUrl = serverUrl + "rate";
     return this.http.post(rateUrl, JSON.stringify(rating), {headers: this.headers});
   }
 
 
   postOrder(order: any): Observable<any> {
-    const url = "https://backend-os-v2.herokuapp.com/api/invoice";
+    const url = serverUrl + "invoice";
 
     if(!this.headers.get('Authorization')) {
       let token = localStorage.getItem('token');
@@ -67,7 +68,7 @@ export class MenuService {
   }
 
   updateOrder(order: any): Observable<any> {
-    const url = "https://backend-os-v2.herokuapp.com/api/invoice-detail/update";
+    const url = serverUrl + "invoice-detail/update";
     if(!this.headers.get('Authorization')) {
       let token = localStorage.getItem('token');
       this.headers.append('Authorization', token);
@@ -83,7 +84,7 @@ export class MenuService {
   }
 
   paymentRequest(payment: Payment):Observable<any> {
-    const url="https://backend-os-v2.herokuapp.com/api/invoice/confirm-paid/";
+    const url= serverUrl + "invoice/confirm-paid/";
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
@@ -92,25 +93,25 @@ export class MenuService {
   }
 
   getCombination(id: number): Observable<FoodCombination[]> {
-    const url="https://backend-os-v2.herokuapp.com/api/order-combination/"+id;
+    const url= serverUrl + "order-combination/"+id;
     return this.http.get(url)
         .map(response => response.json());
   }
 
   getTypeOfFood():Observable<FoodAndDrinkType[]> {
-    const url="https://backend-os-v2.herokuapp.com/api/food-and-drink-type/all";
+    const url=serverUrl + "food-and-drink-type/all";
     return this.http.get(url).map(res => res.json());
   }
 
   searchTags(keySearch: string): Observable<FoodAndDrink[]> {
-    const url="https://backend-os-v2.herokuapp.com/api/food-and-drink/search/tag";
+    const url=serverUrl + "food-and-drink/search/tag";
     let params = new URLSearchParams();
     params.set('tag', keySearch);
     return this.http.get(url, {search: params}).map(res => res.json());
   }
 
   updateTableStatus(tableUpdate: any): Observable<any> {
-    const url="https://backend-os-v2.herokuapp.com/api/table/update-status";
+    const url = serverUrl + "table/update-status";
     let headers = new Headers({'Content-Type': 'application/json'});
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
@@ -125,7 +126,7 @@ export class MenuService {
   public handleError(error: Response) {
     // console.error(error);
     if(error.status == 406) {
-      alert("This table still doesnt pay yet ");
+      alert("This table still doesn't pay yet");
     }
     return Observable.throw(error.json().error || 'Server error');
   }
