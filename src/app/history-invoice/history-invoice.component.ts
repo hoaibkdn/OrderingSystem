@@ -13,6 +13,7 @@ import { InvoiceDetail } from '../models/invoice-detail';
 export class HistoryInvoiceComponent implements OnInit {
   invoices: Invoice[];
   invoiceDetails: InvoiceDetail[];
+  sortBy = "id";
   // invoiceId: number;
   // @Input() id: number;
   constructor(

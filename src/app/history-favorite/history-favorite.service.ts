@@ -12,6 +12,7 @@ import { serverUrl } from '../server-url.config';
 @Injectable()
 export class HistoryFavoriteService {
   favoriteFood: Favorite[];
+  
   private headers = new Headers({'Content-Type': 'application/json'});
   constructor(
     private http: Http

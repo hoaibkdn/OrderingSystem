@@ -252,7 +252,12 @@ export class StaffComponent implements OnInit {
       "statusNumber":"0"
     }
     this.menuService.updateTableStatus(updateTable)
-      .subscribe(res => console.log('updated table ', res));
+      .subscribe(res => {
+        console.log('updated table ', res);
+        if (res.status == 200){
+          this.stompClient.send("/app/admin", {}, "Table number: " + this.busyTable.tableNumber + " has been cleaned. Confirmed by: " + this.userInfo.name + ".");
+        }
+      });
     localStorage.removeItem("tableId");
     localStorage.removeItem('currentTable');
     $('#cleanTable').modal('hide');

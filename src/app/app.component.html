@@ -14,7 +14,7 @@
           </h1>
         </div>
         <div class="header__btn-group flex-box">
-          <button routerLink="/scanQRcode" class="header__btn-qrCode" *ngIf="isCustomer === true">Scan QR code</button>
+          <!-- <button routerLink="/scanQRcode" class="header__btn-qrCode" *ngIf="isCustomer === true">Scan QR code</button> -->
           <button class="header__btn-login" data-toggle="modal" data-target="#login" *ngIf="!token">Log In</button>
           <button (click)="logOut()" class="header__btn-login" *ngIf="token && isCustomer === true">Log Out</button>
           <!-- For staff -->

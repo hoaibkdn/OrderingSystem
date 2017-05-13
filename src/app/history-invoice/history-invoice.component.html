@@ -1,59 +1,92 @@
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>No</th>
-      <th>Day</th>
-      <th>Price</th>
-      <th>Payment via</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr  *ngFor = 'let invoice of invoices | paginate: { itemsPerPage: 6, currentPage: p }; let i = index' data-toggle="modal" data-target="#invoice-detail" (click) = "getInvoiceDetail(invoice.id)">
-      <td>{{i+1}}</td>
-      <td>{{invoice.payingTime | date: fomart}}</td>
-      <td>{{invoice.totalAmount | currency:'vnd':true:'1.0-2'}}</td>
-      <td>{{invoice.paymentType}}</td>
-    </tr>
-  </tbody>
+<table class="table table-hover" [mfData]="invoices | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="5" [(mfSortBy)]="sortBy">
+    <thead>
+        <tr>
+            <th>
+                No.
+            </th>
+            <th>
+                <mfDefaultSorter by="id">Invoice ID</mfDefaultSorter>
+            </th>
+            <th>
+                <mfDefaultSorter by="payingTime">Date</mfDefaultSorter>
+            </th>
+            <th>
+                <mfDefaultSorter by="totalAmount">Price</mfDefaultSorter>
+            </th>
+            <th>
+                <mfDefaultSorter by="paymentType">Payment type</mfDefaultSorter>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let invoice of mf.data; let i = index" data-toggle="modal" data-target="#invoice-detail" (click)="getInvoiceDetail(invoice.id)">
+            <td>{{i+1}}</td>
+            <td>{{invoice.id}}</td>
+            <td>{{invoice.payingTime | date: 'medium'}}</td>
+            <td>{{invoice.totalAmount | currency:'vnd':true:'1.0-2'}}</td>
+            <td>{{invoice.paymentType}}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="10">
+                <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+            </td>
+        </tr>
+    </tfoot>
 </table>
-<pagination-controls
-  (pageChange)="p = $event" style="text-align: center;"
-  previousLabel=""
-  nextLabel="">
-</pagination-controls>
-
-
-<div class="modal fade" id="invoice-detail" tabindex="-1" role="dialog" aria-labelledby="detailInvoiceLabel" >
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" >
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Invoice detail</h4>
-      </div>
-      <div class="modal-body" *ngIf='invoiceDetails'>
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Name</th>
-              <th>Quantity</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr  *ngFor = 'let invoiceDetail of invoiceDetails; let i = index'>
-              <td>{{i+1}}</td>
-              <td>{{invoiceDetail.foodAndDrink.name}}</td>
-              <td>{{invoiceDetail.quantity}}</td>
-              <td>{{invoiceDetail.price}}</td>
-            </tr>
-          </tbody>
-        </table>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
+<!-- <table class="table table-hover">
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Invoice ID</th>
+            <th>Day</th>
+            <th>Price</th>
+            <th>Payment via</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor='let invoice of invoices | paginate: { itemsPerPage: 6, currentPage: p }; let i = index' data-toggle="modal" data-target="#invoice-detail" (click)="getInvoiceDetail(invoice.id)">
+            <td>{{i+1}}</td>
+            <td>{{invoice.id}}</td>
+            <td>{{invoice.payingTime | date: fomart}}</td>
+            <td>{{invoice.totalAmount | currency:'vnd':true:'1.0-2'}}</td>
+            <td>{{invoice.paymentType}}</td>
+        </tr>
+    </tbody>
+</table>
+<pagination-controls (pageChange)="p = $event" style="text-align: center;" previousLabel="" nextLabel="">
+</pagination-controls> -->
+<div class="modal fade" id="invoice-detail" tabindex="-1" role="dialog" aria-labelledby="detailInvoiceLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Invoice detail</h4>
+            </div>
+            <div class="modal-body" *ngIf='invoiceDetails'>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let invoiceDetail of invoiceDetails; let i = index'>
+                            <td>{{i+1}}</td>
+                            <td>{{invoiceDetail.foodAndDrink.name}}</td>
+                            <td>{{invoiceDetail.quantity}}</td>
+                            <td>{{invoiceDetail.price}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
