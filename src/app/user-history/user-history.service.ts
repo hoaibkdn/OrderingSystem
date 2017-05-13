@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
+import { serverUrl } from '../server-url.config';
 
 import { InvoiceDetail } from '../models/invoice-detail';
 
@@ -17,7 +18,7 @@ export class UserHistoryService {
   ){}
 
   getAllDetail(): Observable<InvoiceDetail[]>{
-    const url = 'https://backend-os-v2.herokuapp.com/api/invoice-detail/all';
+    const url = serverUrl + 'invoice-detail/all';
     if(!this.headers.get('Authorization')) {
       let token = localStorage.getItem('token');
       this.headers.append('Authorization', token);
