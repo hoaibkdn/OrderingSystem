@@ -10,13 +10,17 @@ import { UserHistoryComponent } from './../user-history/user-history.component';
 import { HistoryInvoiceComponent } from './../history-invoice/history-invoice.component';
 
 import { UserHistoryService } from './../user-history/user-history.service';
+import { DataTableModule } from "angular2-datatable";
+import { DataFilterModule } from './../data-filter/data-filter.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     HistoryRoutingModule,
-    Ng2PaginationModule
+    Ng2PaginationModule,
+    DataTableModule,
+    DataFilterModule
   ],
   declarations: [
     HistoryComponent,

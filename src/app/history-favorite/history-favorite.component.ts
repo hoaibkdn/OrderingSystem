@@ -9,6 +9,7 @@ import { Favorite } from '../models/favorite';
 })
 export class HistoryFavoriteComponent implements OnInit {
   favoriteFood: Favorite[];
+  sortBy = "quantity";
   constructor(
     private historyFavoriteService: HistoryFavoriteService
   ) { }
@@ -16,7 +17,11 @@ export class HistoryFavoriteComponent implements OnInit {
   ngOnInit() {
     this.historyFavoriteService.getAllFavorite()
       .subscribe(res => { this.favoriteFood = res;
-        console.log('favorite ', res);
+        console.log('favorite ', this.favoriteFood);
+        for(let i = 0; i < this.favoriteFood.length; i++){
+          this.favoriteFood[i].price = parseInt(this.favoriteFood[i].price + "");
+          this.favoriteFood[i].quantity = parseInt(this.favoriteFood[i].quantity + "");
+        }
       },
       err => {console.log(err)});
   }
