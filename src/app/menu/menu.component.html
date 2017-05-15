@@ -47,7 +47,7 @@
                                               <a (click)="getDetail(afood)" class="food__name" data-toggle="modal" data-target="#detailFood">
                                                   <img class="food__img" src="../../assets/slice/food/{{afood.id}}.png" alt="">
                                                   <div class="food__board">
-                                                      <p class="food__board--name">{{afood.name | truncate : 13}}</p>
+                                                      <p class="food__board--name">{{afood.name | truncate : 10}}</p>
                                                       <p class="food__board--price">{{afood.price}} d</p>
                                                   </div>
                                               </a>
@@ -61,7 +61,7 @@
                                               <a (click)="getDetail(afood)" class="food__name" data-toggle="modal" data-target="#detailFood">
                                                   <img class="food__img" src="../../assets/slice/food/{{afood.id}}.png"  alt="">
                                                   <div class="food__board">
-                                                      <p class="food__board--name">{{afood.name | truncate : 13}}</p>
+                                                      <p class="food__board--name">{{afood.name | truncate : 10}}</p>
                                                       <p class="food__board--price">{{afood.price}} d</p>
                                                   </div>
                                               </a>
