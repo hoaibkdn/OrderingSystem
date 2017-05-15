@@ -324,9 +324,10 @@
     cursor: pointer;
     display: inline-block;
     text-align: center;
-    padding: 5px;
+    padding: 10px;
     @extend %position-center;
     color: #000;
+    width: 100%;
     &--detail {
       display: none;
     }

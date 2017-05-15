@@ -19,8 +19,8 @@ export class HistoryFavoriteComponent implements OnInit {
       .subscribe(res => { this.favoriteFood = res;
         console.log('favorite ', this.favoriteFood);
         for(let i = 0; i < this.favoriteFood.length; i++){
-          this.favoriteFood[i].price = parseInt(this.favoriteFood[i].price + "");
-          this.favoriteFood[i].quantity = parseInt(this.favoriteFood[i].quantity + "");
+          this.favoriteFood[i].price = this.favoriteFood[i].price;
+          this.favoriteFood[i].quantity = this.favoriteFood[i].quantity;
         }
       },
       err => {console.log(err)});
