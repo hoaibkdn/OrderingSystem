@@ -6,6 +6,8 @@ import { MenuService } from './../menu/menu.services';
 import { Table } from './../models/table';
 import { Invoice } from './../models/invoice';
 import { Payment } from '../models/payment';
+import { websocketUrl } from '../server-url.config'
+
 declare var Stomp: any;
 declare var $:any;
 
@@ -51,18 +53,19 @@ export class AdStaffsComponent implements OnInit {
       }
     }
 
-    this.stompClient = Stomp.client("wss://backend-os-v2.herokuapp.com/admin");
+    this.stompClient = Stomp.client(websocketUrl + "admin");
     this.stompClient.connect({}, (frame) => {
                     console.log('Connected: ' + frame);
                     console.log(this.stompClient);
-                    setInterval(() => {
-                        if(!this.stompClient.connected){
-                          console.log("Failed to connect");
-                        } else {
-                          console.log("Interval at " + new Date());
-                          this.stompClient.send("/app/admin", {}, "");
-                        }
-                      }, 30000);
+                    // Uncomment for heroku app
+                    // setInterval(() => {
+                    //     if(!this.stompClient.connected){
+                    //       console.log("Failed to connect");
+                    //     } else {
+                    //       console.log("Interval at " + new Date());
+                    //       this.stompClient.send("/app/admin", {}, "");
+                    //     }
+                    //   }, 30000);
                     this.stompClient.subscribe('/request/admin', (messageOutput) => {
                       var tag = document.getElementsByClassName('chat-box')[0];
                       let allMessage = localStorage.getItem('allMessage') == null ? "" : localStorage.getItem('allMessage');

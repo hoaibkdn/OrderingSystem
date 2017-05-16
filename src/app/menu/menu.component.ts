@@ -20,6 +20,8 @@ import { AdminService } from './../admin/admin.service';
 import { AdStatisticDrinkService } from './../ad-statistic-drink/ad-statistic-drink.service';
 import { Table } from '../models/table';
 import { Chart } from 'angular-highcharts';
+import { websocketUrl } from '../server-url.config'
+
 // import { TruncatePipe } from './../truncate';
 
 import * as _ from 'lodash';
@@ -337,18 +339,19 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   connectAdmin(): void {
-    this.stompClient = Stomp.client("wss://backend-os-v2.herokuapp.com/admin");
+    this.stompClient = Stomp.client(websocketUrl + "admin");
     this.stompClient.connect({}, (frame) => {
         console.log('Connected admin: ' + frame);
         console.log(this.stompClient);
-        setInterval(() => {
-            if(!this.stompClient.connected){
-              console.log("Failed to connect");
-            } else {
-              console.log("Interval at " + new Date());
-              this.stompClient.send("/app/admin", {}, "");
-            }
-          }, 30000);
+        // Uncomment for heroku app
+        // setInterval(() => {
+        //     if(!this.stompClient.connected){
+        //       console.log("Failed to connect");
+        //     } else {
+        //       console.log("Interval at " + new Date());
+        //       this.stompClient.send("/app/admin", {}, "");
+        //     }
+        //   }, 30000);
         this.stompClient.subscribe('/request/admin', (messageOutput) => {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
