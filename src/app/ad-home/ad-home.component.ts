@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AdminService } from '../admin/admin.service';
 import { Table } from '../models/table';
 import { Invoice } from '../models/invoice';
+import { websocketUrl } from './../server-url.config';
 
 declare var Stomp: any;
 
@@ -29,7 +30,7 @@ export class AdHomeComponent implements OnInit {
 
   ngOnInit() {
     this.getUnpaidInvoice();
-    this.stompClient = Stomp.client("wss://backend-os-v2.herokuapp.com/admin");
+    this.stompClient = Stomp.client(websocketUrl + "admin");
     this.stompClient.connect({}, (frame) => {
         console.log('Connected admin: ' + frame);
         console.log(this.stompClient);

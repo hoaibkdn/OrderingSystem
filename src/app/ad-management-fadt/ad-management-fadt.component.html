@@ -48,7 +48,7 @@
                 <mfDefaultSorter by="name">Name</mfDefaultSorter>
             </th>
             <th>
-                <mfDefaultSorter by="detail">Detail</mfDefaultSorter>
+                <mfDefaultSorter by="mainDish">Main dish</mfDefaultSorter>
             </th>
             <th>
                 <mfDefaultSorter by="createdDate">Date added</mfDefaultSorter>
@@ -62,7 +62,7 @@
         <tr *ngFor="let fadt of mf.data; let i = index">
                 <td (click)="getAllFoodAndDrinkOfType(fadt)" data-toggle="modal" data-target="#detailFood">{{i + 1}}</td>
                 <td (click)="getAllFoodAndDrinkOfType(fadt)" data-toggle="modal" data-target="#detailFood">{{fadt.name}}</td>
-                <td (click)="getAllFoodAndDrinkOfType(fadt)" data-toggle="modal" data-target="#detailFood">{{fadt.detail}}</td>
+                <td (click)="getAllFoodAndDrinkOfType(fadt)" data-toggle="modal" data-target="#detailFood">{{fadt.mainDish}}</td>
                 <td (click)="getAllFoodAndDrinkOfType(fadt)" data-toggle="modal" data-target="#detailFood">{{fadt.createdDate | date:'medium'}}</td>
                 <td>
                     <button class="btn btn-danger" (click)="deleteFadt(fadt)" data-toggle="modal" data-target="#deleteFood">X</button>
