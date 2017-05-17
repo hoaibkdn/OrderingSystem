@@ -13,7 +13,7 @@
                     <div class="food overfollow">
                         <div class="col-xs-2">
                           <div class="row">
-                              <button class="btn btn-default type-up icon-circle-up"></button>
+                              <button (click)="upType()" class="btn btn-default type-up icon-circle-up"></button>
                               <div class="btn-type-group">
                                   <div class="row btn-type">
                                       <a (click)="getFood(0)" class="btn-menu"
@@ -30,7 +30,7 @@
                                       </a>
                                   </div>
                               </div>
-                              <button href="#" class="btn btn-default type-down icon-circle-down"></button>
+                              <button (click)="downType()" class="btn btn-default type-down icon-circle-down"></button>
                           </div>
                         </div>
 
@@ -183,7 +183,7 @@
 <div class="modal fade" id="detailFood" tabindex="-1" role="dialog" aria-labelledby="detailFoodLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content modal-detail">
-            <div class="modal-body show-detail overfollow" *ngIf="afood">
+            <div class="modal-body show-detail overfollow flex-box" *ngIf="afood">
                 <div class="show-detail__img">
                     <img class="show-detail__img--food" src="../../assets/slice/food/{{afood.id}}.png"  alt="">
                 </div>
