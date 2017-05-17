@@ -40,6 +40,7 @@ export class AdManagementTableComponent implements OnInit {
   		console.log(JSON.parse(res._body));
   		if(res.status == 201){
   			this.getAllTable();
+        this.size = null;
   			$("#addTable").modal('hide');
   		}
   	}, err => {
