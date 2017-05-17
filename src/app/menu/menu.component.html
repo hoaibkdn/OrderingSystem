@@ -13,7 +13,7 @@
                     <div class="food overfollow">
                         <div class="col-xs-2">
                           <div class="row">
-                              <button class="btn btn-default type-up icon-circle-up"></button>
+                              <button (click)="upType()" class="btn btn-default type-up icon-circle-up"></button>
                               <div class="btn-type-group">
                                   <div class="row btn-type">
                                       <a (click)="getFood(0)" class="btn-menu"
@@ -30,7 +30,7 @@
                                       </a>
                                   </div>
                               </div>
-                              <button href="#" class="btn btn-default type-down icon-circle-down"></button>
+                              <button (click)="downType()" class="btn btn-default type-down icon-circle-down"></button>
                           </div>
                         </div>
 

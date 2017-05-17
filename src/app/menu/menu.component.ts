@@ -226,7 +226,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     });
     this.totalMoney();
     this.textSearch = "";
-    this.typeUpDown();
+    this.checkCurrentType();
     this.getDistance();
     this.isMobileInvoiceOpen = false;
     this.isOpenedModal = false;
@@ -1166,7 +1166,10 @@ export class MenuComponent extends LoadingPage implements OnInit {
       })
   }
 
+
   typeUpDown() {
+
+
     var top = parseInt($('.btn-type').css('top').split('px')[0]);
     if(top === 0) {
       $('.type-down').css({'color': '#EA6D24'});
@@ -1178,7 +1181,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
       event.preventDefault();
       var top = parseInt($('.btn-type').css('top').split('px')[0]);
       if(top > -300) {
-        $('.btn-type').css({'top': top-150+'px'});
+        $('.btn-type').css({'top': top-80+'px'});
         $('.type-down').css({'color': '#EA6D24'});
         $('.type-down').prop('disabled', false);
       }
@@ -1222,6 +1225,67 @@ export class MenuComponent extends LoadingPage implements OnInit {
       }
       console.log('top down', top);
     });
+  }
+
+  checkCurrentType() {
+    var sizeBtnType = 80;
+    var numOfBtnType = document.getElementsByClassName("btn-menu").length;
+    console.log('numOfBtnType ', numOfBtnType);
+    var top = parseInt($('.btn-type').css('top').split('px')[0]);
+    if(top === 0) {
+      $('.type-down').css({'color': '#EA6D24'});
+      $('.type-down').prop('disabled', false);
+      $('.type-up').css({'color': '#ccc'});
+      $('.type-up').prop('disabled', true);
+    }
+    else if(top === (-sizeBtnType*numOfBtnType)) {
+      $('.type-down').css({'color': '#ccc'});
+      $('.type-down').prop('disabled', true);
+      $('.type-up').css({'color': '#EA6D24'});
+      $('.type-up').prop('disabled', false);
+    }
+  }
+
+  upType() {
+    this.checkCurrentType();
+    var sizeBtnType = 80;
+    var currentTop = parseInt($('.btn-type').css('top').split('px')[0]);
+    var numOfBtnType = document.getElementsByClassName("btn-menu").length;
+    var valueChange = sizeBtnType*3;
+    var allSizeBtnType = sizeBtnType*numOfBtnType;
+    var absCurrentTop = Math.abs(currentTop);
+    if(absCurrentTop > 0) {
+      $('.btn-type').css({'top': (currentTop+valueChange)+'px'});
+      $('.type-down').css({'color': '#EA6D24'});
+      $('.type-down').prop('disabled', false);
+    }
+    if((allSizeBtnType-Math.abs(currentTop+valueChange)) == allSizeBtnType) {
+      $('.type-down').css({'color': '#EA6D24'});
+      $('.type-down').prop('disabled', false);
+      $('.type-up').css({'color': '#ccc'});
+      $('.type-up').prop('disabled', true);
+    }
+  }
+
+  downType() {
+    this.checkCurrentType();
+    var sizeBtnType = 80;
+    var currentTop = parseInt($('.btn-type').css('top').split('px')[0]);
+    var numOfBtnType = document.getElementsByClassName("btn-menu").length;
+    var valueChange = sizeBtnType*3;
+    var absCurrentTop = Math.abs(currentTop);
+    var allSizeBtnType = sizeBtnType*numOfBtnType;
+    if(absCurrentTop < (allSizeBtnType - valueChange)) {
+      $('.btn-type').css({'top': (currentTop-valueChange)+'px'});
+      $('.type-up').css({'color': '#EA6D24'});
+      $('.type-up').prop('disabled', false);
+    }
+    if((allSizeBtnType-Math.abs(currentTop-valueChange)) < sizeBtnType*5) {
+      $('.type-down').css({'color': '#ccc'});
+      $('.type-down').prop('disabled', true);
+      $('.type-up').css({'color': '#EA6D24'});
+      $('.type-up').prop('disabled', false);
+    }
   }
 
   sendMessageAdmin(): void {

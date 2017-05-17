@@ -155,13 +155,6 @@ export class StaffComponent implements OnInit {
       .map(res => res.json() )
       .subscribe(res => {
          this.cleaningTables = res;
-        // console.log('all table ', typeof res);
-        // var sizeTable = res.length;
-        // res.forEach(element => {
-        //   if(element.tableStatus == 3) {
-        //     self.cleaningTables.push(element);
-        //   }
-        // });
         console.log('cleaning table ', this.cleaningTables);
       })
   }
@@ -227,9 +220,9 @@ export class StaffComponent implements OnInit {
           localStorage.removeItem("invoiceId");
         };
         invoice.table.tableStatus = 3;
-        this.getCleaningTable();
+        // this.getCleaningTable();
         // this.busyTable = invoice.table;
-        $('#cleanTable').modal('show');
+        // $('#cleanTable').modal('show');
         $('#tableUnpay').modal('hide');
       },
         err => {console.log(err)});
@@ -246,7 +239,6 @@ export class StaffComponent implements OnInit {
   }
 
   cleanedTable() {
-    // table.tableStatus = 0;
     var updateTable = {
       "tableId": this.busyTable.id+"",
       "statusNumber":"0"
@@ -262,7 +254,6 @@ export class StaffComponent implements OnInit {
     localStorage.removeItem('currentTable');
     $('#cleanTable').modal('hide');
     $('#emptyTable').modal('hide');
-    // this.router.navigate(["/"]);
   }
 
   isCheckedInShift() {

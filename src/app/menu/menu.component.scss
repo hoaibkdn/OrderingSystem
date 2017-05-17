@@ -259,7 +259,7 @@
   &__info {
     background: url("../../assets/slice/bg-ordering_v3.png") no-repeat;
     width: 70%;
-    background-size: contain;
+    background-size: cover;
     background-position: center;
     img {
       box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
@@ -388,7 +388,7 @@
   top: 0px;
   // overflow: hidden;
   &-group {
-    height:350px;
+    height:450px;
     overflow: hidden;
   }
 }
