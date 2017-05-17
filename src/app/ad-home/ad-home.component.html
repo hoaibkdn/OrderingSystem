@@ -5,7 +5,8 @@
         <td (click) = "detailTable(table.tableNumber)" class="table-order__col {{table.tableNumber}}" *ngFor="let table of group"
         [class.is-ordering]="invoices[table.tableNumber - 1] != null && !invoices[table.tableNumber - 1].made" [class.is-food-made]="invoices[table.tableNumber - 1] != null && invoices[table.tableNumber - 1].made"
         [class.is-cleaning]="table.tableStatus === 3"
-        [class.is-free]="table.tableStatus === 0">
+        [class.is-free]="table.tableStatus === 0"
+        [class.is-reserved]="table.tableStatus === 4">
         <!-- <p *ngIf="invoices[table.tableNumber - 1] != null">{{invoices[table.tableNumber - 1].table.tableNumber}}</p> -->
           <p class="table-order__number">Table {{table.tableNumber}}</p>
           <p class="table-order__size">{{table.size}} people</p>
