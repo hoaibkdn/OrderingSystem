@@ -22,4 +22,20 @@ export class AppService {
     var headers = new Headers({'Content-Type': 'application/json'});
     return this.http.post(url, JSON.stringify(forgotPass), {headers: headers});
   }
+
+  reservedTable(contentTable: any): Observable<any> {
+    const url = serverUrl + "reserved-table";
+    var headers = new Headers({'Content-Type': 'application/json'});
+    var token = localStorage.getItem('token');
+    headers.append('Authorization', token);
+    return this.http.post(url, JSON.stringify(contentTable), {headers: headers});
+  }
+
+  cancelReserved(contenCancel: any): Observable<any> {
+    const url = serverUrl + "reserved-table/update";
+    var headers = new Headers({'Content-Type': 'application/json'});
+    var token = localStorage.getItem('token');
+    headers.append('Authorization', token);
+    return this.http.put(url, JSON.stringify(contenCancel), {headers:headers});
+  }
 }

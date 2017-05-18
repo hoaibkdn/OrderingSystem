@@ -15,9 +15,11 @@
         </div>
         <div class="header__btn-group flex-box">
           <!-- <button routerLink="/scanQRcode" class="header__btn-qrCode" *ngIf="isCustomer === true">Scan QR code</button> -->
+
           <button class="header__btn-login" data-toggle="modal" data-target="#login" *ngIf="!token">Log In</button>
           <button (click)="logOut()" class="header__btn-login" *ngIf="token && isCustomer === true">Log Out</button>
           <button *ngIf="isReserved === false" class="header__btn-reserved"  data-toggle="modal" data-target="#reserved">Reserved</button>
+          <button *ngIf="countDownReserving === true" class="header__btn-reserved">{{timeCountMinsReserve}}:{{timeCountSecsReserve}}</button>
 
           <!-- For staff -->
           <button (click)="logOut()" class="header__btn-login position-logout" *ngIf="token && isCustomer === false">Log Out</button>
@@ -230,8 +232,8 @@
               <p class="show-table__quote--reserved">Reserved</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button (click)="sendMessageAdmin()" type="button" class="btn btn-warning">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -300,30 +302,30 @@
           <div class="reserved__people">
             <p class="reserved__people--label">Number of people</p>
             <label class="radio-inline reserved__option-group">
-              <input type="radio" [(ngModel)]="reserverForm" value="underFive">
+              <input type="radio" name="reservedPeople" [(ngModel)]="reservedPeople" value="underFive">
               <p class="reserved__option">	&lt;5 people</p>
             </label>
             <label class="radio-inline reserved__option-group">
-              <input type="radio" [(ngModel)]="reserverForm" value="betweenFiveAndTen">
+              <input type="radio" name="reservedPeople" [(ngModel)]="reservedPeople" value="betweenFiveAndTen">
               <p class="reserved__option">	5-10 people</p>
             </label>
             <label class="radio-inline reserved__option-group">
-              <input type="radio" [(ngModel)]="reserverForm" value="overTen">
+              <input type="radio" name="reservedPeople" [(ngModel)]="reservedPeople" value="overTen">
               <p class="reserved__option">&gt;10 people</p>
             </label>
           </div>
           <div class="reserved__time">
             <p class="reserved__time--label">How long will it take you to travel to the restaurant?</p>
             <label class="radio-inline reserved__option-group">
-              <input type="radio" [(ngModel)]="reserverForm" value="twentyMins">
+              <input type="radio" name="reservedTime" [(ngModel)]="reservedTime" value="20">
               <p class="reserved__option">	20 mins</p>
             </label>
             <label class="radio-inline reserved__option-group">
-              <input type="radio" [(ngModel)]="reserverForm" value="fortyMins">
+              <input type="radio" name="reservedTime" [(ngModel)]="reservedTime" value="40">
               <p class="reserved__option">	40 mins</p>
             </label>
             <label class="radio-inline reserved__option-group">
-              <input type="radio" [(ngModel)]="reserverForm" value="hour">
+              <input type="radio" name="reservedTime" [(ngModel)]="reservedTime" value="60">
               <p class="reserved__option">	1 hour</p>
             </label>
           </div>
@@ -334,9 +336,42 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-warning">Send</button>
+        <button (click)="reservedTable()" type="button" class="btn btn-warning">Send</button>
         <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">Close</button>
       </div>
     </div>
   </div>
+</div>
+
+<!--modal choose a table to reserve-->
+<div class="modal fade" id="reservingTable" tabindex="-1" role="dialog" aria-labelledby="chooseTablesLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header flex-box">
+                <button type="button" class="btn btn-default close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h5 *ngIf="validTables.length === 1" class="modal-title title-padding" id="chooseTableLabel">There is 1 valid table </h5>
+                <h5 *ngIf="validTables.length > 1" class="modal-title title-padding" id="chooseTableLabel">There is {{validTables.legth}} valid tables </h5>
+                <h5 *ngIf="validTables.length === 0" class="modal-title title-padding" id="chooseTableLabel">There aren't valid tables </h5>
+            </div>
+            <div class="modal-body overfollow">
+              <div class="col-xs-12">
+                <div class="col-xs-4" *ngFor="let table of validTables"
+                  (click)="getNumOfTable(table, 'reserving')">
+                  <div class="row">
+                    <div class="show-table btn btn-default choose-table"
+                    [class.is-free]="table.tableStatus === 0"
+                    [class.is-choosing]="table == temporaryReservingTable" >
+                      <p>{{table.tableNumber}}</p>
+                      <p>Max: {{table.size}} people</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+                <button (click)="reserveRequest()" type="button" class="btn btn-warning">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>

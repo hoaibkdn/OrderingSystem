@@ -232,21 +232,15 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.getDistance();
     this.isMobileInvoiceOpen = false;
     this.isOpenedModal = false;
-    console.log('init modal ', this.isMobileInvoiceOpen);
     var self = this;
-    // this.checkInvoiceMobileOpen();
     $('body').on('click', function(e){
-      console.log('@@@@@ modal close1 ', self.isMobileInvoiceOpen);
       var isOpen = $('#invoiceMobile').hasClass('in');
-      console.log('body isOpenedModal ', self.isOpenedModal);
       if(self.isMobileInvoiceOpen && self.isOpenedModal && !isOpen) {
-        console.log('@@@@@ modal close2 ', self.isMobileInvoiceOpen);
         var allInvoice = $('.ordering');
         var boxInvoiceTb = $('.invoice');
         boxInvoiceTb.append(allInvoice);
         self.isMobileInvoiceOpen = false;
         self.isOpenedModal = false;
-        console.log('@@@@@ modal close3 ', self.isMobileInvoiceOpen);
       }
     });
 
@@ -310,14 +304,11 @@ export class MenuComponent extends LoadingPage implements OnInit {
 
   showInvoiceMobile() {
     var widthDevice = $(window).width();
-    console.log('widthDevice ', widthDevice);
     if(widthDevice <= 768) {
       var allInvoice = $('.ordering');
       var boxInvoiceMb = $('.show-invoice-mobile');
       boxInvoiceMb.append(allInvoice);
       this.isMobileInvoiceOpen = true;
-      // this.isOpenedModal = true;
-      //   console.log('isOpenedModal ', this.isOpenedModal);
       var that = this;
       setTimeout(function() {
         console.log('isOpenedModal1 ', that.isOpenedModal);

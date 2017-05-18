@@ -57,10 +57,18 @@ export class AppComponent extends LoadingPage implements OnInit {
   tables: Table[];
   temporaryTable:Table;
   emailForgetPass: Object;
-  // inputEmailForgetPass: string;
   conditionPointReserved: number = 10;
   conditionPositionReserved: number = 100;
 
+  reservedPeople: string;
+  reservedTime: string;
+  minsTimeReserve: number;
+  emptyTables: Table[] = [];
+  validTables: Table[] = [];
+  temporaryReservingTable: Table;
+  countDownReserving: boolean = false;
+  timeCountMinsReserve: number;
+  timeCountSecsReserve: number;
   constructor(
     private router: Router,
     private facebookService: FacebookService,
@@ -89,10 +97,11 @@ export class AppComponent extends LoadingPage implements OnInit {
   }
 
   ngOnInit() {
+    // localStorage.removeItem("timestartReserved");
+    // localStorage.removeItem("countDownReserving");
     var self = this;
     if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.error, this.options);
-      let that = this;
 
       // check reserved
       var token = localStorage.getItem('token');
@@ -145,7 +154,6 @@ export class AppComponent extends LoadingPage implements OnInit {
           roleId: "4"
         };
         self.confirmPassword="";
-        console.log('close sign up ', self.objSignUp);
       }
     });
 
@@ -153,6 +161,28 @@ export class AppComponent extends LoadingPage implements OnInit {
     if(existedTable) {
       this.currentTable = JSON.parse(localStorage.getItem('currentTable'));
       console.log('table init ', this.currentTable);
+    }
+
+    var timeReservedStr = localStorage.getItem("timestartReserved");
+    var permitCount = localStorage.getItem("countDownReserving");
+    if(permitCount) {
+      this.countDownReserving = (permitCount === "true");
+    }
+    else this.countDownReserving = false;
+    if(timeReservedStr) {
+      var timeReserved = parseFloat(timeReservedStr);
+      var currentTime = new Date().getTime();
+      var spentTime = currentTime - timeReserved;
+      var mins = new Date(spentTime).getMinutes();
+      var localMinsComing = parseInt(localStorage.getItem("minsTimeReserve"));
+      console.log('this.minsTimeReserve ', localMinsComing);
+      var secs = new Date(spentTime).getSeconds();
+      var remainMins = localMinsComing - 1 - mins;
+      console.log('remainMins ', parseFloat(this.reservedTime));
+
+      var remainSecs = 60 - secs;
+      this.countDownReserved(remainMins, remainSecs);
+      // console.log('spentTime ', mins);
     }
   }
 
@@ -384,7 +414,6 @@ export class AppComponent extends LoadingPage implements OnInit {
       // console.log('count down ', self.countDown);
       if(self.countDown === 0) clearInterval(startCount);
     }, 1000);
-
   }
 
   showModalSignUp() {
@@ -423,12 +452,15 @@ export class AppComponent extends LoadingPage implements OnInit {
     // else false;
   }
 
-  getNumOfTable(table: Table) {
+  getNumOfTable(table: Table, reserving:  string) {
     if(table.tableStatus !== 0) {
       $('#toConfirmTable').modal('show');
     }
     else {
       this.temporaryTable = table;
+      if(reserving) {
+        this.temporaryReservingTable = table;
+      }
     }
   }
 
@@ -467,5 +499,103 @@ export class AppComponent extends LoadingPage implements OnInit {
         return true;
     }
     return false;
+  }
+
+  reservedTable() {
+    this.adminService.getAllTable()
+      .map(res => res.json())
+      .subscribe(allTables => {
+        allTables.forEach( (table, index) => {
+          if(table.tableStatus === 0)
+            this.emptyTables.push(table);
+
+        });
+        console.log('empty tables ', this.emptyTables);
+        this.filterValidTableForReserve(this.emptyTables);
+        if(this.validTables.length > 0) {
+          $("#reservingTable").modal('show');
+          $("#reserved").modal('hide');
+        }
+      });
+  }
+
+  filterValidTableForReserve(emptyTables: Table[]) {
+    emptyTables.forEach( (table, index)=> {
+      switch (this.reservedPeople) {
+        case "underFive":
+          if(table.size <= 5) this.validTables.push(table);
+          break;
+
+        case "betweenFiveAndTen":
+          if(table.size > 5 && table.size <= 10) this.validTables.push(table);
+          break;
+
+        case "overTen":
+          if(table.size > 10) this.validTables.push(table);
+          break;
+      }
+      console.log('valid table ', this.validTables);
+    });
+  }
+
+  reserveRequest() {
+    var reservedTable = this.temporaryReservingTable;
+    var noteForTable = $('.reserved__desc--content').val();
+    var contentTable = {
+      "tableId": reservedTable.id,
+      "detail": noteForTable
+    }
+    var minsTimeReserve = parseInt(this.reservedTime);
+    this.countDownReserved(minsTimeReserve, 0);
+    this.countDownReserving = true;
+    var timestartReserved = new Date().getTime();
+    localStorage.setItem("timestartReserved", timestartReserved.toString());
+    localStorage.setItem("countDownReserving", this.countDownReserving.toString());
+    localStorage.setItem("minsTimeReserve", this.reservedTime);
+    console.log('countDownReserving ', this.countDownReserving);
+    $("#reservingTable").modal('hide');
+  }
+
+  countDownReserved(mins: number, secs: number) {
+    if(secs === 0) {
+      this.timeCountMinsReserve = mins-1;
+      this.timeCountSecsReserve = 59;
+    }
+    else {
+      this.timeCountMinsReserve = mins;
+      this.timeCountSecsReserve = secs;
+    }
+    var self = this;
+    var startCount = setInterval(function() {
+      self.timeCountSecsReserve--;
+      if(self.timeCountSecsReserve === 0) {
+        self.timeCountMinsReserve--;
+        self.timeCountSecsReserve = 60;
+      }
+      if(self.timeCountMinsReserve === 0 && self.timeCountSecsReserve === 0) {
+        this.countDownReserving = false;
+        localStorage.removeItem("timestartReserved");
+        localStorage.removeItem("countDownReserving");
+        clearInterval(startCount);
+        var tableCancel = this.getReservedTableCancel(13);
+        this.cancelReserved(tableCancel);
+      }
+    }, 1000);
+
+  }
+
+  getReservedTableCancel(statusCancel: number) {
+    var reservedTableId = this.temporaryReservingTable.id;
+    var objCancel = {
+      "reservedTableId": reservedTableId+'',
+      "detail": "",
+      "finalStatus": statusCancel+""
+    }
+    return objCancel;
+  }
+
+  cancelReserved(reservedCancel:any) {
+    this.appService.cancelReserved(reservedCancel)
+      .subscribe(res => console.log("cancel ", res));
   }
 }
