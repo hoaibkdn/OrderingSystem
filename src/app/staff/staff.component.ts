@@ -174,9 +174,11 @@ export class StaffComponent implements OnInit {
 	addMessage(message: string) {
 	  let ul = document.getElementsByClassName("message")[0];
     console.log("UL tag for messages: ", ul);
-    let li = document.createElement("li");
-    li.appendChild(document.createTextNode(message));
-    ul.appendChild(li);
+    if(ul != undefined){
+      let li = document.createElement("li");
+      li.appendChild(document.createTextNode(message));
+      ul.appendChild(li);
+    }
 	}
 
   music(type, audio) {

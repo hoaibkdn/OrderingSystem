@@ -89,11 +89,11 @@ export class AdOrderingComponent implements OnInit {
     if (!table.classList.contains('has-done')){
       this.adminService.setMadeForInvoice(this.invoice.id).subscribe(res => {
           console.log(res._body);
-          table.classList.add('has-done');
+          table.classList.add('is-food-made');
           table.classList.remove('is-ordering');
           let btnDone = document.getElementsByClassName('btn-done')[0];
           console.log(this.invoice.id, " - ", this.invoice.table.tableNumber);
-          console.log(table.classList.contains('has-done'));
+          console.log(table.classList.contains('is-food-made'));
           this.stompClient.send("/app/admin", {}, "Admin notification - Food and drink for table " + this.tableNumber + " is ready");
         }, err => {
           console.log(err);
