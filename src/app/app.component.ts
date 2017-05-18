@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { User } from './models/user';
 import { Permission } from './models/permission';
 import { ViewEncapsulation } from '@angular/core';
@@ -26,7 +26,7 @@ declare var Stomp: any;
 })
 export class AppComponent extends LoadingPage implements OnInit {
 
-  users: User[];
+  currentUser: User;
   errorMessage: string;
   inputEmail: string;
   inputPassword: string;
@@ -34,10 +34,19 @@ export class AppComponent extends LoadingPage implements OnInit {
   userName: string;
   permissions: Permission[];
   stompClient: any;
+  longitude: number;
+  latitude: number;
+  distance: number;
+  resLon: number;
+  resLat: number;
+  options = {
+    timeout: 10000
+  };
 
   countDown: number;
   isCustomer: boolean;
   isAdmin: boolean;
+  isReserved: boolean;
 
   getOrdering: boolean;
   isLoading: boolean;
@@ -49,6 +58,8 @@ export class AppComponent extends LoadingPage implements OnInit {
   temporaryTable:Table;
   emailForgetPass: Object;
   // inputEmailForgetPass: string;
+  conditionPointReserved: number = 10;
+  conditionPositionReserved: number = 100;
 
   constructor(
     private router: Router,
@@ -78,6 +89,29 @@ export class AppComponent extends LoadingPage implements OnInit {
   }
 
   ngOnInit() {
+    var self = this;
+    if(navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.error, this.options);
+      let that = this;
+
+      // check reserved
+      var token = localStorage.getItem('token');
+      if(token && token != null) {
+        console.log('token logined ', token);
+        this.token = token;
+        this.userProfileService.getInfo().subscribe(res => {
+          this.userName = res.name;
+            this.isReserved = this.checkConditionReserved(res, this.distance);
+            console.log('check distance ', this.distance);
+            console.log('isReserved ', this.isReserved);
+          localStorage.setItem("userInfo", JSON.stringify(res));
+        }, err => {
+          console.log("Error: ", err);
+        });
+      }
+    } else {
+        alert("No location is supported");
+    }
     this.isLoading = false;
     // localStorage.setItem('isCustomer', true + "");
     this.getOrdering = false;
@@ -101,19 +135,6 @@ export class AppComponent extends LoadingPage implements OnInit {
     }
     this.countDown = 0;
     this.connectAdmin();
-    let that = this;
-    var token = localStorage.getItem('token');
-    if(token && token != null) {
-      console.log('token logined ', token);
-      this.token = token;
-      this.userProfileService.getInfo().subscribe(res => {
-        this.userName = res.name;
-        localStorage.setItem("userInfo", JSON.stringify(res));
-      }, err => {
-        console.log("Error: ", err);
-      });
-    }
-    var self = this;
     $('body').on('click', function() {
       var signUpIsOpen = $('#signUp').hasClass('in');
       if(!signUpIsOpen) {
@@ -133,6 +154,47 @@ export class AppComponent extends LoadingPage implements OnInit {
       this.currentTable = JSON.parse(localStorage.getItem('currentTable'));
       console.log('table init ', this.currentTable);
     }
+  }
+
+  error(err) {
+    console.log(err);
+  }
+
+  setPosition(position){
+      this.longitude = position.coords.longitude;
+      this.latitude = position.coords.latitude;
+      this.userProfileService.getLocation().subscribe(res => {
+        let location = res._body;
+        this.resLat = location.split(',')[0];
+        this.resLon = location.split(',')[1];
+        localStorage.setItem('resLat', this.resLat + "");
+        localStorage.setItem('resLon', this.resLon + "");
+        this.distance = this.distanceInKmBetweenEarthCoordinates(this.resLat, this.resLon, this.latitude, this.longitude);
+        console.log("Distance: ", this.distance.toFixed(2), " km");
+      }, err => {
+        console.log(err);
+      })
+  }
+
+  degreesToRadians(degrees) {
+    return degrees * Math.PI / 180;
+  }
+
+  distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
+  // https://en.wikipedia.org/wiki/Haversine_formula
+    var earthRadiusKm = 6371;
+
+    var dLat = this.degreesToRadians(lat2-lat1);
+    var dLon = this.degreesToRadians(lon2-lon1);
+
+    lat1 = this.degreesToRadians(lat1);
+    lat2 = this.degreesToRadians(lat2);
+
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    this.distance = earthRadiusKm * c * 1000
+    return earthRadiusKm * c;
   }
 
   typeOfAccount(permissions: Permission[]): string{
@@ -394,5 +456,16 @@ export class AppComponent extends LoadingPage implements OnInit {
       console.log(err);
       alert("We can't find your email in our system. Please check it again.");
     })
+  }
+
+  checkConditionReserved(user: User, distance: number) {
+    console.log('user reserved ', user, ' distance ', this.distance);
+    console.log('condition point', this.conditionPointReserved , ' ', 'location ', this.conditionPositionReserved);
+
+    if(user.membershipPoint >= this.conditionPointReserved &&
+      distance <= this.conditionPositionReserved) {
+        return true;
+    }
+    return false;
   }
 }

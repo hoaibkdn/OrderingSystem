@@ -17,7 +17,7 @@ export class UserHistoryService {
     private http: Http
   ){}
 
-  getAllDetail(): Observable<InvoiceDetail[]>{
+  getAllDetail(): Observable<InvoiceDetail[]> {
     const url = serverUrl + 'invoice-detail/all';
     if(!this.headers.get('Authorization')) {
       let token = localStorage.getItem('token');
@@ -28,5 +28,7 @@ export class UserHistoryService {
     return this.http.get(url, {headers: this.headers})
       .map(res => res.json() as InvoiceDetail[]);
   }
+
+
 
 }

@@ -28,7 +28,8 @@
     position: relative;
   }
   &__btn-login,
-  &__btn-qrCode {
+  &__btn-qrCode,
+  &__btn-reserved {
     @include retangle(70px, 45px);
     @extend %position-center;
     left: -80%;
@@ -39,7 +40,8 @@
     border-radius: 3px;
     display: block;
   }
-  &__btn-qrCode {
+  &__btn-qrCode,
+  &__btn-reserved {
     left: -155px;
   }
   &__btn-waiter {
@@ -249,4 +251,36 @@ $cl-transparent: rgba(255,255,255,0);
 
 .title-padding {
   padding-left: 10px;
+}
+
+.reserved {
+  // text-align: center;
+  &__people {
+    margin-top: 20px;
+  }
+  &__people,
+  &__time,
+  &__desc {
+    margin-bottom: 20px;
+  }
+  &__people--label,
+  &__time--label,
+  &__desc--label {
+    text-align: left;
+    font-weight: bold;
+  }
+  &__option {
+    margin-left: 5px;
+  }
+  &__option-group {
+    margin-right: 20px;
+  }
+
+  &__desc {
+    &--content {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 0;
+    }
+  }
 }
