@@ -100,27 +100,28 @@ export class AppComponent extends LoadingPage implements OnInit {
     // localStorage.removeItem("timestartReserved");
     // localStorage.removeItem("countDownReserving");
     var self = this;
-    if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.error, this.options);
+    this.checkShowBtnReserve();
+    // if(navigator.geolocation) {
+    //   navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.error, this.options);
 
-      // check reserved
-      var token = localStorage.getItem('token');
-      if(token && token != null) {
-        console.log('token logined ', token);
-        this.token = token;
-        this.userProfileService.getInfo().subscribe(res => {
-          this.userName = res.name;
-            this.isReserved = this.checkConditionReserved(res, this.distance);
-            console.log('check distance ', this.distance);
-            console.log('isReserved ', this.isReserved);
-          localStorage.setItem("userInfo", JSON.stringify(res));
-        }, err => {
-          console.log("Error: ", err);
-        });
-      }
-    } else {
-        alert("No location is supported");
-    }
+    //   // check reserved
+    //   var token = localStorage.getItem('token');
+    //   if(token && token != null) {
+    //     console.log('token logined ', token);
+    //     this.token = token;
+    //     this.userProfileService.getInfo().subscribe(res => {
+    //       this.userName = res.name;
+    //         this.isReserved = this.checkConditionReserved(res, this.distance);
+    //         console.log('check distance ', this.distance);
+    //         console.log('isReserved ', this.isReserved);
+    //       localStorage.setItem("userInfo", JSON.stringify(res));
+    //     }, err => {
+    //       console.log("Error: ", err);
+    //     });
+    //   }
+    // } else {
+    //     alert("No location is supported");
+    // }
     this.isLoading = false;
     // localStorage.setItem('isCustomer', true + "");
     this.getOrdering = false;
@@ -227,6 +228,30 @@ export class AppComponent extends LoadingPage implements OnInit {
     return earthRadiusKm * c;
   }
 
+  checkShowBtnReserve() {
+    if(navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.error, this.options);
+
+      // check reserved
+      var token = localStorage.getItem('token');
+      if(token && token != null) {
+        console.log('token logined ', token);
+        this.token = token;
+        this.userProfileService.getInfo().subscribe(res => {
+          this.userName = res.name;
+            this.isReserved = this.checkConditionReserved(res, this.distance);
+            console.log('check distance ', this.distance);
+            console.log('isReserved ', this.isReserved);
+          localStorage.setItem("userInfo", JSON.stringify(res));
+        }, err => {
+          console.log("Error: ", err);
+        });
+      }
+    } else {
+        alert("No location is supported");
+    }
+  }
+
   typeOfAccount(permissions: Permission[]): string{
     for (var i = 0; i < permissions.length; i++) {
       if(permissions[i].role.name.includes('ROLE_ADMIN')){
@@ -271,6 +296,7 @@ export class AppComponent extends LoadingPage implements OnInit {
         this.doAfterLogin();
         this.ready();
         console.log('isLoading2 ', this.isLoading);
+        this.checkShowBtnReserve();
       }, err => {
         alert("Oops! You might have used wrong email/password. Please check it again.")
         console.log("Error: ", err);
@@ -329,6 +355,7 @@ export class AppComponent extends LoadingPage implements OnInit {
       localStorage.removeItem('foodOrderLocal');
       localStorage.removeItem('isCustomer');
       localStorage.removeItem('isAdmin');
+      this.isReserved = false;
       if (localStorage.getItem('isPaid')){
         localStorage.removeItem('isPaid');
       }
@@ -341,6 +368,7 @@ export class AppComponent extends LoadingPage implements OnInit {
       localStorage.setItem('isCustomer', true + "");
       this.router.navigate(['']);
     }
+
   }
 
 
@@ -386,15 +414,6 @@ export class AppComponent extends LoadingPage implements OnInit {
     }
     this.stompClient.send("/app/admin", {}, message);
     this.startCountDown();
-    // if(this.temporaryTable) {
-    //   this.currentTable = this.temporaryTable;
-    //   localStorage.setItem('currentTable', this.currentTable+'');
-    //   let message = "Table " + this.currentTable.tableNumber + " is needing some help.";
-    //   console.log("Message to send: ", message);
-    //   this.stompClient.send("/app/admin", {}, message);
-    //   this.startCountDown();
-    //   $('#chooseTables').modal('hide');
-    // }
   };
 
   goScan() {
@@ -427,6 +446,7 @@ export class AppComponent extends LoadingPage implements OnInit {
       .subscribe(res => {console.log("new account ", res);
       this.token = res;
       localStorage.setItem('token', this.token)});
+    this.checkShowBtnReserve();
     this.router.navigate(["/"]);
     $('#signUp').modal('hide');
   }
@@ -540,6 +560,7 @@ export class AppComponent extends LoadingPage implements OnInit {
 
   reserveRequest() {
     var reservedTable = this.temporaryReservingTable;
+    localStorage.setItem('reservedTable', JSON.stringify(reservedTable));
     var noteForTable = $('.reserved__desc--content').val();
     var contentTable = {
       "tableId": reservedTable.id,
@@ -553,6 +574,8 @@ export class AppComponent extends LoadingPage implements OnInit {
     localStorage.setItem("countDownReserving", this.countDownReserving.toString());
     localStorage.setItem("minsTimeReserve", this.reservedTime);
     console.log('countDownReserving ', this.countDownReserving);
+    this.appService.reservedTable(contentTable)
+      .subscribe(res => console.log("reserved table ", res));
     $("#reservingTable").modal('hide');
   }
 
@@ -570,22 +593,24 @@ export class AppComponent extends LoadingPage implements OnInit {
       self.timeCountSecsReserve--;
       if(self.timeCountSecsReserve === 0) {
         self.timeCountMinsReserve--;
-        self.timeCountSecsReserve = 60;
-      }
-      if(self.timeCountMinsReserve === 0 && self.timeCountSecsReserve === 0) {
-        this.countDownReserving = false;
-        localStorage.removeItem("timestartReserved");
-        localStorage.removeItem("countDownReserving");
-        clearInterval(startCount);
-        var tableCancel = this.getReservedTableCancel(13);
-        this.cancelReserved(tableCancel);
+        if(self.timeCountMinsReserve === 0) {
+          console.log('time out');
+          this.countDownReserving = false;
+          clearInterval(startCount);
+          var tableCancel = this.getReservedTableCancel(13);
+          this.cancelReserved(tableCancel);
+        }
+        else self.timeCountSecsReserve = 60;
       }
     }, 1000);
 
   }
 
-  getReservedTableCancel(statusCancel: number) {
-    var reservedTableId = this.temporaryReservingTable.id;
+  getReservedTableCancel(statusCancel: number): any {
+    var reservedTable = JSON.parse(localStorage.getItem('reservedTable'));
+    console.log("reservedTable local ", reservedTable);
+
+    var reservedTableId = reservedTable.id;
     var objCancel = {
       "reservedTableId": reservedTableId+'',
       "detail": "",
@@ -594,8 +619,22 @@ export class AppComponent extends LoadingPage implements OnInit {
     return objCancel;
   }
 
-  cancelReserved(reservedCancel:any) {
+  cancelReserved(statusCancel: number) {
+    var reservedCancel = this.getReservedTableCancel(statusCancel);
+    console.log('table cancel ', reservedCancel);
+
     this.appService.cancelReserved(reservedCancel)
       .subscribe(res => console.log("cancel ", res));
+    localStorage.removeItem("timestartReserved");
+    localStorage.removeItem("countDownReserving");
+    localStorage.removeItem('reservedTable');
+    this.timeCountMinsReserve = 0;
+    this.timeCountSecsReserve = 0;
+    this.countDownReserving = false;
   }
+
+  sendReservedTableAdmin(): void {
+    let table = JSON.parse(localStorage.getItem("reservedTable"));
+    this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " reserved");
+  };
 }
