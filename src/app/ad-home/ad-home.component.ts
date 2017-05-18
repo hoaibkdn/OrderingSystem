@@ -34,14 +34,15 @@ export class AdHomeComponent implements OnInit {
     this.stompClient.connect({}, (frame) => {
         console.log('Connected admin: ' + frame);
         console.log(this.stompClient);
-        setInterval(() => {
-            if(!this.stompClient.connected){
-              console.log("Failed to connect");
-            } else {
-              console.log("Interval at " + new Date());
-              this.stompClient.send("/app/admin", {}, "");
-            }
-          }, 30000);
+        // Uncomment for heroku server
+        // setInterval(() => {
+        //     if(!this.stompClient.connected){
+        //       console.log("Failed to connect");
+        //     } else {
+        //       console.log("Interval at " + new Date());
+        //       this.stompClient.send("/app/admin", {}, "");
+        //     }
+        //   }, 30000);
         this.stompClient.subscribe('/request/admin', (messageOutput) => {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);

@@ -3,7 +3,8 @@
     <tbody>
       <tr class="table-order__row" *ngFor="let group of groupThreeTables">
         <td (click) = "detailTable(table.tableNumber)" class="table-order__col {{table.tableNumber}}" *ngFor="let table of group"
-        [class.is-ordering]="invoices[table.tableNumber - 1] != null && !invoices[table.tableNumber - 1].made" [class.is-food-made]="invoices[table.tableNumber - 1] != null && invoices[table.tableNumber - 1].made"
+        [class.is-ordering]="invoices[table.tableNumber - 1] != null && !invoices[table.tableNumber - 1].made" 
+        [class.is-food-made]="invoices[table.tableNumber - 1] != null && invoices[table.tableNumber - 1].made"
         [class.is-cleaning]="table.tableStatus === 3"
         [class.is-free]="table.tableStatus === 0"
         [class.is-reserved]="table.tableStatus === 4">
