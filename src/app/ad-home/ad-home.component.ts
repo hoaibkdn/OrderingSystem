@@ -4,8 +4,10 @@ import { AdminService } from '../admin/admin.service';
 import { Table } from '../models/table';
 import { Invoice } from '../models/invoice';
 import { websocketUrl } from './../server-url.config';
+import { AppService } from './../app.service';
 
 declare var Stomp: any;
+declare var $:any;
 
 @Component({
   selector: 'app-ad-home',
@@ -19,11 +21,13 @@ export class AdHomeComponent implements OnInit {
   invoices: Invoice[];
   stompClient: any;
   orderOfTable: any;
+  cancelTable: Table;
 
   constructor(
     private router: Router,
     private adminService: AdminService,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private appService: AppService) {
     this.invoices = [];
     this.orderOfTable = [];
     }
@@ -46,15 +50,57 @@ export class AdHomeComponent implements OnInit {
         this.stompClient.subscribe('/request/admin', (messageOutput) => {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
-          if(messageOutput.body.includes("is ordering") || messageOutput.body.includes("has been paid") || messageOutput.body.includes("has been cleaned")){
+          if(messageOutput.body.includes("is ordering") || messageOutput.body.includes("has been paid") ||
+          messageOutput.body.includes("has been cleaned") ){
             this.getUnpaidInvoice();
           }
+          if(messageOutput.body.includes("is reserving")) {
+            var tableNumber = messageOutput.body.split(' ')[1];
+            console.log('tableNumber ', tableNumber);
+          }
         });
-    });    
+    });
   }
 
-  detailTable(id: number) {
-    this.router.navigate([id], { relativeTo: this.route });
+  detailTable(table: Table) {
+    if(table.tableStatus === 4) {
+      this.cancelTable = table;
+      $('#cancelReservingTable').modal('show');
+    }
+    else {
+      this.router.navigate([table.id], { relativeTo: this.route });
+    }
+  }
+
+  cancelReserved(statusCancel: number) {
+    var reservedTable = this.cancelTable;
+    var cancelTableId;
+    console.log("reservedTable local ", reservedTable);
+    this.appService.getReservedTable()
+      .subscribe(res => {
+        res.forEach( (resTable, index) => {
+          if(resTable.table.id === reservedTable.id) {
+            cancelTableId = resTable.id;
+          }
+        });
+        var objCancel = {
+          "reservedTableId": cancelTableId+'',
+          "detail": "",
+          "finalStatus": statusCancel+""
+        }
+
+        this.appService.cancelReserved(objCancel)
+          .subscribe(res => console.log("cancel ", res));
+        localStorage.removeItem("timestartReserved");
+        localStorage.setItem("countDownReserving", 'false');
+        localStorage.removeItem('reservedTable');
+        $('#cancelReservingTable').modal('hide');
+
+        // this.router.navigate(["/admin"]);
+        // this.timeCountMinsReserve = 0;
+        // this.timeCountSecsReserve = 0;
+        // this.countDownReserving = false;
+      })
   }
 
   getUnpaidInvoice(){
@@ -160,7 +206,7 @@ export class AdHomeComponent implements OnInit {
           } else {
             return 0;
           }
-          
+
         })
         console.log("Order of table: ", this.orderOfTable);
       }, err => {
@@ -168,11 +214,7 @@ export class AdHomeComponent implements OnInit {
     });
   }
 
-  // getOrderingNumberOfTable(tableId: any){
-  //   for(let i = 0; i < this.orderOfTable.length; i++){
-  //     if(this.orderOfTable[i]["tableId"] == tableId + ""){
-  //       return this.orderOfTable[i]["order"];
-  //     }
-  //   }
-  // }
+  countDownReserving() {
+
+  }
 }

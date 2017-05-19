@@ -1357,8 +1357,16 @@ export class MenuComponent extends LoadingPage implements OnInit {
     var permitCount = localStorage.getItem("countDownReserving");
     if(permitCount) {
       this.countDownReserving = (permitCount === "true");
+      if(!this.countDownReserving) {
+        this.timeCountMinsReserve = 0;
+        this.timeCountSecsReserve = 0;
+      }
     }
-    else this.countDownReserving = false;
+    else {
+      this.countDownReserving = false;
+      this.timeCountMinsReserve = 0;
+      this.timeCountSecsReserve = 0;
+    }
     if(timeReservedStr) {
       var timeReserved = parseFloat(timeReservedStr);
       var currentTime = new Date().getTime();
@@ -1425,11 +1433,12 @@ export class MenuComponent extends LoadingPage implements OnInit {
     var reservedTable = this.temporaryReservingTable;
     localStorage.setItem('reservedTable', JSON.stringify(reservedTable));
     var noteForTable = $('.reserved__desc--content').val();
-    var contentTable = {
-      "tableId": reservedTable.id,
-      "detail": noteForTable
-    }
     var minsTimeReserve = parseInt(this.reservedTime);
+    var contentTable = {
+      "tableId": reservedTable.id+'',
+      "detail": noteForTable,
+      "travelingTime": minsTimeReserve+''
+    }
     this.countDownReserved(minsTimeReserve, 0);
     this.countDownReserving = true;
     var timestartReserved = new Date().getTime();
@@ -1439,6 +1448,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     console.log('countDownReserving ', this.countDownReserving);
     this.appService.reservedTable(contentTable)
       .subscribe(res => console.log("reserved table ", res));
+    this.sendMessageReserveToAdmin();
     $("#reservingTable").modal('hide');
   }
 
@@ -1456,12 +1466,12 @@ export class MenuComponent extends LoadingPage implements OnInit {
       self.timeCountSecsReserve--;
       if(self.timeCountSecsReserve === 0) {
         self.timeCountMinsReserve--;
-        if(self.timeCountMinsReserve === 0) {
+        if(self.timeCountMinsReserve === -1) {
           console.log('time out');
           this.countDownReserving = false;
           clearInterval(startCount);
-          var tableCancel = this.getReservedTableCancel(13);
-          this.cancelReserved(tableCancel);
+          // var tableCancel = self.getReservedTableCancel(13);
+          this.cancelReserved(13);
         }
         else self.timeCountSecsReserve = 60;
       }
@@ -1469,30 +1479,41 @@ export class MenuComponent extends LoadingPage implements OnInit {
 
   }
 
-  getReservedTableCancel(statusCancel: number): any {
-    var reservedTable = JSON.parse(localStorage.getItem('reservedTable'));
-    console.log("reservedTable local ", reservedTable);
-
-    var reservedTableId = reservedTable.id;
-    var objCancel = {
-      "reservedTableId": reservedTableId+'',
-      "detail": "",
-      "finalStatus": statusCancel+""
-    }
-    return objCancel;
-  }
-
   cancelReserved(statusCancel: number) {
-    var reservedCancel = this.getReservedTableCancel(statusCancel);
-    console.log('table cancel ', reservedCancel);
+    var reservedTable = JSON.parse(localStorage.getItem('reservedTable'));
+    var cancelTableId;
+    console.log("reservedTable local ", reservedTable);
+    this.appService.getReservedTable()
+      .subscribe(res => {
+        console.log('all reserved tables ', res);
 
-    this.appService.cancelReserved(reservedCancel)
-      .subscribe(res => console.log("cancel ", res));
-    localStorage.removeItem("timestartReserved");
-    localStorage.removeItem("countDownReserving");
-    localStorage.removeItem('reservedTable');
-    this.timeCountMinsReserve = 0;
-    this.timeCountSecsReserve = 0;
-    this.countDownReserving = false;
+        for(var i = 0; i < res.length; i++) {
+          if(res[i].table.id === reservedTable.id) {
+            cancelTableId = res[i].id;
+          }
+        }
+        var objCancel = {
+          "reservedTableId": cancelTableId+'',
+          "detail": "",
+          "finalStatus": statusCancel+""
+        }
+        console.log('objCancel ', objCancel);
+        this.appService.cancelReserved(objCancel)
+          .subscribe(res => console.log("cancel ", res));
+        localStorage.removeItem("timestartReserved");
+        localStorage.setItem("countDownReserving", 'false');
+        localStorage.removeItem('reservedTable');
+        this.timeCountMinsReserve = 0;
+        this.timeCountSecsReserve = 0;
+        this.countDownReserving = false;
+
+        this.checkShowBtnReserve();
+        $('#cancelReservingTable').modal('hide');
+      })
   }
+
+  sendMessageReserveToAdmin(): void {
+    let table = JSON.parse(localStorage.getItem('reservedTable'));
+    this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " is reserving");
+  };
 }

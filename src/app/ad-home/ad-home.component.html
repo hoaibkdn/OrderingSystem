@@ -2,8 +2,8 @@
   <table class="table-order">
     <tbody>
       <tr class="table-order__row" *ngFor="let group of groupThreeTables">
-        <td (click) = "detailTable(table.tableNumber)" class="table-order__col {{table.tableNumber}}" *ngFor="let table of group"
-        [class.is-ordering]="table.tableStatus === 1" 
+        <td (click) = "detailTable(table)" class="table-order__col {{table.tableNumber}}" *ngFor="let table of group"
+        [class.is-ordering]="table.tableStatus === 1"
         [class.is-food-made]="table.tableStatus === 2"
         [class.is-cleaning]="table.tableStatus === 3"
         [class.is-free]="table.tableStatus === 0"
@@ -26,4 +26,22 @@
 </div>
 <div class="col-xs-4">
   <router-outlet></router-outlet>
+</div>
+
+<!--modal cancel table-->
+<div class="modal fade" id="cancelReservingTable" tabindex="-1" role="dialog" aria-labelledby="chooseTablesLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header flex-box">
+                <button type="button" class="btn btn-default close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body overfollow">
+              <p>Do you want to cancel reserved table?</p>
+            </div>
+            <div class="modal-footer">
+                <button (click)="cancelReserved(14)" type="button" class="btn btn-warning">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>

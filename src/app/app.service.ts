@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import 'rxjs/Rx';
 import { serverUrl }  from './server-url.config';
+import { ReservedTable } from './models/reserved-table';
 
 @Injectable()
 export class AppService {
@@ -37,5 +38,14 @@ export class AppService {
     var token = localStorage.getItem('token');
     headers.append('Authorization', token);
     return this.http.put(url, JSON.stringify(contenCancel), {headers:headers});
+  }
+
+  getReservedTable(): Observable<ReservedTable[]> {
+    const url = serverUrl + "reserved-table";
+    var headers = new Headers({'Content-Type': 'application/json'});
+    var token = localStorage.getItem('token');
+    headers.append('Authorization', token);
+    return this.http.get(url,{headers:headers})
+      .map(res => res.json() as ReservedTable[]);
   }
 }

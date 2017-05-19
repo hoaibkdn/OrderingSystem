@@ -1,3 +1,4 @@
+import { CountDown } from './count-down';
 export class Table {
   id: number;
   size: number;
@@ -5,4 +6,5 @@ export class Table {
   visible: boolean;
   tableNumber: number;
   tableStatus: number;
+  countDown: CountDown;
 }
