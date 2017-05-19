@@ -192,6 +192,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
 
     let isCustomer = localStorage.getItem("isCustomer");
     if(isCustomer && isCustomer.includes("true")){
+      console.log("Connect server websocket")
       this.connectAdmin();
     }
 
@@ -807,6 +808,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
               console.log(this.invoiceId);
               this.sendMessageAdmin();
               localStorage.setItem("invoiceId", this.invoiceId+"")
+            }, err => {
+              console.log(err);
             });
               // this.invoiceId = res._body;
               // console.log(this.invoiceId);
@@ -1293,7 +1296,13 @@ export class MenuComponent extends LoadingPage implements OnInit {
 
   sendMessageAdmin(): void {
     let table = JSON.parse(localStorage.getItem("currentTable"));
-    this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " is ordering");
+    if(this.stompClient !=  undefined){
+      this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " is ordering");
+    } else {
+      // this.connectAdmin();
+      // this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " is ordering");
+      console.log("Can't send message");
+    }
   };
 
   chooseTable():boolean {
