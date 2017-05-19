@@ -99,7 +99,7 @@ export class MenuService {
   }
 
   getTypeOfFood():Observable<FoodAndDrinkType[]> {
-    const url=serverUrl + "food-and-drink-type/all";
+    const url=serverUrl + "food-and-drink-type/all/not-empty";
     return this.http.get(url).map(res => res.json());
   }
 
