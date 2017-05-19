@@ -45,6 +45,7 @@ export class AppService {
     var headers = new Headers({'Content-Type': 'application/json'});
     var token = localStorage.getItem('token');
     headers.append('Authorization', token);
+    console.log('token for admin ', token);
     return this.http.get(url,{headers:headers})
       .map(res => res.json() as ReservedTable[]);
   }

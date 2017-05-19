@@ -229,6 +229,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
 
     let isCustomer = localStorage.getItem("isCustomer");
     if(isCustomer && isCustomer.includes("true")){
+      console.log("Connect server websocket")
       this.connectAdmin();
     }
 
@@ -836,6 +837,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
               console.log(this.invoiceId);
               this.sendMessageAdmin();
               localStorage.setItem("invoiceId", this.invoiceId+"")
+            }, err => {
+              console.log(err);
             });
               // this.invoiceId = res._body;
               // console.log(this.invoiceId);
@@ -1322,7 +1325,13 @@ export class MenuComponent extends LoadingPage implements OnInit {
 
   sendMessageAdmin(): void {
     let table = JSON.parse(localStorage.getItem("currentTable"));
-    this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " is ordering");
+    if(this.stompClient !=  undefined){
+      this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " is ordering");
+    } else {
+      // this.connectAdmin();
+      // this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " is ordering");
+      console.log("Can't send message");
+    }
   };
 
   chooseTable():boolean {
@@ -1449,7 +1458,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     console.log('countDownReserving ', this.countDownReserving);
     this.appService.reservedTable(contentTable)
       .subscribe(res => console.log("reserved table ", res));
-    this.sendMessageReserveToAdmin();
+    this.sendMessageReserveToAdmin('reserve');
     $("#reservingTable").modal('hide');
   }
 
@@ -1467,7 +1476,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
       self.timeCountSecsReserve--;
       if(self.timeCountSecsReserve === 0) {
         self.timeCountMinsReserve--;
-        if(self.timeCountMinsReserve === -1) {
+        if(self.timeCountMinsReserve === (-1)) {
           console.log('time out');
           this.countDownReserving = false;
           clearInterval(startCount);
@@ -1501,6 +1510,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
         console.log('objCancel ', objCancel);
         this.appService.cancelReserved(objCancel)
           .subscribe(res => console.log("cancel ", res));
+        this.sendMessageReserveToAdmin('cancel');
         localStorage.removeItem("timestartReserved");
         localStorage.setItem("countDownReserving", 'false');
         localStorage.removeItem('reservedTable');
@@ -1509,12 +1519,18 @@ export class MenuComponent extends LoadingPage implements OnInit {
         this.countDownReserving = false;
 
         this.checkShowBtnReserve();
+        this.emptyTables = [];
         $('#cancelReservingTable').modal('hide');
       })
   }
 
-  sendMessageReserveToAdmin(): void {
+  sendMessageReserveToAdmin(type: string): void {
     let table = JSON.parse(localStorage.getItem('reservedTable'));
-    this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " is reserving");
+    if(type == "reserve") {
+      this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " is reserving");
+    }
+    if(type == "cancel") {
+      this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " canceled");
+    }
   };
 }

@@ -7,6 +7,6 @@ export class ReservedTable {
   user: User;
   table: Table;
   finalStatus: number;
-  reservingTime: Date;
+  reservingTime: number;
   travelingTime: number;
 }

@@ -11,7 +11,8 @@
         <!-- <p *ngIf="invoices[table.tableNumber - 1] != null">{{invoices[table.tableNumber - 1].table.tableNumber}}</p> -->
           <p class="table-order__number">Table {{table.tableNumber}}</p>
           <p class="table-order__size">{{table.size}} people</p>
-          <p class="table-order__order-time" *ngIf="orderOfTable[table.tableNumber-1] != null">Order <span >{{orderOfTable[table.tableNumber-1]["order"]}}</span></p>
+          <p class="table-order__order-time" *ngIf="orderTables[table.tableNumber-1].numOrder != 0">Order <span >{{orderTables[table.tableNumber-1].numOrder}}</span></p>
+          <!--<p *ngIf="table.tableStatus === 4">{{table.countDown.minutes}}:{{table.countDown.seconds}}</p>-->
         </td>
       </tr>
     </tbody>
