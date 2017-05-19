@@ -46,7 +46,7 @@ export class AppComponent extends LoadingPage implements OnInit {
   countDown: number;
   isCustomer: boolean;
   isAdmin: boolean;
-  isReserved: boolean;
+  // isReserved: boolean;
 
   getOrdering: boolean;
   isLoading: boolean;
@@ -57,8 +57,8 @@ export class AppComponent extends LoadingPage implements OnInit {
   tables: Table[];
   temporaryTable:Table;
   emailForgetPass: Object;
-  conditionPointReserved: number = 10;
-  conditionPositionReserved: number = 100;
+  // conditionPointReserved: number = 10;
+  // conditionPositionReserved: number = 100;
 
   reservedPeople: string;
   reservedTime: string;
@@ -100,30 +100,8 @@ export class AppComponent extends LoadingPage implements OnInit {
     // localStorage.removeItem("timestartReserved");
     // localStorage.removeItem("countDownReserving");
     var self = this;
-    this.checkShowBtnReserve();
-    // if(navigator.geolocation) {
-    //   navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.error, this.options);
-
-    //   // check reserved
-    //   var token = localStorage.getItem('token');
-    //   if(token && token != null) {
-    //     console.log('token logined ', token);
-    //     this.token = token;
-    //     this.userProfileService.getInfo().subscribe(res => {
-    //       this.userName = res.name;
-    //         this.isReserved = this.checkConditionReserved(res, this.distance);
-    //         console.log('check distance ', this.distance);
-    //         console.log('isReserved ', this.isReserved);
-    //       localStorage.setItem("userInfo", JSON.stringify(res));
-    //     }, err => {
-    //       console.log("Error: ", err);
-    //     });
-    //   }
-    // } else {
-    //     alert("No location is supported");
-    // }
     this.isLoading = false;
-    // localStorage.setItem('isCustomer', true + "");
+    this.token = localStorage.getItem('token');
     this.getOrdering = false;
     var isCustomer = localStorage.getItem('isCustomer');
     if(isCustomer) {
@@ -164,27 +142,27 @@ export class AppComponent extends LoadingPage implements OnInit {
       console.log('table init ', this.currentTable);
     }
 
-    var timeReservedStr = localStorage.getItem("timestartReserved");
-    var permitCount = localStorage.getItem("countDownReserving");
-    if(permitCount) {
-      this.countDownReserving = (permitCount === "true");
-    }
-    else this.countDownReserving = false;
-    if(timeReservedStr) {
-      var timeReserved = parseFloat(timeReservedStr);
-      var currentTime = new Date().getTime();
-      var spentTime = currentTime - timeReserved;
-      var mins = new Date(spentTime).getMinutes();
-      var localMinsComing = parseInt(localStorage.getItem("minsTimeReserve"));
-      console.log('this.minsTimeReserve ', localMinsComing);
-      var secs = new Date(spentTime).getSeconds();
-      var remainMins = localMinsComing - 1 - mins;
-      console.log('remainMins ', parseFloat(this.reservedTime));
+    // var timeReservedStr = localStorage.getItem("timestartReserved");
+    // var permitCount = localStorage.getItem("countDownReserving");
+    // if(permitCount) {
+    //   this.countDownReserving = (permitCount === "true");
+    // }
+    // else this.countDownReserving = false;
+    // if(timeReservedStr) {
+    //   var timeReserved = parseFloat(timeReservedStr);
+    //   var currentTime = new Date().getTime();
+    //   var spentTime = currentTime - timeReserved;
+    //   var mins = new Date(spentTime).getMinutes();
+    //   var localMinsComing = parseInt(localStorage.getItem("minsTimeReserve"));
+    //   console.log('this.minsTimeReserve ', localMinsComing);
+    //   var secs = new Date(spentTime).getSeconds();
+    //   var remainMins = localMinsComing - 1 - mins;
+    //   console.log('remainMins ', parseFloat(this.reservedTime));
 
-      var remainSecs = 60 - secs;
-      this.countDownReserved(remainMins, remainSecs);
-      // console.log('spentTime ', mins);
-    }
+    //   var remainSecs = 60 - secs;
+    //   this.countDownReserved(remainMins, remainSecs);
+    //   // console.log('spentTime ', mins);
+    // }
   }
 
   error(err) {
@@ -228,29 +206,29 @@ export class AppComponent extends LoadingPage implements OnInit {
     return earthRadiusKm * c;
   }
 
-  checkShowBtnReserve() {
-    if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.error, this.options);
+  // checkShowBtnReserve() {
+  //   if(navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.error, this.options);
 
-      // check reserved
-      var token = localStorage.getItem('token');
-      if(token && token != null) {
-        console.log('token logined ', token);
-        this.token = token;
-        this.userProfileService.getInfo().subscribe(res => {
-          this.userName = res.name;
-            this.isReserved = this.checkConditionReserved(res, this.distance);
-            console.log('check distance ', this.distance);
-            console.log('isReserved ', this.isReserved);
-          localStorage.setItem("userInfo", JSON.stringify(res));
-        }, err => {
-          console.log("Error: ", err);
-        });
-      }
-    } else {
-        alert("No location is supported");
-    }
-  }
+  //     // check reserved
+  //     var token = localStorage.getItem('token');
+  //     if(token && token != null) {
+  //       console.log('token logined ', token);
+  //       this.token = token;
+  //       this.userProfileService.getInfo().subscribe(res => {
+  //         this.userName = res.name;
+  //           this.isReserved = this.checkConditionReserved(res, this.distance);
+  //           console.log('check distance ', this.distance);
+  //           console.log('isReserved ', this.isReserved);
+  //         localStorage.setItem("userInfo", JSON.stringify(res));
+  //       }, err => {
+  //         console.log("Error: ", err);
+  //       });
+  //     }
+  //   } else {
+  //       alert("No location is supported");
+  //   }
+  // }
 
   typeOfAccount(permissions: Permission[]): string{
     for (var i = 0; i < permissions.length; i++) {
@@ -276,6 +254,7 @@ export class AppComponent extends LoadingPage implements OnInit {
             this.doAfterLogin();
             $('#login').modal('hide');
             // Hoai: Add your logic code after login success here
+            this.router.navigate(['']);
           },
           err => {
             console.log(err);
@@ -296,7 +275,8 @@ export class AppComponent extends LoadingPage implements OnInit {
         this.doAfterLogin();
         this.ready();
         console.log('isLoading2 ', this.isLoading);
-        this.checkShowBtnReserve();
+        this.router.navigate(['']);
+        // this.checkShowBtnReserve();
       }, err => {
         alert("Oops! You might have used wrong email/password. Please check it again.")
         console.log("Error: ", err);
@@ -355,7 +335,7 @@ export class AppComponent extends LoadingPage implements OnInit {
       localStorage.removeItem('foodOrderLocal');
       localStorage.removeItem('isCustomer');
       localStorage.removeItem('isAdmin');
-      this.isReserved = false;
+      // this.isReserved = false;
       if (localStorage.getItem('isPaid')){
         localStorage.removeItem('isPaid');
       }
@@ -446,7 +426,7 @@ export class AppComponent extends LoadingPage implements OnInit {
       .subscribe(res => {console.log("new account ", res);
       this.token = res;
       localStorage.setItem('token', this.token)});
-    this.checkShowBtnReserve();
+    // this.checkShowBtnReserve();
     this.router.navigate(["/"]);
     $('#signUp').modal('hide');
   }
@@ -510,131 +490,130 @@ export class AppComponent extends LoadingPage implements OnInit {
     })
   }
 
-  checkConditionReserved(user: User, distance: number) {
-    console.log('user reserved ', user, ' distance ', this.distance);
-    console.log('condition point', this.conditionPointReserved , ' ', 'location ', this.conditionPositionReserved);
+  // checkConditionReserved(user: User, distance: number) {
+  //   console.log('user reserved ', user, ' distance ', this.distance);
+  //   console.log('condition point', this.conditionPointReserved , ' ', 'location ', this.conditionPositionReserved);
 
-    if(user.membershipPoint >= this.conditionPointReserved &&
-      distance <= this.conditionPositionReserved) {
-        return true;
-    }
-    return false;
-  }
+  //   if(user.membershipPoint >= this.conditionPointReserved &&
+  //     distance <= this.conditionPositionReserved) {
+  //       return true;
+  //   }
+  //   return false;
+  // }
 
-  reservedTable() {
-    this.adminService.getAllTable()
-      .map(res => res.json())
-      .subscribe(allTables => {
-        allTables.forEach( (table, index) => {
-          if(table.tableStatus === 0)
-            this.emptyTables.push(table);
+  // reservedTable() {
+  //   this.adminService.getAllTable()
+  //     .map(res => res.json())
+  //     .subscribe(allTables => {
+  //       allTables.forEach( (table, index) => {
+  //         if(table.tableStatus === 0 || table.tableStatus === 3)
+  //           this.emptyTables.push(table);
+  //       });
+  //       console.log('empty tables ', this.emptyTables);
+  //       this.filterValidTableForReserve(this.emptyTables);
+  //       if(this.validTables.length > 0) {
+  //         $("#reservingTable").modal('show');
+  //         $("#reserved").modal('hide');
+  //       }
+  //     });
+  // }
 
-        });
-        console.log('empty tables ', this.emptyTables);
-        this.filterValidTableForReserve(this.emptyTables);
-        if(this.validTables.length > 0) {
-          $("#reservingTable").modal('show');
-          $("#reserved").modal('hide');
-        }
-      });
-  }
+  // filterValidTableForReserve(emptyTables: Table[]) {
+  //   emptyTables.forEach( (table, index)=> {
+  //     switch (this.reservedPeople) {
+  //       case "underFive":
+  //         if(table.size <= 5) this.validTables.push(table);
+  //         break;
 
-  filterValidTableForReserve(emptyTables: Table[]) {
-    emptyTables.forEach( (table, index)=> {
-      switch (this.reservedPeople) {
-        case "underFive":
-          if(table.size <= 5) this.validTables.push(table);
-          break;
+  //       case "betweenFiveAndTen":
+  //         if(table.size > 5 && table.size <= 10) this.validTables.push(table);
+  //         break;
 
-        case "betweenFiveAndTen":
-          if(table.size > 5 && table.size <= 10) this.validTables.push(table);
-          break;
+  //       case "overTen":
+  //         if(table.size > 10) this.validTables.push(table);
+  //         break;
+  //     }
+  //     console.log('valid table ', this.validTables);
+  //   });
+  // }
 
-        case "overTen":
-          if(table.size > 10) this.validTables.push(table);
-          break;
-      }
-      console.log('valid table ', this.validTables);
-    });
-  }
+  // reserveRequest() {
+  //   var reservedTable = this.temporaryReservingTable;
+  //   localStorage.setItem('reservedTable', JSON.stringify(reservedTable));
+  //   var noteForTable = $('.reserved__desc--content').val();
+  //   var contentTable = {
+  //     "tableId": reservedTable.id,
+  //     "detail": noteForTable
+  //   }
+  //   var minsTimeReserve = parseInt(this.reservedTime);
+  //   this.countDownReserved(minsTimeReserve, 0);
+  //   this.countDownReserving = true;
+  //   var timestartReserved = new Date().getTime();
+  //   localStorage.setItem("timestartReserved", timestartReserved.toString());
+  //   localStorage.setItem("countDownReserving", this.countDownReserving.toString());
+  //   localStorage.setItem("minsTimeReserve", this.reservedTime);
+  //   console.log('countDownReserving ', this.countDownReserving);
+  //   this.appService.reservedTable(contentTable)
+  //     .subscribe(res => console.log("reserved table ", res));
+  //   $("#reservingTable").modal('hide');
+  // }
 
-  reserveRequest() {
-    var reservedTable = this.temporaryReservingTable;
-    localStorage.setItem('reservedTable', JSON.stringify(reservedTable));
-    var noteForTable = $('.reserved__desc--content').val();
-    var contentTable = {
-      "tableId": reservedTable.id,
-      "detail": noteForTable
-    }
-    var minsTimeReserve = parseInt(this.reservedTime);
-    this.countDownReserved(minsTimeReserve, 0);
-    this.countDownReserving = true;
-    var timestartReserved = new Date().getTime();
-    localStorage.setItem("timestartReserved", timestartReserved.toString());
-    localStorage.setItem("countDownReserving", this.countDownReserving.toString());
-    localStorage.setItem("minsTimeReserve", this.reservedTime);
-    console.log('countDownReserving ', this.countDownReserving);
-    this.appService.reservedTable(contentTable)
-      .subscribe(res => console.log("reserved table ", res));
-    $("#reservingTable").modal('hide');
-  }
+  // countDownReserved(mins: number, secs: number) {
+  //   if(secs === 0) {
+  //     this.timeCountMinsReserve = mins-1;
+  //     this.timeCountSecsReserve = 59;
+  //   }
+  //   else {
+  //     this.timeCountMinsReserve = mins;
+  //     this.timeCountSecsReserve = secs;
+  //   }
+  //   var self = this;
+  //   var startCount = setInterval(function() {
+  //     self.timeCountSecsReserve--;
+  //     if(self.timeCountSecsReserve === 0) {
+  //       self.timeCountMinsReserve--;
+  //       if(self.timeCountMinsReserve === 0) {
+  //         console.log('time out');
+  //         this.countDownReserving = false;
+  //         clearInterval(startCount);
+  //         var tableCancel = this.getReservedTableCancel(13);
+  //         this.cancelReserved(tableCancel);
+  //       }
+  //       else self.timeCountSecsReserve = 60;
+  //     }
+  //   }, 1000);
 
-  countDownReserved(mins: number, secs: number) {
-    if(secs === 0) {
-      this.timeCountMinsReserve = mins-1;
-      this.timeCountSecsReserve = 59;
-    }
-    else {
-      this.timeCountMinsReserve = mins;
-      this.timeCountSecsReserve = secs;
-    }
-    var self = this;
-    var startCount = setInterval(function() {
-      self.timeCountSecsReserve--;
-      if(self.timeCountSecsReserve === 0) {
-        self.timeCountMinsReserve--;
-        if(self.timeCountMinsReserve === 0) {
-          console.log('time out');
-          this.countDownReserving = false;
-          clearInterval(startCount);
-          var tableCancel = this.getReservedTableCancel(13);
-          this.cancelReserved(tableCancel);
-        }
-        else self.timeCountSecsReserve = 60;
-      }
-    }, 1000);
+  // }
 
-  }
+  // getReservedTableCancel(statusCancel: number): any {
+  //   var reservedTable = JSON.parse(localStorage.getItem('reservedTable'));
+  //   console.log("reservedTable local ", reservedTable);
 
-  getReservedTableCancel(statusCancel: number): any {
-    var reservedTable = JSON.parse(localStorage.getItem('reservedTable'));
-    console.log("reservedTable local ", reservedTable);
+  //   var reservedTableId = reservedTable.id;
+  //   var objCancel = {
+  //     "reservedTableId": reservedTableId+'',
+  //     "detail": "",
+  //     "finalStatus": statusCancel+""
+  //   }
+  //   return objCancel;
+  // }
 
-    var reservedTableId = reservedTable.id;
-    var objCancel = {
-      "reservedTableId": reservedTableId+'',
-      "detail": "",
-      "finalStatus": statusCancel+""
-    }
-    return objCancel;
-  }
+  // cancelReserved(statusCancel: number) {
+  //   var reservedCancel = this.getReservedTableCancel(statusCancel);
+  //   console.log('table cancel ', reservedCancel);
 
-  cancelReserved(statusCancel: number) {
-    var reservedCancel = this.getReservedTableCancel(statusCancel);
-    console.log('table cancel ', reservedCancel);
+  //   this.appService.cancelReserved(reservedCancel)
+  //     .subscribe(res => console.log("cancel ", res));
+  //   localStorage.removeItem("timestartReserved");
+  //   localStorage.removeItem("countDownReserving");
+  //   localStorage.removeItem('reservedTable');
+  //   this.timeCountMinsReserve = 0;
+  //   this.timeCountSecsReserve = 0;
+  //   this.countDownReserving = false;
+  // }
 
-    this.appService.cancelReserved(reservedCancel)
-      .subscribe(res => console.log("cancel ", res));
-    localStorage.removeItem("timestartReserved");
-    localStorage.removeItem("countDownReserving");
-    localStorage.removeItem('reservedTable');
-    this.timeCountMinsReserve = 0;
-    this.timeCountSecsReserve = 0;
-    this.countDownReserving = false;
-  }
-
-  sendReservedTableAdmin(): void {
-    let table = JSON.parse(localStorage.getItem("reservedTable"));
-    this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " reserved");
-  };
+  // sendReservedTableAdmin(): void {
+  //   let table = JSON.parse(localStorage.getItem("reservedTable"));
+  //   this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " reserved");
+  // };
 }
