@@ -765,6 +765,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   actOrder() {
+    this.currentTable = JSON.parse(localStorage.getItem("currentTable"));
     if(!this.currentTable) {
       this.chooseTable();
     }
