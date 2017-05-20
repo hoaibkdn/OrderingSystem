@@ -385,9 +385,17 @@ export class MenuComponent extends LoadingPage implements OnInit {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
           if(messageOutput.body.includes('canceled')) {
-            this.countDownReserving = false;
-            localStorage.setItem('countDownReserving', 'false');
-            this.checkShowBtnReserve();
+            var tableReceivedId = messageOutput.body.split(' ')[8];
+            var reservedTable = JSON.parse(localStorage.getItem('reservedTable'));
+            console.log('canceled ', reservedTable);
+            console.log('message send table id ', tableReceivedId);
+            if(reservedTable.id == tableReceivedId) {
+              console.log('message send table id @@@ ', tableReceivedId);
+              this.countDownReserving = false;
+              localStorage.removeItem('reservedTable');
+              localStorage.setItem('countDownReserving', 'false');
+              this.checkShowBtnReserve();
+            }
           }
         });
     });
