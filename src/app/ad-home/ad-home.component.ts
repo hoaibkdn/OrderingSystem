@@ -26,6 +26,8 @@ export class AdHomeComponent implements OnInit {
   cancelTable: Table;
   orderTables: OrderTable[];
   stompAdmin: any;
+  tablesCountDownMins: number[] = [];
+  tablesCountDownSecs: number[] = [];
 
   constructor(
     private router: Router,
@@ -33,7 +35,8 @@ export class AdHomeComponent implements OnInit {
     private route: ActivatedRoute,
     private appService: AppService) {
     this.invoices = [];
-    }
+    this.initTimeReserved();
+  }
 
   ngOnInit() {
     this.getUnpaidInvoice();
@@ -67,6 +70,9 @@ export class AdHomeComponent implements OnInit {
           }
         });
     });
+
+    // this.stompAdmin = Stomp.client(websocketUrl);
+    // this.stompAdmin.connect
   }
 
   detailTable(table: Table) {
@@ -79,16 +85,31 @@ export class AdHomeComponent implements OnInit {
     }
   }
 
-  cancelReserved(statusCancel: number) {
-    var reservedTable = this.cancelTable;
+  cancelReserved(statusCancel: number, numOfTable: number) {
+    // var reservedTable: Table;
+    console.log('this.cancelTable ', this.cancelTable);
+
+    // if( reservedTable = this.cancelTable;) {
+    //   reservedTable = this.cancelTable;
+    // }
     var cancelTableId;
-    console.log("reservedTable local ", reservedTable);
+    // console.log("reservedTable local ", reservedTable);
     this.appService.getReservedTable()
       .subscribe(res => {
         res.forEach( (resTable, index) => {
-          if(resTable.table.id === reservedTable.id) {
+          if((this.cancelTable && (resTable.table.tableNumber === this.cancelTable.tableNumber)) ||
+            (!this.cancelTable &&(resTable.table.tableNumber == numOfTable))){
             cancelTableId = resTable.id;
           }
+          // if(!this.cancelTable) {
+          //   console.log('dont have cancel table');
+          //   console.log('table auto cancel ', numOfTable);
+          //   if(resTable.table.tableNumber == numOfTable) {
+          //     cancelTableId = resTable.id;
+          //     console.log('cancel reserved id ', cancelTableId);
+
+          //   }
+          // }
         });
         var objCancel = {
           "reservedTableId": cancelTableId+'',
@@ -103,7 +124,11 @@ export class AdHomeComponent implements OnInit {
         localStorage.setItem("countDownReserving", 'false');
         localStorage.removeItem('reservedTable');
         $('#cancelReservingTable').modal('hide');
+        this.tablesCountDownMins[numOfTable-1] = 0;
+        this.tablesCountDownSecs[numOfTable-1] = 0;
         this.updateViewCancelReservedTable();
+        this.cancelTable = null;
+        this.sendCancelReserveToClient();
         // this.router.navigate(["/admin"]);
         // this.timeCountMinsReserve = 0;
         // this.timeCountSecsReserve = 0;
@@ -176,6 +201,17 @@ export class AdHomeComponent implements OnInit {
     });
   }
 
+  initTimeReserved() {
+    this.adminService.getAllTable().subscribe(res => {
+      this.tables = JSON.parse(res._body);
+      var self = this;
+      this.tables.forEach((table, index) => {
+        self.tablesCountDownMins.push(0);
+        self.tablesCountDownSecs.push(0);
+      });
+    });
+  }
+
   updateViewCancelReservedTable() {
     this.adminService.getAllTable().subscribe(res => {
         this.tables = JSON.parse(res._body);
@@ -226,36 +262,57 @@ export class AdHomeComponent implements OnInit {
           }
           var travelingTime = recentTableReserved.travelingTime;
           var reservingTime = recentTableReserved.reservingTime;
-          console.log('reservingTime ', new Date(reservingTime).getMinutes(), ':', new Date(reservingTime).getSeconds());
+          console.log('reservingTime ', reservingTime);
           var currentTime = new Date().getTime();
-          var spentTime = currentTime - reservingTime;
-          var remainTime = travelingTime - spentTime;
-          var remainTimeFormat = new Date(remainTime);
-          console.log('remainTime ', remainTimeFormat.getMinutes(), ':', remainTimeFormat.getSeconds());
+          console.log('currentTime ', currentTime);
 
-          if(remainTime > 0) {
-
+          if(reservingTime > currentTime) {
+            // reservingTime = currentTime;
+            // var remainTimeFormat = new Date(travelingTime);
+            // var remainMins = remainTimeFormat.getMinutes();
+            // var remainSecs = remainTimeFormat.getSeconds();
+            this.countDownReserving(tableNumber, 0, 10);
           }
-          this.countDownReserving(recentTableReserved.table);
+          else {
+            var spentTime = currentTime - reservingTime;
+            console.log('spentTime ', new Date(spentTime));
+            var remainTime = travelingTime - spentTime;
+            var remainTimeFormat = new Date(remainTime);
+            var remainMins = remainTimeFormat.getMinutes();
+            var remainSecs = remainTimeFormat.getSeconds();
+            console.log('remainTime ', remainTimeFormat.getMinutes(), ':', remainTimeFormat.getSeconds());
+            if(remainTime > 0) {
+              this.countDownReserving(tableNumber, remainMins, remainSecs);
+            }
+          }
         });
     });
   }
-  countDownReserving(table: Table) {
-    // table.countDown.minutes = 0;
-    // table.countDown.seconds = 50;
+  countDownReserving(tableNumber: number, mins: number, secs: number) {
+    console.log('cownt down ', this.tablesCountDownMins);
+    var self = this;
+    this.tablesCountDownMins[tableNumber-1] = mins;
+    this.tablesCountDownSecs[tableNumber-1] = secs;
     var startCount = setInterval(function() {
-      // if(table.countDown.seconds > 0) {
-      //   table.countDown.seconds--;
-      //   if(table.countDown.seconds === 0) {
-      //     table.countDown.minutes--;
-      //     if(table.countDown.minutes === (-1)) {
-      //       clearInterval(startCount);
-      //     }
-      //   }
-      // }
-      table.size--;
-      console.log('table size ', table.size);
-
+      if(self.tablesCountDownSecs[tableNumber-1] > 0) {
+        self.tablesCountDownSecs[tableNumber-1]--;
+        if(self.tablesCountDownSecs[tableNumber-1] === 0) {
+          self.tablesCountDownMins[tableNumber-1]--;
+          self.tablesCountDownSecs[tableNumber-1] = 59;
+          if(self.tablesCountDownMins[tableNumber-1] === (-1)) {
+            self.cancelReserved(13, tableNumber);
+            self.updateViewCancelReservedTable();
+            self.tablesCountDownMins[tableNumber-1] = 0;
+            self.tablesCountDownSecs[tableNumber-1] = 0;
+            clearInterval(startCount);
+          }
+        }
+      }
     }, 1000)
+  }
+
+  sendCancelReserveToClient() {
+    // let table = this.cancelTable;
+    this.stompClient.send("/app/admin", {}, "Your reseved table is canceled");
   }
 }

@@ -373,17 +373,22 @@ export class MenuComponent extends LoadingPage implements OnInit {
         console.log('Connected admin: ' + frame);
         console.log(this.stompClient);
         // Uncomment for heroku app
-        // setInterval(() => {
-        //     if(!this.stompClient.connected){
-        //       console.log("Failed to connect");
-        //     } else {
-        //       console.log("Interval at " + new Date());
-        //       this.stompClient.send("/app/admin", {}, "");
-        //     }
-        //   }, 30000);
+        setInterval(() => {
+            if(!this.stompClient.connected){
+              console.log("Failed to connect");
+            } else {
+              console.log("Interval at " + new Date());
+              this.stompClient.send("/app/admin", {}, "");
+            }
+          }, 30000);
         this.stompClient.subscribe('/request/admin', (messageOutput) => {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
+          if(messageOutput.body.includes('canceled')) {
+            this.countDownReserving = false;
+            localStorage.setItem('countDownReserving', 'false');
+            this.checkShowBtnReserve();
+          }
         });
     });
   }
@@ -1387,7 +1392,6 @@ export class MenuComponent extends LoadingPage implements OnInit {
       var secs = new Date(spentTime).getSeconds();
       var remainMins = localMinsComing - 1 - mins;
       console.log('remainMins ', parseFloat(this.reservedTime));
-
       var remainSecs = 60 - secs;
       this.countDownReserved(remainMins, remainSecs);
       // console.log('spentTime ', mins);
@@ -1479,9 +1483,11 @@ export class MenuComponent extends LoadingPage implements OnInit {
         if(self.timeCountMinsReserve === (-1)) {
           console.log('time out');
           this.countDownReserving = false;
-          clearInterval(startCount);
-          // var tableCancel = self.getReservedTableCancel(13);
           this.cancelReserved(13);
+          clearInterval(startCount);
+          self.timeCountSecsReserve = 0;
+          self.timeCountMinsReserve = 0;
+          // var tableCancel = self.getReservedTableCancel(13);
         }
         else self.timeCountSecsReserve = 60;
       }
