@@ -577,3 +577,15 @@ $cl-transparent: rgba(255,255,255,0);
 .title-padding {
   padding-left: 10px;
 }
+
+.btn-reserve {
+  margin: 10px 0;
+  width: 100%;
+  background: #8BC34A;
+  padding: 8px;
+  color: $cl-white;
+  border-radius: 0;
+  &:hover {
+    background: #FFC107;
+  }
+}

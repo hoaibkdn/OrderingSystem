@@ -1,6 +1,7 @@
 import { Component, OnInit, Directive, ElementRef, ComponentFactoryResolver,
         ComponentRef, Input } from '@angular/core';
 import { MenuService } from './menu.services';
+import { AppService } from '../app.service';
 import { FoodAndDrink } from '../models/food-and-drink';
 import { ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
@@ -20,6 +21,7 @@ import { AdminService } from './../admin/admin.service';
 import { AdStatisticDrinkService } from './../ad-statistic-drink/ad-statistic-drink.service';
 import { Table } from '../models/table';
 import { Chart } from 'angular-highcharts';
+import { User } from '../models/user';
 import { websocketUrl } from '../server-url.config'
 
 // import { TruncatePipe } from './../truncate';
@@ -80,6 +82,21 @@ export class MenuComponent extends LoadingPage implements OnInit {
   ratingServiceArr: Rating[];
   showOrder: boolean;
   typeChoosing: number;
+
+  isReserved: boolean;
+  conditionPointReserved: number = 10;
+  conditionPositionReserved: number = 100;
+
+  reservedPeople: string;
+  reservedTime: string;
+  minsTimeReserve: number;
+  emptyTables: Table[] = [];
+  validTables: Table[] = [];
+  temporaryReservingTable: Table;
+  countDownReserving: boolean = false;
+  timeCountMinsReserve: number;
+  timeCountSecsReserve: number;
+
   options = {
     timeout: 10000
   };
@@ -90,7 +107,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
               private router: Router,
               private userProfileService: UserProfileService,
               private adminService: AdminService,
-              private adStatisticDrinkService: AdStatisticDrinkService) {
+              private adStatisticDrinkService: AdStatisticDrinkService,
+              private appService: AppService) {
                 super(false);
                 this.foodLocalStorages = [];
   }
@@ -110,6 +128,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
         localStorage.setItem('resLon', this.resLon + "");
         this.distance = this.distanceInKmBetweenEarthCoordinates(this.resLat, this.resLon, this.latitude, this.longitude);
         console.log("Distance: ", this.distance.toFixed(2), " km");
+        this.checkShowBtnReserve();
       }, err => {
         console.log(err);
       })
@@ -139,13 +158,31 @@ export class MenuComponent extends LoadingPage implements OnInit {
   // Call to get distance
   getDistance(){
     if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.error, this.options);
-     } else {
+      navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.error, this.options);
+    } else {
          alert("No location is supported");
      }
   }
 
+  checkShowBtnReserve() {
+    // check reserved
+    var token = localStorage.getItem('token');
+    if(token && token != null) {
+      console.log('token logined ', token);
+      this.userProfileService.getInfo().subscribe(res => {
+          this.isReserved = this.checkConditionReserved(res, this.distance);
+          console.log('check distance ', this.distance);
+          console.log('isReserved ', this.isReserved);
+        localStorage.setItem("userInfo", JSON.stringify(res));
+      }, err => {
+        console.log("Error: ", err);
+      });
+      this.getTimeReserveFromLocal();
+    }
+  }
+
   ngOnInit() {
+    this.getDistance();
     this.standby();
     this.isfilteringFood = true;
 
@@ -230,24 +267,18 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.totalMoney();
     this.textSearch = "";
     this.checkCurrentType();
-    this.getDistance();
+    this.checkShowBtnReserve();
     this.isMobileInvoiceOpen = false;
     this.isOpenedModal = false;
-    console.log('init modal ', this.isMobileInvoiceOpen);
     var self = this;
-    // this.checkInvoiceMobileOpen();
     $('body').on('click', function(e){
-      console.log('@@@@@ modal close1 ', self.isMobileInvoiceOpen);
       var isOpen = $('#invoiceMobile').hasClass('in');
-      console.log('body isOpenedModal ', self.isOpenedModal);
       if(self.isMobileInvoiceOpen && self.isOpenedModal && !isOpen) {
-        console.log('@@@@@ modal close2 ', self.isMobileInvoiceOpen);
         var allInvoice = $('.ordering');
         var boxInvoiceTb = $('.invoice');
         boxInvoiceTb.append(allInvoice);
         self.isMobileInvoiceOpen = false;
         self.isOpenedModal = false;
-        console.log('@@@@@ modal close3 ', self.isMobileInvoiceOpen);
       }
     });
 
@@ -311,14 +342,11 @@ export class MenuComponent extends LoadingPage implements OnInit {
 
   showInvoiceMobile() {
     var widthDevice = $(window).width();
-    console.log('widthDevice ', widthDevice);
     if(widthDevice <= 768) {
       var allInvoice = $('.ordering');
       var boxInvoiceMb = $('.show-invoice-mobile');
       boxInvoiceMb.append(allInvoice);
       this.isMobileInvoiceOpen = true;
-      // this.isOpenedModal = true;
-      //   console.log('isOpenedModal ', this.isOpenedModal);
       var that = this;
       setTimeout(function() {
         console.log('isOpenedModal1 ', that.isOpenedModal);
@@ -345,17 +373,30 @@ export class MenuComponent extends LoadingPage implements OnInit {
         console.log('Connected admin: ' + frame);
         console.log(this.stompClient);
         // Uncomment for heroku app
-        // setInterval(() => {
-        //     if(!this.stompClient.connected){
-        //       console.log("Failed to connect");
-        //     } else {
-        //       console.log("Interval at " + new Date());
-        //       this.stompClient.send("/app/admin", {}, "");
-        //     }
-        //   }, 30000);
+        setInterval(() => {
+            if(!this.stompClient.connected){
+              console.log("Failed to connect");
+            } else {
+              console.log("Interval at " + new Date());
+              this.stompClient.send("/app/admin", {}, "");
+            }
+          }, 30000);
         this.stompClient.subscribe('/request/admin', (messageOutput) => {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
+          if(messageOutput.body.includes('canceled')) {
+            var tableReceivedId = messageOutput.body.split(' ')[8];
+            var reservedTable = JSON.parse(localStorage.getItem('reservedTable'));
+            console.log('canceled ', reservedTable);
+            console.log('message send table id ', tableReceivedId);
+            if(reservedTable.id == tableReceivedId) {
+              console.log('message send table id @@@ ', tableReceivedId);
+              this.countDownReserving = false;
+              localStorage.removeItem('reservedTable');
+              localStorage.setItem('countDownReserving', 'false');
+              this.checkShowBtnReserve();
+            }
+          }
         });
     });
   }
@@ -738,6 +779,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   actOrder() {
+    this.currentTable = JSON.parse(localStorage.getItem("currentTable"));
     if(!this.currentTable) {
       this.chooseTable();
     }
@@ -1313,12 +1355,15 @@ export class MenuComponent extends LoadingPage implements OnInit {
     if(this.currentTable) return true;
     else false;
   }
-  getNumOfTable(table: Table) {
+  getNumOfTable(table: Table, reserving:  string) {
     if(table.tableStatus !== 0) {
-      $('#confirmTable').modal('show');
+      $('#toConfirmTable').modal('show');
     }
     else {
       this.temporaryTable = table;
+      if(reserving) {
+        this.temporaryReservingTable = table;
+      }
     }
   }
 
@@ -1329,4 +1374,177 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.ordered();
     $("#chooseTable").modal('hide');
   }
+
+  getTimeReserveFromLocal() {
+    var timeReservedStr = localStorage.getItem("timestartReserved");
+    var permitCount = localStorage.getItem("countDownReserving");
+    if(permitCount) {
+      this.countDownReserving = (permitCount === "true");
+      if(!this.countDownReserving) {
+        this.timeCountMinsReserve = 0;
+        this.timeCountSecsReserve = 0;
+      }
+    }
+    else {
+      this.countDownReserving = false;
+      this.timeCountMinsReserve = 0;
+      this.timeCountSecsReserve = 0;
+    }
+    if(timeReservedStr) {
+      var timeReserved = parseFloat(timeReservedStr);
+      var currentTime = new Date().getTime();
+      var spentTime = currentTime - timeReserved;
+      var mins = new Date(spentTime).getMinutes();
+      var localMinsComing = parseInt(localStorage.getItem("minsTimeReserve"));
+      console.log('this.minsTimeReserve ', localMinsComing);
+      var secs = new Date(spentTime).getSeconds();
+      var remainMins = localMinsComing - 1 - mins;
+      console.log('remainMins ', parseFloat(this.reservedTime));
+      var remainSecs = 60 - secs;
+      this.countDownReserved(remainMins, remainSecs);
+      // console.log('spentTime ', mins);
+    }
+  }
+
+  checkConditionReserved(user: User, distance: number) {
+    console.log('user reserved ', user, ' distance ', this.distance);
+    if(user.membershipPoint >= this.conditionPointReserved &&
+      distance <= this.conditionPositionReserved) {
+        return true;
+    }
+    return false;
+  }
+
+  reservedTable() {
+    this.adminService.getAllTable()
+      .map(res => res.json())
+      .subscribe(allTables => {
+        allTables.forEach( (table, index) => {
+          if(table.tableStatus === 0 || table.tableStatus === 3)
+            this.emptyTables.push(table);
+        });
+        console.log('empty tables ', this.emptyTables);
+        this.filterValidTableForReserve(this.emptyTables);
+        if(this.validTables.length > 0) {
+          $("#reservingTable").modal('show');
+          $("#reserved").modal('hide');
+        }
+      });
+  }
+
+  filterValidTableForReserve(emptyTables: Table[]) {
+    emptyTables.forEach( (table, index)=> {
+      switch (this.reservedPeople) {
+        case "underFive":
+          if(table.size <= 5) this.validTables.push(table);
+          break;
+
+        case "betweenFiveAndTen":
+          if(table.size > 5 && table.size <= 10) this.validTables.push(table);
+          break;
+
+        case "overTen":
+          if(table.size > 10) this.validTables.push(table);
+          break;
+      }
+    });
+    console.log('valid table ', this.validTables.length);
+  }
+
+  reserveRequest() {
+    var reservedTable = this.temporaryReservingTable;
+    localStorage.setItem('reservedTable', JSON.stringify(reservedTable));
+    var noteForTable = $('.reserved__desc--content').val();
+    var minsTimeReserve = parseInt(this.reservedTime);
+    var contentTable = {
+      "tableId": reservedTable.id+'',
+      "detail": noteForTable,
+      "travelingTime": minsTimeReserve+''
+    }
+    this.countDownReserved(minsTimeReserve, 0);
+    this.countDownReserving = true;
+    var timestartReserved = new Date().getTime();
+    localStorage.setItem("timestartReserved", timestartReserved.toString());
+    localStorage.setItem("countDownReserving", this.countDownReserving.toString());
+    localStorage.setItem("minsTimeReserve", this.reservedTime);
+    console.log('countDownReserving ', this.countDownReserving);
+    this.appService.reservedTable(contentTable)
+      .subscribe(res => console.log("reserved table ", res));
+    this.sendMessageReserveToAdmin('reserve');
+    $("#reservingTable").modal('hide');
+  }
+
+  countDownReserved(mins: number, secs: number) {
+    if(secs === 0) {
+      this.timeCountMinsReserve = mins-1;
+      this.timeCountSecsReserve = 59;
+    }
+    else {
+      this.timeCountMinsReserve = mins;
+      this.timeCountSecsReserve = secs;
+    }
+    var self = this;
+    var startCount = setInterval(function() {
+      self.timeCountSecsReserve--;
+      if(self.timeCountSecsReserve === 0) {
+        self.timeCountMinsReserve--;
+        if(self.timeCountMinsReserve === (-1)) {
+          console.log('time out');
+          this.countDownReserving = false;
+          this.cancelReserved(13);
+          clearInterval(startCount);
+          self.timeCountSecsReserve = 0;
+          self.timeCountMinsReserve = 0;
+          // var tableCancel = self.getReservedTableCancel(13);
+        }
+        else self.timeCountSecsReserve = 60;
+      }
+    }, 1000);
+
+  }
+
+  cancelReserved(statusCancel: number) {
+    var reservedTable = JSON.parse(localStorage.getItem('reservedTable'));
+    var cancelTableId;
+    console.log("reservedTable local ", reservedTable);
+    this.appService.getReservedTable()
+      .subscribe(res => {
+        console.log('all reserved tables ', res);
+
+        for(var i = 0; i < res.length; i++) {
+          if(res[i].table.id === reservedTable.id) {
+            cancelTableId = res[i].id;
+          }
+        }
+        var objCancel = {
+          "reservedTableId": cancelTableId+'',
+          "detail": "",
+          "finalStatus": statusCancel+""
+        }
+        console.log('objCancel ', objCancel);
+        this.appService.cancelReserved(objCancel)
+          .subscribe(res => console.log("cancel ", res));
+        this.sendMessageReserveToAdmin('cancel');
+        localStorage.removeItem("timestartReserved");
+        localStorage.setItem("countDownReserving", 'false');
+        localStorage.removeItem('reservedTable');
+        this.timeCountMinsReserve = 0;
+        this.timeCountSecsReserve = 0;
+        this.countDownReserving = false;
+
+        this.checkShowBtnReserve();
+        this.emptyTables = [];
+        $('#cancelReservingTable').modal('hide');
+      })
+  }
+
+  sendMessageReserveToAdmin(type: string): void {
+    let table = JSON.parse(localStorage.getItem('reservedTable'));
+    if(type == "reserve") {
+      this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " is reserving");
+    }
+    if(type == "cancel") {
+      this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " canceled");
+    }
+  };
 }

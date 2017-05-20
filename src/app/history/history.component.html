@@ -4,9 +4,13 @@
       <div class="user__wrap overfollow quang-scroll">
         <div class="col-xs-8 col-xs-offset-2">
           <div class="row">
-            <div class="user__menu">
+            <div class="user__menu flex-box">
               <a routerLink="/history/invoice" class="menu__history">Invoice</a>
               <a routerLink="/history/favorite" class="menu__favorite">Favorite</a>
+              <div class="menu__membership">
+                <p class="menu__point">{{membershipPoint}}</p>
+                <p class="menu__text">points</p>
+              </div>
             </div>
           </div>
         </div>

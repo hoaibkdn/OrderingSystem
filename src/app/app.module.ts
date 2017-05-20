@@ -38,6 +38,8 @@ import { DataFilterModule } from './data-filter/data-filter.module';
 import { CustomFormsModule } from 'ng2-validation';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
+import {CountDown} from "angular2-simple-countdown/countdown";
+
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp( new AuthConfig({}), http, options);
 }
@@ -59,7 +61,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     ScanQRCodeComponent,
     LoadingIndicatorComponent,
     TruncatePipe,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    CountDown
   ],
   imports: [
     BrowserModule,

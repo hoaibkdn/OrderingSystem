@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { User } from './models/user';
 import { Permission } from './models/permission';
 import { ViewEncapsulation } from '@angular/core';
@@ -26,7 +26,7 @@ declare var Stomp: any;
 })
 export class AppComponent extends LoadingPage implements OnInit {
 
-  users: User[];
+  currentUser: User;
   errorMessage: string;
   inputEmail: string;
   inputPassword: string;
@@ -34,10 +34,19 @@ export class AppComponent extends LoadingPage implements OnInit {
   userName: string;
   permissions: Permission[];
   stompClient: any;
+  longitude: number;
+  latitude: number;
+  distance: number;
+  resLon: number;
+  resLat: number;
+  options = {
+    timeout: 10000
+  };
 
   countDown: number;
   isCustomer: boolean;
   isAdmin: boolean;
+  // isReserved: boolean;
 
   getOrdering: boolean;
   isLoading: boolean;
@@ -48,8 +57,18 @@ export class AppComponent extends LoadingPage implements OnInit {
   tables: Table[];
   temporaryTable:Table;
   emailForgetPass: Object;
-  // inputEmailForgetPass: string;
+  // conditionPointReserved: number = 10;
+  // conditionPositionReserved: number = 100;
 
+  reservedPeople: string;
+  reservedTime: string;
+  minsTimeReserve: number;
+  emptyTables: Table[] = [];
+  validTables: Table[] = [];
+  temporaryReservingTable: Table;
+  countDownReserving: boolean = false;
+  timeCountMinsReserve: number;
+  timeCountSecsReserve: number;
   constructor(
     private router: Router,
     private facebookService: FacebookService,
@@ -78,8 +97,11 @@ export class AppComponent extends LoadingPage implements OnInit {
   }
 
   ngOnInit() {
+    // localStorage.removeItem("timestartReserved");
+    // localStorage.removeItem("countDownReserving");
+    var self = this;
     this.isLoading = false;
-    // localStorage.setItem('isCustomer', true + "");
+    this.token = localStorage.getItem('token');
     this.getOrdering = false;
     var isCustomer = localStorage.getItem('isCustomer');
     if(isCustomer) {
@@ -101,19 +123,6 @@ export class AppComponent extends LoadingPage implements OnInit {
     }
     this.countDown = 0;
     this.connectAdmin();
-    let that = this;
-    var token = localStorage.getItem('token');
-    if(token && token != null) {
-      console.log('token logined ', token);
-      this.token = token;
-      this.userProfileService.getInfo().subscribe(res => {
-        this.userName = res.name;
-        localStorage.setItem("userInfo", JSON.stringify(res));
-      }, err => {
-        console.log("Error: ", err);
-      });
-    }
-    var self = this;
     $('body').on('click', function() {
       var signUpIsOpen = $('#signUp').hasClass('in');
       if(!signUpIsOpen) {
@@ -124,7 +133,6 @@ export class AppComponent extends LoadingPage implements OnInit {
           roleId: "4"
         };
         self.confirmPassword="";
-        console.log('close sign up ', self.objSignUp);
       }
     });
 
@@ -133,6 +141,69 @@ export class AppComponent extends LoadingPage implements OnInit {
       this.currentTable = JSON.parse(localStorage.getItem('currentTable'));
       console.log('table init ', this.currentTable);
     }
+
+    // var timeReservedStr = localStorage.getItem("timestartReserved");
+    // var permitCount = localStorage.getItem("countDownReserving");
+    // if(permitCount) {
+    //   this.countDownReserving = (permitCount === "true");
+    // }
+    // else this.countDownReserving = false;
+    // if(timeReservedStr) {
+    //   var timeReserved = parseFloat(timeReservedStr);
+    //   var currentTime = new Date().getTime();
+    //   var spentTime = currentTime - timeReserved;
+    //   var mins = new Date(spentTime).getMinutes();
+    //   var localMinsComing = parseInt(localStorage.getItem("minsTimeReserve"));
+    //   console.log('this.minsTimeReserve ', localMinsComing);
+    //   var secs = new Date(spentTime).getSeconds();
+    //   var remainMins = localMinsComing - 1 - mins;
+    //   console.log('remainMins ', parseFloat(this.reservedTime));
+
+    //   var remainSecs = 60 - secs;
+    //   this.countDownReserved(remainMins, remainSecs);
+    //   // console.log('spentTime ', mins);
+    // }
+  }
+
+  error(err) {
+    console.log(err);
+  }
+
+  setPosition(position){
+      this.longitude = position.coords.longitude;
+      this.latitude = position.coords.latitude;
+      this.userProfileService.getLocation().subscribe(res => {
+        let location = res._body;
+        this.resLat = location.split(',')[0];
+        this.resLon = location.split(',')[1];
+        localStorage.setItem('resLat', this.resLat + "");
+        localStorage.setItem('resLon', this.resLon + "");
+        this.distance = this.distanceInKmBetweenEarthCoordinates(this.resLat, this.resLon, this.latitude, this.longitude);
+        console.log("Distance: ", this.distance.toFixed(2), " km");
+      }, err => {
+        console.log(err);
+      })
+  }
+
+  degreesToRadians(degrees) {
+    return degrees * Math.PI / 180;
+  }
+
+  distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
+  // https://en.wikipedia.org/wiki/Haversine_formula
+    var earthRadiusKm = 6371;
+
+    var dLat = this.degreesToRadians(lat2-lat1);
+    var dLon = this.degreesToRadians(lon2-lon1);
+
+    lat1 = this.degreesToRadians(lat1);
+    lat2 = this.degreesToRadians(lat2);
+
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    this.distance = earthRadiusKm * c * 1000
+    return earthRadiusKm * c;
   }
 
   typeOfAccount(permissions: Permission[]): string{
@@ -159,6 +230,7 @@ export class AppComponent extends LoadingPage implements OnInit {
             this.doAfterLogin();
             $('#login').modal('hide');
             // Hoai: Add your logic code after login success here
+            this.router.navigate(['']);
           },
           err => {
             console.log(err);
@@ -175,10 +247,13 @@ export class AppComponent extends LoadingPage implements OnInit {
         console.log(res);
         $('#login').modal('hide');
         this.token = res.json().token;
+
         localStorage.setItem('token', this.token);
         this.doAfterLogin();
         this.ready();
         console.log('isLoading2 ', this.isLoading);
+        this.router.navigate(['']);
+        // this.checkShowBtnReserve();
       }, err => {
         alert("Oops! You might have used wrong email/password. Please check it again.")
         console.log("Error: ", err);
@@ -237,6 +312,7 @@ export class AppComponent extends LoadingPage implements OnInit {
       localStorage.removeItem('foodOrderLocal');
       localStorage.removeItem('isCustomer');
       localStorage.removeItem('isAdmin');
+      // this.isReserved = false;
       if (localStorage.getItem('isPaid')){
         localStorage.removeItem('isPaid');
       }
@@ -249,6 +325,7 @@ export class AppComponent extends LoadingPage implements OnInit {
       localStorage.setItem('isCustomer', true + "");
       this.router.navigate(['']);
     }
+
   }
 
 
@@ -294,15 +371,6 @@ export class AppComponent extends LoadingPage implements OnInit {
     }
     this.stompClient.send("/app/admin", {}, message);
     this.startCountDown();
-    // if(this.temporaryTable) {
-    //   this.currentTable = this.temporaryTable;
-    //   localStorage.setItem('currentTable', this.currentTable+'');
-    //   let message = "Table " + this.currentTable.tableNumber + " is needing some help.";
-    //   console.log("Message to send: ", message);
-    //   this.stompClient.send("/app/admin", {}, message);
-    //   this.startCountDown();
-    //   $('#chooseTables').modal('hide');
-    // }
   };
 
   goScan() {
@@ -322,7 +390,6 @@ export class AppComponent extends LoadingPage implements OnInit {
       // console.log('count down ', self.countDown);
       if(self.countDown === 0) clearInterval(startCount);
     }, 1000);
-
   }
 
   showModalSignUp() {
@@ -336,6 +403,7 @@ export class AppComponent extends LoadingPage implements OnInit {
       .subscribe(res => {console.log("new account ", res);
       this.token = res;
       localStorage.setItem('token', this.token)});
+    // this.checkShowBtnReserve();
     this.router.navigate(["/"]);
     $('#signUp').modal('hide');
   }
@@ -361,12 +429,15 @@ export class AppComponent extends LoadingPage implements OnInit {
     // else false;
   }
 
-  getNumOfTable(table: Table) {
+  getNumOfTable(table: Table, reserving:  string) {
     if(table.tableStatus !== 0) {
       $('#toConfirmTable').modal('show');
     }
     else {
       this.temporaryTable = table;
+      if(reserving) {
+        this.temporaryReservingTable = table;
+      }
     }
   }
 

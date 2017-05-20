@@ -6,6 +6,7 @@ import '../rxjs-extensions';
 import { Permission } from '../models/permission';
 import { User } from '../models/user';
 import { serverUrl } from '../server-url.config';
+import { serverLocationUrl } from '../server-url.config';
 
 @Injectable()
 export class UserProfileService {
@@ -41,7 +42,7 @@ export class UserProfileService {
     return this.http.post(url, body, {headers: headers});
   }
   getLocation():Observable<any>{
-    var url = serverUrl + "location";
+    var url = serverLocationUrl + "location";
     let headers = new Headers({'Content-Type': 'application/json'});
     return this.http.get(url, headers);
   }

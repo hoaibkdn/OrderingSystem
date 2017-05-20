@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
+import { UserProfileService } from '../user-profile/user-profile.service';
 
 import { Invoice } from '../models/invoice';
 import { InvoiceDetail } from '../models/invoice-detail';
+import { User } from './../models/user';
 
 @Component({
   selector: 'app-history',
@@ -13,8 +15,20 @@ import { InvoiceDetail } from '../models/invoice-detail';
 export class HistoryComponent implements OnInit {
   invoices: Invoice[];
   invoiceDetail: InvoiceDetail[];
-  constructor() {}
+  membershipPoint: number;
+  constructor(
+    private userProfileService: UserProfileService
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getMembershipPoint();
+  }
 
+  getMembershipPoint() {
+    this.userProfileService.getInfo()
+      .subscribe(res => {
+        this.membershipPoint = res.membershipPoint;
+        console.log('membershipPoint ', this.membershipPoint);
+      })
+  }
 }
