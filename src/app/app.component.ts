@@ -100,6 +100,7 @@ export class AppComponent extends LoadingPage implements OnInit {
   ngOnInit() {
     // localStorage.removeItem("timestartReserved");
     // localStorage.removeItem("countDownReserving");
+    console.log("Init app component");
     var self = this;
     this.isLoading = false;
     this.token = localStorage.getItem('token');
