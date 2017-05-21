@@ -589,3 +589,33 @@ $cl-transparent: rgba(255,255,255,0);
     background: #FFC107;
   }
 }
+
+.warning {
+  color: #EF9B4C;
+  margin-left: 20px;
+  font-size: 30px;
+  span {
+    color: black;
+    font-size: 20px;
+  }
+}
+
+.btn-server {
+  &__1,
+  &__2 {
+    position: fixed;
+    bottom: 10px;
+    left: 20px;
+    background: #0b123c;
+    border-radius: 3px;
+    padding: 10px;
+    color: $cl-white;
+    &:hover {
+      background: #3F51B5;
+      color: $cl-white;
+    }
+  }
+  &__1 {
+    bottom: 60px;
+  }
+}
