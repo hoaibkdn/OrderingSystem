@@ -86,6 +86,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   isReserved: boolean;
   conditionPointReserved: number = 10;
   conditionPositionReserved: number = 100;
+  startCounReserved: any;
 
   reservedPeople: string;
   reservedTime: string;
@@ -165,8 +166,14 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   checkShowBtnReserve() {
+    console.log('checkShowBtnReserve');
+
     // check reserved
     var token = localStorage.getItem('token');
+    if(!token) {
+      this.isReserved = false;
+      localStorage.setItem("isReserved", "false");
+    }
     if(token && token != null) {
       console.log('token logined ', token);
       this.userProfileService.getInfo().subscribe(res => {
@@ -185,7 +192,6 @@ export class MenuComponent extends LoadingPage implements OnInit {
 
   ngOnInit() {
     console.log("Init menu component");
-
     this.getDistance();
     this.standby();
     this.isfilteringFood = true;
@@ -271,7 +277,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.totalMoney();
     this.textSearch = "";
     this.checkCurrentType();
-    this.checkShowBtnReserve();
+    // this.checkShowBtnReserve();
     this.isMobileInvoiceOpen = false;
     this.isOpenedModal = false;
     var self = this;
@@ -388,7 +394,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
         this.stompClient.subscribe('/request/admin', (messageOutput) => {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
-          if(messageOutput.body.includes('canceled')) {
+          if(messageOutput.body.includes('canceled by admin')) {
             var tableReceivedId = messageOutput.body.split(' ')[8];
             var reservedTable = JSON.parse(localStorage.getItem('reservedTable'));
             console.log('canceled ', reservedTable);
@@ -1124,14 +1130,11 @@ export class MenuComponent extends LoadingPage implements OnInit {
       this.showTotalIsPaid();
       localStorage.removeItem("invoiceId");
       console.log(localStorage.getItem("invoiceId"));
-      // this.router.navigate(["/"]);
-      // localStorage.removeItem("tableId");
-      // localStorage.removeItem('currentTable');
       location.reload();
     }, err => {
       console.log(err);
     });
-    
+
   }
 
   closeRating() {
@@ -1368,13 +1371,15 @@ export class MenuComponent extends LoadingPage implements OnInit {
     else false;
   }
   getNumOfTable(table: Table, reserving:  string) {
-    if(table.tableStatus !== 0) {
-      $('#toConfirmTable').modal('show');
+    if(reserving) {
+      this.temporaryReservingTable = table;
     }
     else {
-      this.temporaryTable = table;
-      if(reserving) {
-        this.temporaryReservingTable = table;
+      if(table.tableStatus !== 0) {
+        $('#toConfirmTable').modal('show');
+      }
+      else {
+        this.temporaryTable = table;
       }
     }
   }
@@ -1428,6 +1433,12 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   reservedTable() {
+    if(this.emptyTables.length) {
+      var sizeTables = this.emptyTables.length;
+      for(var i = 0; i < sizeTables; i++) {
+        this.emptyTables.pop();
+      };
+    }
     this.adminService.getAllTable()
       .map(res => res.json())
       .subscribe(allTables => {
@@ -1445,6 +1456,13 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   filterValidTableForReserve(emptyTables: Table[]) {
+    // this.validTables = [];
+    var sizeEmptyTable = this.validTables.length;
+    console.log('valid table 1@@@ ', this.validTables.length);
+    for(var i = 0; i < sizeEmptyTable; i++) {
+      this.validTables.pop();
+    };
+    console.log('valid table 2@@@ ', this.validTables.length);
     emptyTables.forEach( (table, index)=> {
       switch (this.reservedPeople) {
         case "underFive":
@@ -1460,7 +1478,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
           break;
       }
     });
-    console.log('valid table ', this.validTables.length);
+    console.log('valid table 3@@@ ', this.validTables.length);
   }
 
   reserveRequest() {
@@ -1496,20 +1514,21 @@ export class MenuComponent extends LoadingPage implements OnInit {
       this.timeCountSecsReserve = secs;
     }
     var self = this;
-    var startCount = setInterval(function() {
+    this.startCounReserved = setInterval(function() {
       self.timeCountSecsReserve--;
       if(self.timeCountSecsReserve === 0) {
         self.timeCountMinsReserve--;
+        self.timeCountSecsReserve = 59;
         if(self.timeCountMinsReserve === (-1)) {
           console.log('time out');
           this.countDownReserving = false;
           this.cancelReserved(13);
-          clearInterval(startCount);
+          clearInterval(self.startCounReserved);
           self.timeCountSecsReserve = 0;
           self.timeCountMinsReserve = 0;
           // var tableCancel = self.getReservedTableCancel(13);
         }
-        else self.timeCountSecsReserve = 60;
+        // else self.timeCountSecsReserve = 59;
       }
     }, 1000);
 
@@ -1543,9 +1562,9 @@ export class MenuComponent extends LoadingPage implements OnInit {
         this.timeCountMinsReserve = 0;
         this.timeCountSecsReserve = 0;
         this.countDownReserving = false;
-
+        clearInterval(this.startCounReserved);
         this.checkShowBtnReserve();
-        this.emptyTables = [];
+
         $('#cancelReservingTable').modal('hide');
       })
   }
@@ -1556,7 +1575,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
       this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " is reserving");
     }
     if(type == "cancel") {
-      this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " canceled");
+      this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " canceled by user");
     }
   };
 }

@@ -106,14 +106,14 @@ export class StaffComponent implements OnInit {
                     console.log('Connected: ' + frame);
                     console.log(this.stompClient);
                     // Uncomment for heroku app
-                    // setInterval(() => {
-                    //     if(!this.stompClient.connected){
-                    //       console.log("Failed to connect");
-                    //     } else {
-                    //       console.log("Interval at " + new Date());
-                    //       this.stompClient.send("/app/admin", {}, "");
-                    //     }
-                    //   }, 30000);
+                    setInterval(() => {
+                        if(!this.stompClient.connected){
+                          console.log("Failed to connect");
+                        } else {
+                          console.log("Interval at " + new Date());
+                          this.stompClient.send("/app/admin", {}, "");
+                        }
+                      }, 30000);
                     this.stompClient.subscribe('/request/admin', (messageOutput) => {
                       var tag = document.getElementsByClassName('chat-box')[0];
                       let allMessage = localStorage.getItem('allMessage') == null ? "" : localStorage.getItem('allMessage');

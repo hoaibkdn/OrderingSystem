@@ -44,14 +44,14 @@ export class AdHomeComponent implements OnInit {
         console.log('Connected admin: ' + frame);
         console.log(this.stompClient);
         // Uncomment for heroku server
-        // setInterval(() => {
-        //     if(!this.stompClient.connected){
-        //       console.log("Failed to connect");
-        //     } else {
-        //       console.log("Interval at " + new Date());
-        //       this.stompClient.send("/app/admin", {}, "");
-        //     }
-        //   }, 30000);
+        setInterval(() => {
+            if(!this.stompClient.connected){
+              console.log("Failed to connect");
+            } else {
+              console.log("Interval at " + new Date());
+              this.stompClient.send("/app/admin", {}, "");
+            }
+          }, 30000);
         this.stompClient.subscribe('/request/admin', (messageOutput) => {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
@@ -272,7 +272,7 @@ export class AdHomeComponent implements OnInit {
           self.tablesCountDownMins[tableNumber-1]--;
           self.tablesCountDownSecs[tableNumber-1] = 59;
           if(self.tablesCountDownMins[tableNumber-1] === (-1)) {
-            self.cancelReserved(13, tableNumber);
+            // self.cancelReserved(13, tableNumber);
             self.updateViewCancelReservedTable();
             self.tablesCountDownMins[tableNumber-1] = 0;
             self.tablesCountDownSecs[tableNumber-1] = 0;
@@ -280,11 +280,11 @@ export class AdHomeComponent implements OnInit {
           }
         }
       }
-    }, 1000)
+    }, 1000);
   }
 
   sendCancelReserveToClient(table: Table) {
     console.log("choosed table cancel ", table);
-    this.stompClient.send("/app/admin", {},"Table " +table.id + " is canceled");
+    this.stompClient.send("/app/admin", {},"Table " +table.id + " is canceled by admin");
   }
 }
