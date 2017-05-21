@@ -253,7 +253,8 @@ export class AppComponent extends LoadingPage implements OnInit {
         this.doAfterLogin();
         this.ready();
         console.log('isLoading2 ', this.isLoading);
-        this.router.navigate(['/']);
+        // this.router.navigate(['/']);
+        location.reload();
         // this.checkShowBtnReserve();
       }, err => {
         alert("Oops! You might have used wrong email/password. Please check it again.")
@@ -327,6 +328,7 @@ export class AppComponent extends LoadingPage implements OnInit {
       localStorage.setItem('isReserved', false + "");
       this.isReserved = false;
       this.router.navigate(['/']);
+      location.reload();
     }
 
   }
@@ -338,14 +340,14 @@ export class AppComponent extends LoadingPage implements OnInit {
         console.log('Connected admin: ' + frame);
         console.log(this.stompClient);
         // Uncomment for heroku app
-        // setInterval(() => {
-        //     if(!this.stompClient.connected){
-        //       console.log("Failed to connect");
-        //     } else {
-        //       console.log("Interval at " + new Date());
-        //       this.stompClient.send("/app/admin", {}, "");
-        //     }
-        //   }, 30000);
+        setInterval(() => {
+            if(!this.stompClient.connected){
+              console.log("Failed to connect");
+            } else {
+              console.log("Interval at " + new Date());
+              this.stompClient.send("/app/admin", {}, "");
+            }
+          }, 30000);
         this.stompClient.subscribe('/request/admin', (messageOutput) => {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
@@ -408,6 +410,7 @@ export class AppComponent extends LoadingPage implements OnInit {
       localStorage.setItem('token', this.token)});
     // this.checkShowBtnReserve();
     this.router.navigate(["/"]);
+    location.reload();
     $('#signUp').modal('hide');
   }
 
