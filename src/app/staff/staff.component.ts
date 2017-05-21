@@ -65,9 +65,11 @@ export class StaffComponent implements OnInit {
     this.isChecked = true;
     if(this.isLogInInShift() > 0){
       this.adminService.getLastWorkingTime().subscribe(res => {
+        console.log("Response for last working time: ", res);
         if (res.status == 200){
           this.lastWorkingTime = JSON.parse(res._body);
           console.log("Last working time: ", this.lastWorkingTime);
+          console.log("Is on shift: ", this.isLogInInShift());
           if(this.isCheckedInShift()){
             this.isChecked = true;
           } else {
@@ -106,14 +108,14 @@ export class StaffComponent implements OnInit {
                     console.log('Connected: ' + frame);
                     console.log(this.stompClient);
                     // Uncomment for heroku app
-                    setInterval(() => {
-                        if(!this.stompClient.connected){
-                          console.log("Failed to connect");
-                        } else {
-                          console.log("Interval at " + new Date());
-                          this.stompClient.send("/app/admin", {}, "");
-                        }
-                      }, 30000);
+                    // setInterval(() => {
+                    //     if(!this.stompClient.connected){
+                    //       console.log("Failed to connect");
+                    //     } else {
+                    //       console.log("Interval at " + new Date());
+                    //       this.stompClient.send("/app/admin", {}, "");
+                    //     }
+                    //   }, 30000);
                     this.stompClient.subscribe('/request/admin', (messageOutput) => {
                       var tag = document.getElementsByClassName('chat-box')[0];
                       let allMessage = localStorage.getItem('allMessage') == null ? "" : localStorage.getItem('allMessage');
@@ -159,6 +161,14 @@ export class StaffComponent implements OnInit {
          this.cleaningTables = res;
         console.log('cleaning table ', this.cleaningTables);
       })
+  }
+
+  clearMessage(){
+    let ul = document.getElementsByClassName("message")[0];
+    console.log("UL tag for messages: ", ul);
+    if(ul != undefined){
+      ul.innerHTML = "";
+    }
   }
 
 	sendMessageAdmin(): void {
@@ -274,6 +284,7 @@ export class StaffComponent implements OnInit {
     }
   }
 
+  // Check attendance
   isLogInInShift(){
     let date = new Date();
     if (date.getMinutes() >= 30 && date.getMinutes() <= 59){

@@ -97,7 +97,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   countDownReserving: boolean = false;
   timeCountMinsReserve: number;
   timeCountSecsReserve: number;
-  distancePermittedOrder: number = 0.3;
+  distancePermittedOrder: number = 0.9;
 
   options = {
     timeout: 10000
@@ -417,14 +417,14 @@ export class MenuComponent extends LoadingPage implements OnInit {
         console.log('Connected admin: ' + frame);
         console.log(this.stompClient);
         // Uncomment for heroku app
-        setInterval(() => {
-            if(!this.stompClient.connected){
-              console.log("Failed to connect");
-            } else {
-              console.log("Interval at " + new Date());
-              this.stompClient.send("/app/admin", {}, "");
-            }
-          }, 30000);
+        // setInterval(() => {
+        //     if(!this.stompClient.connected){
+        //       console.log("Failed to connect");
+        //     } else {
+        //       console.log("Interval at " + new Date());
+        //       this.stompClient.send("/app/admin", {}, "");
+        //     }
+        //   }, 30000);
         this.stompClient.subscribe('/request/admin', (messageOutput) => {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
