@@ -589,3 +589,13 @@ $cl-transparent: rgba(255,255,255,0);
     background: #FFC107;
   }
 }
+
+.warning {
+  color: #EF9B4C;
+  margin-left: 20px;
+  font-size: 30px;
+  span {
+    color: black;
+    font-size: 20px;
+  }
+}

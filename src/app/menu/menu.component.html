@@ -484,7 +484,7 @@
 </div>
 
 <!--modal cancel table-->
-<div class="modal fade" id="cancelReservingTable" tabindex="-1" role="dialog" aria-labelledby="chooseTablesLabel">
+<div class="modal fade" id="cancelReservingTable" tabindex="-1" role="dialog" aria-labelledby="cancelReservingTableLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header flex-box">
@@ -496,6 +496,25 @@
             <div class="modal-footer">
                 <button (click)="cancelReserved(12)" type="button" class="btn btn-warning">OK</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--modal permit order or not-->
+<div class="modal fade" id="checkOrder" tabindex="-1" role="dialog" aria-labelledby="checkOrderLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header flex-box">
+                <button type="button" class="btn btn-default close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body overfollow">
+              <p class="glyphicon glyphicon-warning-sign warning">
+                <span>You only permitted order inside restaurant</span>
+              </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal">OK</button>
             </div>
         </div>
     </div>

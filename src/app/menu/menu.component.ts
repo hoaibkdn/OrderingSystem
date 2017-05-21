@@ -97,6 +97,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   countDownReserving: boolean = false;
   timeCountMinsReserve: number;
   timeCountSecsReserve: number;
+  distancePermittedOrder: number = 0.3;
 
   options = {
     timeout: 10000
@@ -789,11 +790,16 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   actOrder() {
-    this.currentTable = JSON.parse(localStorage.getItem("currentTable"));
-    if(!this.currentTable) {
-      this.chooseTable();
+    if(this.distance <= this.distancePermittedOrder) {
+      this.currentTable = JSON.parse(localStorage.getItem("currentTable"));
+      if(!this.currentTable) {
+        this.chooseTable();
+      }
+      else this.ordered();
     }
-    else this.ordered();
+    else {
+      $('#checkOrder').modal('show');
+    }
   }
 
   ordered() {
