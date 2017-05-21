@@ -116,8 +116,8 @@
 
             <div class="col-sm-4">
               <!--permit reserve-->
-              <button class="btn btn-reserve" (click)="changeServer(1)">Server 1</button>
-              <button class="btn btn-reserve" (click)="changeServer(2)">Server 2</button>
+              <button class="btn btn-server__1" (click)="changeServer(1)">Server 1</button>
+              <button class="btn btn-server__2" (click)="changeServer(2)">Server 2</button>
               <button *ngIf="isReserved === true && countDownReserving === false" class="btn btn-reserve"  data-toggle="modal" data-target="#reserved">Reserve table</button>
               <button *ngIf="countDownReserving === true" class="btn btn-reserve"
                 data-toggle="modal" data-target="#cancelReservingTable">
