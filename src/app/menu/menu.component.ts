@@ -128,12 +128,13 @@ export class MenuComponent extends LoadingPage implements OnInit {
         this.resLon = location.split(',')[1];
         localStorage.setItem('resLat', this.resLat + "");
         localStorage.setItem('resLon', this.resLon + "");
+        console.log("Restaurant coordination: ", this.resLat, " - ", this.resLon);
         this.distance = this.distanceInKmBetweenEarthCoordinates(this.resLat, this.resLon, this.latitude, this.longitude);
         console.log("Distance: ", this.distance.toFixed(2), " km");
         this.checkShowBtnReserve();
       }, err => {
         console.log(err);
-      })
+      });
   }
 
   degreesToRadians(degrees) {
@@ -166,6 +167,38 @@ export class MenuComponent extends LoadingPage implements OnInit {
      }
   }
 
+  changeServer(serverNumber: number){
+    if (serverNumber === 1){
+      this.userProfileService.getLocation().subscribe(res => {
+        let location = res._body;
+        this.resLat = location.split(',')[0];
+        this.resLon = location.split(',')[1];
+        localStorage.setItem('resLat', this.resLat + "");
+        localStorage.setItem('resLon', this.resLon + "");
+        console.log("Restaurant coordination: ", this.resLat, " - ", this.resLon);
+        this.distance = this.distanceInKmBetweenEarthCoordinates(this.resLat, this.resLon, this.latitude, this.longitude);
+        console.log("Distance: ", this.distance.toFixed(2), " km");
+        this.checkShowBtnReserve();
+      }, err => {
+        console.log(err);
+      });
+    } else {
+      this.userProfileService.getLocationTest().subscribe(res => {
+        let location = res._body;
+        this.resLat = location.split(',')[0];
+        this.resLon = location.split(',')[1];
+        localStorage.setItem('resLat', this.resLat + "");
+        localStorage.setItem('resLon', this.resLon + "");
+        console.log("Restaurant coordination: ", this.resLat, " - ", this.resLon);
+        this.distance = this.distanceInKmBetweenEarthCoordinates(this.resLat, this.resLon, this.latitude, this.longitude);
+        console.log("Distance: ", this.distance.toFixed(2), " km");
+        this.checkShowBtnReserve();
+      }, err => {
+        console.log(err);
+      });
+    }
+  }
+
   checkShowBtnReserve() {
     console.log('checkShowBtnReserve');
 
@@ -182,7 +215,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
           console.log('check distance ', this.distance);
           console.log('isReserved ', this.isReserved);
           // Remove after test
-          // this.isReserved = true;
+          this.isReserved = true;
         localStorage.setItem("userInfo", JSON.stringify(res));
       }, err => {
         console.log("Error: ", err);
@@ -278,7 +311,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.totalMoney();
     this.textSearch = "";
     this.checkCurrentType();
-    // this.checkShowBtnReserve();
+    this.checkShowBtnReserve();
     this.isMobileInvoiceOpen = false;
     this.isOpenedModal = false;
     var self = this;
@@ -396,7 +429,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
           if(messageOutput.body.includes('canceled by admin')) {
-            var tableReceivedId = messageOutput.body.split(' ')[8];
+            var tableReceivedId = messageOutput.body.split('Table')[1].trim().split(' ')[0];
             var reservedTable = JSON.parse(localStorage.getItem('reservedTable'));
             console.log('canceled ', reservedTable);
             console.log('message send table id ', tableReceivedId);
@@ -1505,9 +1538,17 @@ export class MenuComponent extends LoadingPage implements OnInit {
     localStorage.setItem("minsTimeReserve", this.reservedTime);
     console.log('countDownReserving ', this.countDownReserving);
     this.appService.reservedTable(contentTable)
-      .subscribe(res => console.log("reserved table ", res));
-    this.sendMessageReserveToAdmin('reserve');
-    $("#reservingTable").modal('hide');
+      .subscribe(res => {
+        console.log("reserved table ", res);
+        if (res.status == 201){
+          this.sendMessageReserveToAdmin('reserve');
+          $("#reservingTable").modal('hide');
+        } else {
+          alert("Oops! Reservation was not created successfully. Please check our available tables and make reservation again.");
+        }
+      }, err => {
+        console.log(err);
+      });
   }
 
   countDownReserved(mins: number, secs: number) {
@@ -1560,18 +1601,25 @@ export class MenuComponent extends LoadingPage implements OnInit {
         }
         console.log('objCancel ', objCancel);
         this.appService.cancelReserved(objCancel)
-          .subscribe(res => console.log("cancel ", res));
-        this.sendMessageReserveToAdmin('cancel');
-        localStorage.removeItem("timestartReserved");
-        localStorage.setItem("countDownReserving", 'false');
-        localStorage.removeItem('reservedTable');
-        this.timeCountMinsReserve = 0;
-        this.timeCountSecsReserve = 0;
-        this.countDownReserving = false;
-        clearInterval(this.startCounReserved);
-        this.checkShowBtnReserve();
+          .subscribe(res => {
+            console.log("cancel ", res);
+            if (res.status == 200){
+              this.sendMessageReserveToAdmin('cancel');
+              localStorage.removeItem("timestartReserved");
+              localStorage.setItem("countDownReserving", 'false');
+              localStorage.removeItem('reservedTable');
+              this.timeCountMinsReserve = 0;
+              this.timeCountSecsReserve = 0;
+              this.countDownReserving = false;
+              clearInterval(this.startCounReserved);
+              this.checkShowBtnReserve();
 
-        $('#cancelReservingTable').modal('hide');
+              $('#cancelReservingTable').modal('hide');  
+            }
+          }, err => {
+            console.log(err);
+          });
+        
       })
   }
 

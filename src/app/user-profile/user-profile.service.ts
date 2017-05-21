@@ -47,6 +47,12 @@ export class UserProfileService {
     return this.http.get(url, headers);
   }
 
+  getLocationTest():Observable<any>{
+    var url = serverLocationUrl + "location-test";
+    let headers = new Headers({'Content-Type': 'application/json'});
+    return this.http.get(url, headers);
+  }
+
   getAllWorkingTimeForStaff(): Observable<any>{
     let url = serverUrl + "working-time/all/user/0";
     let headers = new Headers({'Content-Type': 'application/json'});
