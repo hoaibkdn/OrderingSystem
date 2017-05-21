@@ -173,6 +173,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
           this.isReserved = this.checkConditionReserved(res, this.distance);
           console.log('check distance ', this.distance);
           console.log('isReserved ', this.isReserved);
+          // Remove after test
+          this.isReserved = true;
         localStorage.setItem("userInfo", JSON.stringify(res));
       }, err => {
         console.log("Error: ", err);
@@ -182,6 +184,8 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   ngOnInit() {
+    console.log("Init menu component");
+
     this.getDistance();
     this.standby();
     this.isfilteringFood = true;
@@ -373,14 +377,14 @@ export class MenuComponent extends LoadingPage implements OnInit {
         console.log('Connected admin: ' + frame);
         console.log(this.stompClient);
         // Uncomment for heroku app
-        setInterval(() => {
-            if(!this.stompClient.connected){
-              console.log("Failed to connect");
-            } else {
-              console.log("Interval at " + new Date());
-              this.stompClient.send("/app/admin", {}, "");
-            }
-          }, 30000);
+        // setInterval(() => {
+        //     if(!this.stompClient.connected){
+        //       console.log("Failed to connect");
+        //     } else {
+        //       console.log("Interval at " + new Date());
+        //       this.stompClient.send("/app/admin", {}, "");
+        //     }
+        //   }, 30000);
         this.stompClient.subscribe('/request/admin', (messageOutput) => {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
@@ -1057,6 +1061,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.foodLocalStoragesOrdered = [];
     this.foodLocalStoragesOrdering = [];
     this.totalMoney();
+    // if (this.invoiceId)
     this.stompClient.send("/app/admin", {}, "Table: " + localStorage.getItem("tableId")
       + " - InvoiceId: " + payment.invoiceId + " is requesting payment with type: " + payment.paymentType);
     $('#paymentForm').modal('hide');
@@ -1111,23 +1116,26 @@ export class MenuComponent extends LoadingPage implements OnInit {
     newRate.score = foodScore + "," + serviceScore;
     this.menuService.updateRate(newRate).subscribe(res => {
       console.log(res);
+      $('#rating').modal('hide');
+      this.isPaid = false;
+      localStorage.setItem('isPaid', this.isPaid.toString());
+      this.showOrder = false;
+      localStorage.setItem('showOrder', this.showOrder.toString());
+      this.showTotalIsPaid();
+      localStorage.removeItem("invoiceId");
+      console.log(localStorage.getItem("invoiceId"));
+      // this.router.navigate(["/"]);
+      // localStorage.removeItem("tableId");
+      // localStorage.removeItem('currentTable');
+      location.reload();
     }, err => {
       console.log(err);
     });
-    $('#rating').modal('hide');
-    this.router.navigate(["/"]);
-    this.isPaid = false;
-    localStorage.setItem('isPaid', this.isPaid.toString());
-    this.showOrder = false;
-    localStorage.setItem('showOrder', this.showOrder.toString());
-    this.showTotalIsPaid();
-    // localStorage.removeItem("tableId");
-    // localStorage.removeItem('currentTable');
-    // location.reload();
+    
   }
 
   closeRating() {
-    this.router.navigate(["/"]);
+    console.log(this.router);
     $('#rating').modal('hide');
     this.isPaid = false;
     localStorage.setItem('isPaid', this.isPaid.toString());
@@ -1135,8 +1143,12 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.showOrder = false;
     localStorage.setItem('showOrder', this.showOrder.toString());
     this.showTotalIsPaid();
+    localStorage.removeItem("invoiceId");
+    console.log(localStorage.getItem("invoiceId"));
+    // this.router.navigate(["/menu"]);
     // localStorage.removeItem("tableId");
     // localStorage.removeItem('currentTable');
+    location.reload();
   }
 
   showTotalIsPaid() {
