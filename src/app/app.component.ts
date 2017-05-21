@@ -473,4 +473,15 @@ export class AppComponent extends LoadingPage implements OnInit {
       alert("We can't find your email in our system. Please check it again.");
     })
   }
+
+  callWaiter() {
+    var currentTable = localStorage.getItem('currentTable');
+    if(this.countDown === 0 && (this.isCustomer === true || this.isAdmin === true) && currentTable) {
+      this.sendMessageAdmin();
+    }
+    if(this.countDown === 0 && (this.isCustomer === true || this.isAdmin === true) && !currentTable) {
+      this.chooseTable();
+      $('#chooseTables').modal('show');
+    }
+  }
 }

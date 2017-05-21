@@ -62,7 +62,7 @@ export class AdHomeComponent implements OnInit {
           if(messageOutput.body.includes("is reserving")) {
             var tableNumber = messageOutput.body.split(' ')[8];
             console.log('tableNumber ', tableNumber);
-            this.getRecentReservedTable(tableNumber);
+            this.getRecentReservedTable(parseInt(tableNumber));
           }
           if(messageOutput.body.includes("canceled")) {
             this.updateViewCancelReservedTable();
@@ -107,7 +107,10 @@ export class AdHomeComponent implements OnInit {
         console.log('admin cancel ', objCancel);
 
         this.appService.cancelReserved(objCancel)
-          .subscribe(res => console.log("cancel ", res));
+          .subscribe(res => console.log("cancel ", res),
+          err => {
+            console.log(err);
+          });
         localStorage.removeItem("timestartReserved");
         localStorage.setItem("countDownReserving", 'false');
         // localStorage.removeItem('reservedTable');
@@ -188,7 +191,7 @@ export class AdHomeComponent implements OnInit {
   updateViewCancelReservedTable() {
     this.adminService.getAllTable().subscribe(res => {
         this.tables = JSON.parse(res._body);
-        this.getOrderOfTable();
+        this.setTableStatusOnView();
     });
   }
 
