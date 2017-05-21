@@ -44,14 +44,14 @@ export class AdHomeComponent implements OnInit {
         console.log('Connected admin: ' + frame);
         console.log(this.stompClient);
         // Uncomment for heroku server
-        setInterval(() => {
-            if(!this.stompClient.connected){
-              console.log("Failed to connect");
-            } else {
-              console.log("Interval at " + new Date());
-              this.stompClient.send("/app/admin", {}, "");
-            }
-          }, 30000);
+        // setInterval(() => {
+        //     if(!this.stompClient.connected){
+        //       console.log("Failed to connect");
+        //     } else {
+        //       console.log("Interval at " + new Date());
+        //       this.stompClient.send("/app/admin", {}, "");
+        //     }
+        //   }, 30000);
         this.stompClient.subscribe('/request/admin', (messageOutput) => {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
@@ -60,7 +60,7 @@ export class AdHomeComponent implements OnInit {
             this.getUnpaidInvoice();
           }
           if(messageOutput.body.includes("is reserving")) {
-            var tableNumber = messageOutput.body.split(' ')[8];
+            var tableNumber = messageOutput.body.split('Table')[1].trim().split(' ')[0];
             console.log('tableNumber ', tableNumber);
             this.getRecentReservedTable(parseInt(tableNumber));
           }
@@ -107,19 +107,24 @@ export class AdHomeComponent implements OnInit {
         console.log('admin cancel ', objCancel);
 
         this.appService.cancelReserved(objCancel)
-          .subscribe(res => console.log("cancel ", res),
+          .subscribe(res => {
+            console.log("cancel ", res);
+            if (res.status == 200){
+              localStorage.removeItem("timestartReserved");
+              localStorage.setItem("countDownReserving", 'false');
+              // localStorage.removeItem('reservedTable');
+              $('#cancelReservingTable').modal('hide');
+              this.tablesCountDownMins[numOfTable-1] = 0;
+              this.tablesCountDownSecs[numOfTable-1] = 0;
+              this.updateViewCancelReservedTable();
+              this.cancelTable = null;
+              this.sendCancelReserveToClient(cancelTable);
+            }
+          },
           err => {
             console.log(err);
           });
-        localStorage.removeItem("timestartReserved");
-        localStorage.setItem("countDownReserving", 'false');
-        // localStorage.removeItem('reservedTable');
-        $('#cancelReservingTable').modal('hide');
-        this.tablesCountDownMins[numOfTable-1] = 0;
-        this.tablesCountDownSecs[numOfTable-1] = 0;
-        this.updateViewCancelReservedTable();
-        this.cancelTable = null;
-        this.sendCancelReserveToClient(cancelTable);
+        
       })
   }
 
@@ -236,28 +241,30 @@ export class AdHomeComponent implements OnInit {
               break;
             }
           }
-          var travelingTime = recentTableReserved.travelingTime;
-          var reservingTime = recentTableReserved.reservingTime;
-          console.log('reservingTime ', reservingTime);
-          var currentTime = new Date().getTime();
-          console.log('currentTime ', currentTime);
+          if (recentTableReserved != null){
+            var travelingTime = recentTableReserved.travelingTime;
+            var reservingTime = recentTableReserved.reservingTime;
+            console.log('reservingTime ', reservingTime);
+            var currentTime = new Date().getTime();
+            console.log('currentTime ', currentTime);
 
-          if(reservingTime >= currentTime) {
-            this.countDownReserving(tableNumber, travelingTime-1, 59);
-          }
-          else {
-            var spentTime = currentTime - reservingTime;
-            console.log('spentTime ', new Date(spentTime));
-            var spentTimeMins = new Date(spentTime).getMinutes();
-            var spentTimeSecs = new Date(spentTime).getSeconds();
-            if((spentTimeMins > travelingTime) ||
-              (spentTimeMins == travelingTime && spentTimeSecs > 0) ) {
-              this.cancelReserved(13, tableNumber);
+            if(reservingTime >= currentTime) {
+              this.countDownReserving(tableNumber, travelingTime-1, 59);
             }
             else {
-              var remainMins = travelingTime - spentTimeMins - 1;
-              var remainSecs = 60 - spentTimeSecs;
-              this.countDownReserving(tableNumber, remainMins, remainSecs);
+              var spentTime = currentTime - reservingTime;
+              console.log('spentTime ', new Date(spentTime));
+              var spentTimeMins = new Date(spentTime).getMinutes();
+              var spentTimeSecs = new Date(spentTime).getSeconds();
+              if((spentTimeMins > travelingTime) ||
+                (spentTimeMins == travelingTime && spentTimeSecs > 0) ) {
+                this.cancelReserved(13, tableNumber);
+              }
+              else {
+                var remainMins = travelingTime - spentTimeMins - 1;
+                var remainSecs = 60 - spentTimeSecs;
+                this.countDownReserving(tableNumber, remainMins, remainSecs);
+              }
             }
           }
         });
