@@ -39,6 +39,7 @@ export class AppComponent extends LoadingPage implements OnInit {
   distance: number;
   resLon: number;
   resLat: number;
+  isReserved: boolean;
   options = {
     timeout: 10000
   };
@@ -252,7 +253,7 @@ export class AppComponent extends LoadingPage implements OnInit {
         this.doAfterLogin();
         this.ready();
         console.log('isLoading2 ', this.isLoading);
-        this.router.navigate(['']);
+        this.router.navigate(['/']);
         // this.checkShowBtnReserve();
       }, err => {
         alert("Oops! You might have used wrong email/password. Please check it again.")
@@ -323,7 +324,9 @@ export class AppComponent extends LoadingPage implements OnInit {
       this.isCustomer = true;
       this.isAdmin = false;
       localStorage.setItem('isCustomer', true + "");
-      this.router.navigate(['']);
+      localStorage.setItem('isReserved', false + "");
+      this.isReserved = false;
+      this.router.navigate(['/']);
     }
 
   }

@@ -1356,13 +1356,20 @@ export class MenuComponent extends LoadingPage implements OnInit {
     else false;
   }
   getNumOfTable(table: Table, reserving:  string) {
-    if(table.tableStatus !== 0) {
-      $('#toConfirmTable').modal('show');
+    if(reserving) {
+      if(table.tableStatus !== 0 || table.tableStatus !== 3) {
+        $('#toConfirmTable').modal('show');
+      }
+      else {
+          this.temporaryReservingTable = table;
+      }
     }
     else {
-      this.temporaryTable = table;
-      if(reserving) {
-        this.temporaryReservingTable = table;
+      if(table.tableStatus !== 0) {
+        $('#toConfirmTable').modal('show');
+      }
+      else {
+        this.temporaryTable = table;
       }
     }
   }
@@ -1416,6 +1423,10 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   reservedTable() {
+    // var sizeEmptyTable = this.emptyTables.length;
+    // for(var i = 0; i < sizeEmptyTable; i++) {
+    //   this.emptyTables.pop();
+    // };
     this.adminService.getAllTable()
       .map(res => res.json())
       .subscribe(allTables => {
@@ -1433,6 +1444,11 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   filterValidTableForReserve(emptyTables: Table[]) {
+    // this.validTables = [];
+    var sizeEmptyTable = this.validTables.length;
+    for(var i = 0; i < sizeEmptyTable; i++) {
+      this.validTables.pop();
+    };
     emptyTables.forEach( (table, index)=> {
       switch (this.reservedPeople) {
         case "underFive":
@@ -1533,7 +1549,6 @@ export class MenuComponent extends LoadingPage implements OnInit {
         this.countDownReserving = false;
 
         this.checkShowBtnReserve();
-        this.emptyTables = [];
         $('#cancelReservingTable').modal('hide');
       })
   }
