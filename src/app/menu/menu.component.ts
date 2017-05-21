@@ -127,12 +127,13 @@ export class MenuComponent extends LoadingPage implements OnInit {
         this.resLon = location.split(',')[1];
         localStorage.setItem('resLat', this.resLat + "");
         localStorage.setItem('resLon', this.resLon + "");
+        console.log("Restaurant coordination: ", this.resLat, " - ", this.resLon);
         this.distance = this.distanceInKmBetweenEarthCoordinates(this.resLat, this.resLon, this.latitude, this.longitude);
         console.log("Distance: ", this.distance.toFixed(2), " km");
         this.checkShowBtnReserve();
       }, err => {
         console.log(err);
-      })
+      });
   }
 
   degreesToRadians(degrees) {
@@ -163,6 +164,38 @@ export class MenuComponent extends LoadingPage implements OnInit {
     } else {
          alert("No location is supported");
      }
+  }
+
+  changeServer(serverNumber: number){
+    if (serverNumber === 1){
+      this.userProfileService.getLocation().subscribe(res => {
+        let location = res._body;
+        this.resLat = location.split(',')[0];
+        this.resLon = location.split(',')[1];
+        localStorage.setItem('resLat', this.resLat + "");
+        localStorage.setItem('resLon', this.resLon + "");
+        console.log("Restaurant coordination: ", this.resLat, " - ", this.resLon);
+        this.distance = this.distanceInKmBetweenEarthCoordinates(this.resLat, this.resLon, this.latitude, this.longitude);
+        console.log("Distance: ", this.distance.toFixed(2), " km");
+        this.checkShowBtnReserve();
+      }, err => {
+        console.log(err);
+      });
+    } else {
+      this.userProfileService.getLocationTest().subscribe(res => {
+        let location = res._body;
+        this.resLat = location.split(',')[0];
+        this.resLon = location.split(',')[1];
+        localStorage.setItem('resLat', this.resLat + "");
+        localStorage.setItem('resLon', this.resLon + "");
+        console.log("Restaurant coordination: ", this.resLat, " - ", this.resLon);
+        this.distance = this.distanceInKmBetweenEarthCoordinates(this.resLat, this.resLon, this.latitude, this.longitude);
+        console.log("Distance: ", this.distance.toFixed(2), " km");
+        this.checkShowBtnReserve();
+      }, err => {
+        console.log(err);
+      });
+    }
   }
 
   checkShowBtnReserve() {
