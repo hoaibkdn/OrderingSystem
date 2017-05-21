@@ -255,7 +255,7 @@ export class AppComponent extends LoadingPage implements OnInit {
         this.ready();
         console.log('isLoading2 ', this.isLoading);
         // this.router.navigate(['/']);
-        location.reload();
+        // location.reload();
         // this.checkShowBtnReserve();
       }, err => {
         alert("Oops! You might have used wrong email/password. Please check it again.")
@@ -298,7 +298,7 @@ export class AppComponent extends LoadingPage implements OnInit {
               localStorage.setItem('isCustomer', this.isCustomer.toString());
               this.isAdmin = false;
               localStorage.setItem('isAdmin', this.isAdmin.toString());
-              this.router.navigate([""]);
+              this.router.navigate(["/history/invoice"]);
               $('#login').modal('hide');
               break;
           }

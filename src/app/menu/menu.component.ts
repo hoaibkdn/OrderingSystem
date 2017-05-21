@@ -84,7 +84,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   typeChoosing: number;
 
   isReserved: boolean;
-  conditionPointReserved: number = 10;
+  conditionPointReserved: number = 0;
   conditionPositionReserved: number = 100;
   startCounReserved: any;
 
@@ -181,7 +181,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
           console.log('check distance ', this.distance);
           console.log('isReserved ', this.isReserved);
           // Remove after test
-          this.isReserved = true;
+          // this.isReserved = true;
         localStorage.setItem("userInfo", JSON.stringify(res));
       }, err => {
         console.log("Error: ", err);

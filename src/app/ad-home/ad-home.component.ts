@@ -188,7 +188,7 @@ export class AdHomeComponent implements OnInit {
   updateViewCancelReservedTable() {
     this.adminService.getAllTable().subscribe(res => {
         this.tables = JSON.parse(res._body);
-        this.setTableStatusOnView();
+        this.getOrderOfTable();
     });
   }
 
