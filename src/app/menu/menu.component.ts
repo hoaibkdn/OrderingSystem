@@ -97,7 +97,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   countDownReserving: boolean = false;
   timeCountMinsReserve: number;
   timeCountSecsReserve: number;
-  distancePermittedOrder: number = 0.3;
+  distancePermittedOrder: number = 0.5;
 
   options = {
     timeout: 10000
@@ -215,7 +215,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
           console.log('check distance ', this.distance);
           console.log('isReserved ', this.isReserved);
           // Remove after test
-          this.isReserved = true;
+          // this.isReserved = true;
         localStorage.setItem("userInfo", JSON.stringify(res));
       }, err => {
         console.log("Error: ", err);
@@ -1465,7 +1465,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   checkConditionReserved(user: User, distance: number) {
     console.log('user reserved ', user, ' distance ', this.distance);
     if(user.membershipPoint >= this.conditionPointReserved &&
-      distance <= this.conditionPositionReserved) {
+      distance <= this.conditionPositionReserved && distance > this.distancePermittedOrder) {
         return true;
     }
     return false;
@@ -1614,12 +1614,12 @@ export class MenuComponent extends LoadingPage implements OnInit {
               clearInterval(this.startCounReserved);
               this.checkShowBtnReserve();
 
-              $('#cancelReservingTable').modal('hide');  
+              $('#cancelReservingTable').modal('hide');
             }
           }, err => {
             console.log(err);
           });
-        
+
       })
   }
 
