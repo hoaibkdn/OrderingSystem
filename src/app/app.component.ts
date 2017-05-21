@@ -232,7 +232,8 @@ export class AppComponent extends LoadingPage implements OnInit {
             this.doAfterLogin();
             $('#login').modal('hide');
             // Hoai: Add your logic code after login success here
-            this.router.navigate(['']);
+            // this.router.navigate(['']);
+            // this.router.navigate(["/history/invoice"]);
           },
           err => {
             console.log(err);
