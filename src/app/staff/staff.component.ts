@@ -287,8 +287,8 @@ export class StaffComponent implements OnInit {
   // Check attendance
   isLogInInShift(){
     let date = new Date();
-    if (date.getMinutes() >= 30 && date.getMinutes() <= 59){
-      if (date.getHours() == 6){
+    if (date.getMinutes() >= 0 && date.getMinutes() <= 59){
+      if (date.getHours() == 8){
         return 1;
       } else if (date.getHours() == 11){
         return 2;

@@ -440,6 +440,15 @@ export class MenuComponent extends LoadingPage implements OnInit {
               localStorage.setItem('countDownReserving', 'false');
               this.checkShowBtnReserve();
             }
+          } else if(messageOutput.body.includes('confirmed by admin')){
+            let table = JSON.parse(localStorage.getItem("currentTable"));
+            alert(table);
+          } else if(messageOutput.body.includes('is ready')){
+            let table = JSON.parse(localStorage.getItem("currentTable"));
+            let tableNumber = messageOutput.body.split('table')[1].trim().split(' ')[0];
+            if (table != null && tableNumber == table.tableNumber){
+              alert("Your food is ready and will be served within minutes!");
+            }
           }
         });
     });
@@ -1095,6 +1104,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   requestPayment() {
+    let currentTable = JSON.parse(localStorage.getItem("currentTable"));
     console.log('payment ', this.paymentForm);
     var payment = new Payment;
     payment.invoiceId = this.invoiceId;
@@ -1107,7 +1117,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.foodLocalStoragesOrdering = [];
     this.totalMoney();
     // if (this.invoiceId)
-    this.stompClient.send("/app/admin", {}, "Table: " + localStorage.getItem("tableId")
+    this.stompClient.send("/app/admin", {}, "Table: " + currentTable.tableNumber
       + " - InvoiceId: " + payment.invoiceId + " is requesting payment with type: " + payment.paymentType);
     $('#paymentForm').modal('hide');
     // location.reload();
