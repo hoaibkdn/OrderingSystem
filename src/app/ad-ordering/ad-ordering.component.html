@@ -20,21 +20,25 @@
             </div>
         </div>
     </div>
-    <div *ngIf="reservedTable != null">
-        <div>
-            <b>Reserving information</b>
-            <ul>
-                <li>Table number: {{reservedTable.table.tableNumber}}</li>
-                <li>User reserved: {{reservedTable.user.name}}</li>
-                <li>Time reserved: {{reservedTable.reservingTime | date:'medium'}}</li>
+    <div class="ordering__box" *ngIf="reservedTable != null">
+      <div class="ordering__box--inner">
+        <div class="info-reserve">
+            <b class="info-reserve__title">Reserving information</b>
+            <ul class="info-reserve__detail">
+                <li>Table number: <strong>{{reservedTable.table.tableNumber}}</strong></li>
+                <li>User reserved: <strong>{{reservedTable.user.name}}</strong></li>
+                <li>Time reserved: <strong>{{reservedTable.reservingTime | date:'medium'}}</strong></li>
             </ul>
         </div>
-        <div>
-            <button (click)='displayCancel()'>Cancel reservation</button>
+        <div class="info-reserve__group">
+            <button class="btn ordering__btn--cancel btn--suggest info-reserve__btn" (click)='displayCancel()'>Cancel reservation</button>
         </div>
+      </div>
     </div>
-    <div *ngIf="invoice == null && reservedTable == null">
-      <p>This table is free or in cleaning status.</p>
+    <div class="ordering__box italic" *ngIf="invoice == null && reservedTable == null">
+      <div class="ordering__box--inner">
+        <p class="info-reserve">This table is free or in cleaning status.</p>
+      </div>
     </div>
 </div>
 <!--modal cancel table-->
