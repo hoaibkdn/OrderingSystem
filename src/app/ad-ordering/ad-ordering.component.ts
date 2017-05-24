@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { AdminService } from '../admin/admin.service';
+import { MenuService } from '../menu/menu.services';
 import { Invoice } from '../models/invoice';
 import { InvoiceDetail } from '../models/invoice-detail';
 import { Table } from '../models/table';
@@ -26,7 +27,7 @@ export class AdOrderingComponent implements OnInit {
   stompClient: any;
   reservedTable: ReservedTable;
   // user: User;
-  constructor(private route: ActivatedRoute, private adminService: AdminService) {
+  constructor(private route: ActivatedRoute, private adminService: AdminService, private menuService: MenuService) {
   	this.totalMoney = 0;
   }
 
@@ -112,6 +113,38 @@ export class AdOrderingComponent implements OnInit {
     });
   }
 
+  displayCancelOrder(){
+    $('#cancelOrderingRequest').modal('show');
+  }
+
+  cancelOrder(){
+    if (this.invoice != null){
+      this.adminService.deleteInvoice(this.invoice.id).subscribe(res => {
+        console.log(res);
+        if(res.status == 200){
+          var updateTable = {
+            "tableId": this.invoice.table.id+"",
+            "statusNumber":"0"
+          }  
+          this.menuService.updateTableStatus(updateTable).subscribe(res => {
+            console.log(res);
+            this.stompClient.send("/app/admin", {},"Invoice " +this.invoice.id + ": Ordering request has been canceled by ad1min");
+            this.getAllInvoiceDetails();
+          }, err => {
+            console.log(err);
+          })
+          
+          $('#cancelOrderingRequest').modal('hide');
+        } else {
+          alert("Can't delete ordering request due to errors. Please try again");
+        }
+      }, err => {
+        console.log(err);
+        alert("Can't delete ordering request due to errors. Please try again");
+      })
+    }
+  }
+
   changeClassToBeDone(){
     let table = document.getElementsByClassName('table-order__col ' + this.tableNumber)[0];
     if (!table.classList.contains('has-done')){
@@ -139,49 +172,49 @@ export class AdOrderingComponent implements OnInit {
     this.stompClient.send("/app/admin", {},"Table " +table.id + " is canceled by admin");
   }
 
-  cancelReserved(statusCancel: number, numOfTable: number) {
-    // console.log('this.cancelTable ', this.cancelTable);
-    // var cancelTableId;
-    // var cancelTable: Table;
-    // if(this.cancelTable) {
-    //   cancelTable = this.cancelTable;
-    // }
-    // this.appService.getReservedTable()
-    //   .subscribe(res => {
-    //     console.log('all reserved table ', res);
+  // cancelReserved(statusCancel: number, numOfTable: number) {
+  //   // console.log('this.cancelTable ', this.cancelTable);
+  //   // var cancelTableId;
+  //   // var cancelTable: Table;
+  //   // if(this.cancelTable) {
+  //   //   cancelTable = this.cancelTable;
+  //   // }
+  //   // this.appService.getReservedTable()
+  //   //   .subscribe(res => {
+  //   //     console.log('all reserved table ', res);
 
-    //     for(var i = 0; i < res.length; i++) {
-    //       if((this.cancelTable && (res[i].table.tableNumber == cancelTable.tableNumber))||
-    //         (!this.cancelTable && (res[i].table.tableNumber == numOfTable))) {
-    //         cancelTableId = res[i].id;
-    //       }
-    //     }
-    //     var objCancel = {
-    //       "reservedTableId": cancelTableId+'',
-    //       "detail": "",
-    //       "finalStatus": statusCancel+""
-    //     }
-    //     console.log('admin cancel ', objCancel);
+  //   //     for(var i = 0; i < res.length; i++) {
+  //   //       if((this.cancelTable && (res[i].table.tableNumber == cancelTable.tableNumber))||
+  //   //         (!this.cancelTable && (res[i].table.tableNumber == numOfTable))) {
+  //   //         cancelTableId = res[i].id;
+  //   //       }
+  //   //     }
+  //   //     var objCancel = {
+  //   //       "reservedTableId": cancelTableId+'',
+  //   //       "detail": "",
+  //   //       "finalStatus": statusCancel+""
+  //   //     }
+  //   //     console.log('admin cancel ', objCancel);
 
-    //     this.appService.cancelReserved(objCancel)
-    //       .subscribe(res => {
-    //         console.log("cancel ", res);
-    //         if (res.status == 200){
-    //           localStorage.removeItem("timestartReserved");
-    //           localStorage.setItem("countDownReserving", 'false');
-    //           // localStorage.removeItem('reservedTable');
-    //           $('#cancelReservingTable').modal('hide');
-    //           this.tablesCountDownMins[numOfTable-1] = 0;
-    //           this.tablesCountDownSecs[numOfTable-1] = 0;
-    //           this.updateViewCancelReservedTable();
-    //           this.cancelTable = null;
-    //           this.sendCancelReserveToClient(cancelTable);
-    //         }
-    //       },
-    //       err => {
-    //         console.log(err);
-    //       });
+  //   //     this.appService.cancelReserved(objCancel)
+  //   //       .subscribe(res => {
+  //   //         console.log("cancel ", res);
+  //   //         if (res.status == 200){
+  //   //           localStorage.removeItem("timestartReserved");
+  //   //           localStorage.setItem("countDownReserving", 'false');
+  //   //           // localStorage.removeItem('reservedTable');
+  //   //           $('#cancelReservingTable').modal('hide');
+  //   //           this.tablesCountDownMins[numOfTable-1] = 0;
+  //   //           this.tablesCountDownSecs[numOfTable-1] = 0;
+  //   //           this.updateViewCancelReservedTable();
+  //   //           this.cancelTable = null;
+  //   //           this.sendCancelReserveToClient(cancelTable);
+  //   //         }
+  //   //       },
+  //   //       err => {
+  //   //         console.log(err);
+  //   //       });
         
-    //   })
-  }
+  //   //   })
+  // }
 }

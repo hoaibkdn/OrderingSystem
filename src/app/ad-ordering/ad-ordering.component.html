@@ -15,8 +15,9 @@
                     <span class="ordering__total--money">{{totalMoney}} d</span>
                 </p>
             </div>
-            <div class="ordering__btn">
+            <div class="ordering__btn" *ngIf="invoice.table.tableStatus == 1"> 
                 <a class="ordering__btn--order btn--suggest btn-done" (click)='changeClassToBeDone()'>Done</a>
+                <a class="ordering__btn--order btn--suggest btn-done" (click)='displayCancelOrder()'>Cancel request</a>
             </div>
         </div>
     </div>
@@ -41,20 +42,20 @@
       </div>
     </div>
 </div>
-<!--modal cancel table-->
-<!-- <div class="modal fade" id="cancelReservingTable" tabindex="-1" role="dialog" aria-labelledby="chooseTablesLabel">
+<!--modal cancel order-->
+<div class="modal fade" id="cancelOrderingRequest" tabindex="-1" role="dialog" aria-labelledby="chooseTablesLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header flex-box">
                 <button type="button" class="btn btn-default close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body overfollow">
-              <p>Do you want to cancel the reservation at this table?</p>
+              <p>Do you want to cancel this ordering request?</p>
             </div>
             <div class="modal-footer">
-                <button (click)="cancelReserved(14)" type="button" class="btn btn-warning">OK</button>
+                <button (click)="cancelOrder()" type="button" class="btn btn-warning">OK</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
-</div> -->
+</div>
