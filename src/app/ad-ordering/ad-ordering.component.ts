@@ -156,6 +156,7 @@ export class AdOrderingComponent implements OnInit {
           console.log(this.invoice.id, " - ", this.invoice.table.tableNumber);
           console.log(table.classList.contains('is-food-made'));
           this.stompClient.send("/app/admin", {}, "Admin notification - Food and drink for table " + this.tableNumber + " is ready");
+          this.getAllInvoiceDetails();
         }, err => {
           console.log(err);
         }
