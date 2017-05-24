@@ -7,6 +7,7 @@ import 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 import { TotalMoney } from './../models/total-money';
 import { FoodAndDrink } from '../models/food-and-drink';
+import { ReservedTable } from '../models/reserved-table';
 import { serverUrl } from '../server-url.config';
 
 @Injectable()
@@ -169,6 +170,39 @@ export class AdminService {
     let token = localStorage.getItem('token');
     headers.append("Authorization", token);
     return this.http.get(serverUrl + "user/all/customer", {headers: headers});
+  }
+
+  reservedTable(contentTable: any): Observable<any> {
+    const url = serverUrl + "reserved-table";
+    var headers = new Headers({'Content-Type': 'application/json'});
+    var token = localStorage.getItem('token');
+    headers.append('Authorization', token);
+    return this.http.post(url, JSON.stringify(contentTable), {headers: headers});
+  }
+
+  cancelReserved(contentCancel: any): Observable<any> {
+    const url = serverUrl + "reserved-table/update";
+    var headers = new Headers({'Content-Type': 'application/json'});
+    var token = localStorage.getItem('token');
+    headers.append('Authorization', token);
+    return this.http.put(url, JSON.stringify(contentCancel), {headers:headers});
+  }
+
+  getReservedTable(): Observable<ReservedTable[]> {
+    const url = serverUrl + "reserved-table";
+    var headers = new Headers({'Content-Type': 'application/json'});
+    var token = localStorage.getItem('token');
+    headers.append('Authorization', token);
+    // console.log('token for admin ', token);
+    return this.http.get(url,{headers:headers})
+      .map(res => res.json() as ReservedTable[]);
+  }
+
+  getUserInfo(userId: number): Observable<any>{
+    let url = serverUrl + "user/" + userId;
+    let headers = new Headers({'Content-Type': 'application/json'});
+    headers.append("Authorization", localStorage.getItem('token'));
+    return this.http.get(url, {headers: headers}).map(res => res.json());
   }
 
   private extractData(res: Response) {
