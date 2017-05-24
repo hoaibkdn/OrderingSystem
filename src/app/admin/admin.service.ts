@@ -205,6 +205,13 @@ export class AdminService {
     return this.http.get(url, {headers: headers}).map(res => res.json());
   }
 
+  deleteInvoice(id: any): Observable<any>{
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let token = localStorage.getItem('token');
+    headers.append("Authorization", token);
+    return this.http.delete(serverUrl + "invoice/delete/" + id, {headers: headers});
+  }
+
   private extractData(res: Response) {
         let body = res.json();
         return body.data || {};

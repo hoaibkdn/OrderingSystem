@@ -56,7 +56,7 @@ export class AdHomeComponent implements OnInit {
           var tag = document.getElementsByClassName('chat-box')[0];
           console.log("Received message: ", messageOutput.body);
           if(messageOutput.body.includes("is ordering") || messageOutput.body.includes("has been paid") ||
-          messageOutput.body.includes("has been cleaned") ){
+          messageOutput.body.includes("has been cleaned") || messageOutput.body.includes("Ordering request has been canceled by ad1min")){
             this.getUnpaidInvoice();
           }
           if(messageOutput.body.includes("is reserving")) {

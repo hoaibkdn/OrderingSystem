@@ -449,6 +449,17 @@ export class MenuComponent extends LoadingPage implements OnInit {
             if (table != null && tableNumber == table.tableNumber){
               alert("Your food is ready and will be served within minutes!");
             }
+          } else if(messageOutput.body.includes(localStorage.getItem('invoiceId'))){
+            this.isPaid = false;
+            localStorage.removeItem('foodOrderLocal');
+            localStorage.removeItem('invoiceId');
+            localStorage.setItem('showOrder', 'false');
+            localStorage.setItem('isPaid', 'false');
+            localStorage.removeItem('currentTable');
+            alert("Your ordering request has been canceled by admin.");
+            setTimeout(() => {
+              location.reload();
+            },10);
           }
         });
     });
