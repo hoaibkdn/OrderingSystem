@@ -75,11 +75,10 @@ export class AdHomeComponent implements OnInit {
   detailTable(table: Table) {
     if(table.tableStatus === 4) {
       this.cancelTable = table;
-      $('#cancelReservingTable').modal('show');
+      // $('#cancelReservingTable').modal('show');
     }
-    else {
       this.router.navigate([table.id], { relativeTo: this.route });
-    }
+    // }
   }
 
   cancelReserved(statusCancel: number, numOfTable: number) {

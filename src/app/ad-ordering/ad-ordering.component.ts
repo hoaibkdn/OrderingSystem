@@ -4,9 +4,12 @@ import { AdminService } from '../admin/admin.service';
 import { Invoice } from '../models/invoice';
 import { InvoiceDetail } from '../models/invoice-detail';
 import { Table } from '../models/table';
+import { ReservedTable } from '../models/reserved-table';
+import { User } from '../models/user';
 import { websocketUrl } from './../server-url.config'
 
 declare var Stomp: any;
+declare var $:any;
 
 @Component({
   selector: 'app-ad-ordering',
@@ -21,6 +24,8 @@ export class AdOrderingComponent implements OnInit {
 	totalMoney: number;
   invoiceDetail: InvoiceDetail;
   stompClient: any;
+  reservedTable: ReservedTable;
+  // user: User;
   constructor(private route: ActivatedRoute, private adminService: AdminService) {
   	this.totalMoney = 0;
   }
@@ -50,6 +55,27 @@ export class AdOrderingComponent implements OnInit {
 
   }
 
+  getReservedTable(){
+    this.adminService.getReservedTable().subscribe(res => {
+      let allReservedTable: ReservedTable[] = res;
+      for (let i = 0; i < allReservedTable.length; i++){
+        if(allReservedTable[i].table.tableNumber == this.tableNumber){
+          this.reservedTable = allReservedTable[i];
+          console.log(this.reservedTable);
+          break;
+        }
+      }
+      // this.adminService.getUserInfo(this.reservedTable.user.id).subscribe(res => {
+      //   this.user = res;
+      //   console.log(this.user);
+      // }, err => {
+      //   console.log(err);
+      // })
+    }, err => {
+      console.log(err);
+    })
+  }
+
   getAllInvoiceDetails(){
     this.invoiceDetails = [];
     this.adminService.getAllUnpaidInvoice().subscribe(res => {
@@ -57,6 +83,7 @@ export class AdOrderingComponent implements OnInit {
       console.log("Unpaid invoice: ", this.unpaidInvoices);
       this.route.data.subscribe((data: {tableNumber: number} ) => {
         this.invoice = null;
+        this.reservedTable = null;
         this.tableNumber = data.tableNumber;
         console.log('$$$ id table ', this.tableNumber);
         for (let i = 0; i < this.unpaidInvoices.length; i++){
@@ -79,6 +106,7 @@ export class AdOrderingComponent implements OnInit {
         } else {
           this.invoiceDetails = [];
           this.totalMoney = 0;
+          this.getReservedTable();
         }
       });
     });
@@ -100,5 +128,60 @@ export class AdOrderingComponent implements OnInit {
         }
       )
     }
+  }
+
+  displayCancel(){
+    $('#cancelReservingTable').modal('show');
+  }
+
+  sendCancelReserveToClient(table: Table) {
+    console.log("choosed table cancel ", table);
+    this.stompClient.send("/app/admin", {},"Table " +table.id + " is canceled by admin");
+  }
+
+  cancelReserved(statusCancel: number, numOfTable: number) {
+    // console.log('this.cancelTable ', this.cancelTable);
+    // var cancelTableId;
+    // var cancelTable: Table;
+    // if(this.cancelTable) {
+    //   cancelTable = this.cancelTable;
+    // }
+    // this.appService.getReservedTable()
+    //   .subscribe(res => {
+    //     console.log('all reserved table ', res);
+
+    //     for(var i = 0; i < res.length; i++) {
+    //       if((this.cancelTable && (res[i].table.tableNumber == cancelTable.tableNumber))||
+    //         (!this.cancelTable && (res[i].table.tableNumber == numOfTable))) {
+    //         cancelTableId = res[i].id;
+    //       }
+    //     }
+    //     var objCancel = {
+    //       "reservedTableId": cancelTableId+'',
+    //       "detail": "",
+    //       "finalStatus": statusCancel+""
+    //     }
+    //     console.log('admin cancel ', objCancel);
+
+    //     this.appService.cancelReserved(objCancel)
+    //       .subscribe(res => {
+    //         console.log("cancel ", res);
+    //         if (res.status == 200){
+    //           localStorage.removeItem("timestartReserved");
+    //           localStorage.setItem("countDownReserving", 'false');
+    //           // localStorage.removeItem('reservedTable');
+    //           $('#cancelReservingTable').modal('hide');
+    //           this.tablesCountDownMins[numOfTable-1] = 0;
+    //           this.tablesCountDownSecs[numOfTable-1] = 0;
+    //           this.updateViewCancelReservedTable();
+    //           this.cancelTable = null;
+    //           this.sendCancelReserveToClient(cancelTable);
+    //         }
+    //       },
+    //       err => {
+    //         console.log(err);
+    //       });
+        
+    //   })
   }
 }

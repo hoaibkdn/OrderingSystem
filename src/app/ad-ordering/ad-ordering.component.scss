@@ -34,7 +34,8 @@
     padding-right: 10px;
     text-align: center;
     padding-bottom: 10px;
-    &--order {
+    &--order,
+    &--cancel {
       margin-right: 5px;
     }
   }
@@ -76,5 +77,29 @@
   }
   &--id {
     display: none;
+  }
+}
+
+.italic {
+  font-style: italic;
+  color: #673AB7;
+}
+
+.info-reserve {
+  text-align: center;
+  padding: 10px;
+  &__title {
+    text-align: center;
+    font-size: 18px;
+  }
+  &__detail {
+    text-align: left;
+    padding-top: 20px;
+  }
+  &__group {
+    text-align: center;
+  }
+  &__btn {
+    margin: 15px 0;
   }
 }

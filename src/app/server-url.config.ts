@@ -11,4 +11,3 @@ export const websocketUrl = "ws://192.168.0.116:8080/";
 // export const serverUrl = "http://localhost:8080/api/";
 // export const serverLocationUrl = "http://localhost:8080/";
 // export const websocketUrl = "ws://localhost:8080/";
-
