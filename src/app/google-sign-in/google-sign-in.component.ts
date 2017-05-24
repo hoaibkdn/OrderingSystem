@@ -45,7 +45,8 @@ export class GoogleSignInComponent implements AfterViewInit {
               $('#login').modal('hide');
               break;
             default:
-              this.router.navigate([""]);
+              // this.router.navigate([""]);
+              this.router.navigate(["/history/invoice"]);
               $('#login').modal('hide');
               break;
           }

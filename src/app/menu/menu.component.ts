@@ -244,7 +244,6 @@ export class MenuComponent extends LoadingPage implements OnInit {
     // set permitedOrder from localStorage
     var permitedOrderLocal = localStorage.getItem('permitedOrder');
     if(permitedOrderLocal) {
-      console.log("Is pay in local storage", permitedOrderLocal);
       this.permitedOrder = (permitedOrderLocal === "true");
     }
     else {
@@ -439,6 +438,15 @@ export class MenuComponent extends LoadingPage implements OnInit {
               localStorage.removeItem('reservedTable');
               localStorage.setItem('countDownReserving', 'false');
               this.checkShowBtnReserve();
+            }
+          } else if(messageOutput.body.includes('confirmed by admin')){
+            let table = JSON.parse(localStorage.getItem("currentTable"));
+            alert(table);
+          } else if(messageOutput.body.includes('is ready')){
+            let table = JSON.parse(localStorage.getItem("currentTable"));
+            let tableNumber = messageOutput.body.split('table')[1].trim().split(' ')[0];
+            if (table != null && tableNumber == table.tableNumber){
+              alert("Your food is ready and will be served within minutes!");
             }
           }
         });
@@ -824,11 +832,27 @@ export class MenuComponent extends LoadingPage implements OnInit {
 
   actOrder() {
     if(this.distance <= this.distancePermittedOrder) {
+      var token = localStorage.getItem('token');
+      if(token) {
+        this.checkReserved();
+      }
       this.currentTable = JSON.parse(localStorage.getItem("currentTable"));
       if(!this.currentTable) {
         this.chooseTable();
       }
-      else this.ordered();
+      else {
+        this.ordered();
+        var invoiceId = localStorage.getItem('invoiceId');
+        if(invoiceId) {
+          this.cancelReserved(11);
+        }
+        this.timeCountMinsReserve = 0;
+        this.timeCountSecsReserve = 0;
+        this.countDownReserving = false;
+        this.isReserved = false;
+        localStorage.setItem('countDownReserving', 'false');
+        localStorage.setItem('isReserved', 'false');
+      }
     }
     else {
       $('#checkOrder').modal('show');
@@ -1095,6 +1119,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
   }
 
   requestPayment() {
+    let currentTable = JSON.parse(localStorage.getItem("currentTable"));
     console.log('payment ', this.paymentForm);
     var payment = new Payment;
     payment.invoiceId = this.invoiceId;
@@ -1107,7 +1132,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     this.foodLocalStoragesOrdering = [];
     this.totalMoney();
     // if (this.invoiceId)
-    this.stompClient.send("/app/admin", {}, "Table: " + localStorage.getItem("tableId")
+    this.stompClient.send("/app/admin", {}, "Table: " + currentTable.tableNumber
       + " - InvoiceId: " + payment.invoiceId + " is requesting payment with type: " + payment.paymentType);
     $('#paymentForm').modal('hide');
     // location.reload();
@@ -1562,6 +1587,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     }
     var self = this;
     this.startCounReserved = setInterval(function() {
+      // console.log(self.timeCountSecsReserve);
       self.timeCountSecsReserve--;
       if(self.timeCountSecsReserve === 0) {
         self.timeCountMinsReserve--;
@@ -1632,4 +1658,16 @@ export class MenuComponent extends LoadingPage implements OnInit {
       this.stompClient.send("/app/admin", {}, "Table " + table.tableNumber + " canceled by user");
     }
   };
+
+  checkReserved() {
+    this.appService.getReservedTable()
+      .subscribe(res => {
+        console.log('all table reserved ', res);
+        this.currentTable = res[0].table;
+        localStorage.setItem('currentTable', JSON.stringify(this.currentTable));
+      },
+      err => {
+        console.log('err ', err);
+      });
+  }
 }
