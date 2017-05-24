@@ -1572,6 +1572,7 @@ export class MenuComponent extends LoadingPage implements OnInit {
     }
     var self = this;
     this.startCounReserved = setInterval(function() {
+      console.log(self.timeCountSecsReserve);
       self.timeCountSecsReserve--;
       if(self.timeCountSecsReserve === 0) {
         self.timeCountMinsReserve--;
